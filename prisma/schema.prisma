@@ -1,0 +1,388 @@
+// Prisma Schema for Next.js AI SaaS Starter Kit
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// AUTHENTICATION & USER MANAGEMENT
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLogin     DateTime?
+
+  // Credits & Usage
+  credits       Int       @default(100)
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  userRoles     UserRole[]
+  subscription  Subscription?
+  payments      Payment[]
+  chats         Chat[]
+  creditUsage   CreditUsage[]
+  blogs         Blog[]
+
+  @@map("users")
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================
+// RBAC (Role-Based Access Control)
+// ============================================
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique // USER, ADMIN, SUPER_ADMIN
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   @unique // manage_users, manage_plans, etc.
+  description String?
+  category    String?  // grouping: users, billing, content, etc.
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String @id @default(cuid())
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String
+  roleId    String
+  assignedAt DateTime @default(now())
+  assignedBy String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+// ============================================
+// BILLING & SUBSCRIPTIONS
+// ============================================
+
+model Plan {
+  id          String   @id @default(cuid())
+  name        String   @unique // Free, Pro, Business
+  description String?
+
+  // Pricing
+  monthlyPrice  Float
+  yearlyPrice   Float
+
+  // Limits
+  chatsPerMonth Int      @default(-1) // -1 = unlimited
+  pdfsPerChat   Int      @default(-1) // -1 = unlimited
+  creditsPerMonth Int    @default(0)
+
+  // Features
+  features      String[] // JSON array of feature descriptions
+
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  planId            String
+  stripeSubscriptionId String? @unique
+  stripeCustomerId     String?
+
+  status            String   // active, canceled, past_due, etc.
+  billingCycle      String   // monthly, yearly
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd Boolean @default(false)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  stripePaymentId String   @unique
+  amount          Float
+  currency        String   @default("usd")
+  status          String   // succeeded, pending, failed
+  description     String?
+
+  invoiceUrl      String?
+  receiptUrl      String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model DiscountCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  description String?
+
+  discountType     String  // percentage, fixed
+  discountValue    Float   // 10 (for 10% or $10)
+
+  validFrom   DateTime
+  validUntil  DateTime?
+  usageLimit  Int?     // null = unlimited
+  usageCount  Int      @default(0)
+
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("discount_codes")
+}
+
+// ============================================
+// AI CHAT & FILE PROCESSING
+// ============================================
+
+model Chat {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String   @default("New Chat")
+  model     String   @default("gpt-4o") // OpenRouter model
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+  files    File[]
+
+  @@map("chats")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  chatId    String
+  role      String   // user, assistant, system
+  content   String   @db.Text
+  tokens    Int?
+
+  createdAt DateTime @default(now())
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model File {
+  id          String   @id @default(cuid())
+  chatId      String
+  userId      String
+
+  filename    String
+  originalName String
+  fileType    String   // pdf, csv, etc.
+  fileSize    Int
+  fileUrl     String?  // if stored remotely
+
+  // Processing
+  processed   Boolean  @default(false)
+  summary     String?  @db.Text
+  extractedText String? @db.Text
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@map("files")
+}
+
+model CreditUsage {
+  id        String   @id @default(cuid())
+  userId    String
+
+  action    String   // chat_message, pdf_upload, pdf_summary
+  credits   Int      // credits consumed
+  model     String?  // AI model used
+  tokens    Int?     // tokens used
+
+  metadata  String?  @db.Text // JSON for additional info
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("credit_usage")
+}
+
+// ============================================
+// BLOG SYSTEM
+// ============================================
+
+model Blog {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String   @db.Text
+  excerpt     String?
+
+  authorId    String
+
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+
+  featuredImage String?
+
+  views       Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author     User               @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categories BlogCategory[]
+  tags       BlogTag[]
+
+  @@map("blogs")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  blogs BlogCategory[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blogs BlogTag[]
+
+  @@map("tags")
+}
+
+model BlogCategory {
+  blogId     String
+  categoryId String
+
+  blog     Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([blogId, categoryId])
+  @@map("blog_categories")
+}
+
+model BlogTag {
+  blogId String
+  tagId  String
+
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([blogId, tagId])
+  @@map("blog_tags")
+}
