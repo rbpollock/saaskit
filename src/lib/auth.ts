@@ -33,7 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async signIn({ user }) {
-      if (user.email) {
+      if (user.email && user.id) {
         // Update last login
         await prisma.user.update({
           where: { email: user.email },
