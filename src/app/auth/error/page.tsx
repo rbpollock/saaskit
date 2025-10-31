@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 
-export default function AuthError({
+export default async function AuthError({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: Promise<{ error?: string }>;
 }) {
-  const error = searchParams.error;
+  const params = await searchParams;
+  const error = params.error;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-muted">
