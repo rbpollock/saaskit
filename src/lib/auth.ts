@@ -21,10 +21,10 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    id: string;
-    credits: number;
-    roles: string[];
-    permissions: string[];
+    id?: string;
+    credits?: number;
+    roles?: string[];
+    permissions?: string[];
   }
 }
 
@@ -94,6 +94,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
     async jwt({ token, user }) {
+      // Initialize with defaults if not set
+      if (!token.roles) token.roles = [];
+      if (!token.permissions) token.permissions = [];
+
       if (user) {
         token.id = user.id;
         token.credits = user.credits || 100;
@@ -142,8 +146,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id;
-        session.user.credits = token.credits;
+        session.user.id = token.id || "";
+        session.user.credits = token.credits || 100;
         session.user.roles = token.roles || [];
         session.user.permissions = token.permissions || [];
       }
