@@ -3,6 +3,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
+import Credentials from "next-auth/providers/credentials";
+import * as bcrypt from "bcryptjs";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -41,6 +43,43 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
       allowDangerousEmailAccountLinking: true,
+    }),
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Please enter your email and password");
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email as string },
+        });
+
+        if (!user || !user.password) {
+          throw new Error("No user found with this email");
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password as string,
+          user.password
+        );
+
+        if (!isPasswordValid) {
+          throw new Error("Incorrect password");
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          credits: user.credits,
+        };
+      },
     }),
   ],
   callbacks: {
@@ -130,11 +169,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (dbUser) {
             token.id = dbUser.id;
             token.credits = dbUser.credits;
-            token.roles = dbUser.userRoles.map((ur) => ur.role.name);
+            token.roles = dbUser.userRoles.map((ur: any) => ur.role.name);
             token.permissions = Array.from(
               new Set(
-                dbUser.userRoles.flatMap((ur) =>
-                  ur.role.rolePermissions.map((rp) => rp.permission.name)
+                dbUser.userRoles.flatMap((ur: any) =>
+                  ur.role.rolePermissions.map((rp: any) => rp.permission.name)
                 )
               )
             );
@@ -148,10 +187,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id || "";
-        session.user.credits = token.credits || 100;
-        session.user.roles = token.roles || [];
-        session.user.permissions = token.permissions || [];
+        session.user.id = (token.id as string) || "";
+        session.user.credits = (token.credits as number) || 100;
+        session.user.roles = (token.roles as string[]) || [];
+        session.user.permissions = (token.permissions as string[]) || [];
       }
       return session;
     },
