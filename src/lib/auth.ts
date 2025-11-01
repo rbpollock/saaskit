@@ -42,7 +42,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async signIn({ user }) {
-      if (user.email) {
+      if (!user.email) return false;
+
+      try {
         let existingUser = await prisma.user.findUnique({
           where: { email: user.email },
         });
@@ -53,6 +55,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               email: user.email,
               name: user.name,
               image: user.image,
+              credits: 100,
               lastLogin: new Date(),
             },
           });
@@ -89,7 +92,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return false;
       }
     },
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.credits = user.credits || 100;
