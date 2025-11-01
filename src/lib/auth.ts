@@ -41,26 +41,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user, account }) {
-      if (!user.email) return false;
-
-      try {
-        // Find or create user
-        const dbUser = await prisma.user.upsert({
+    async signIn({ user }) {
+      if (user.email) {
+        let existingUser = await prisma.user.findUnique({
           where: { email: user.email },
-          update: { lastLogin: new Date() },
-          create: {
-            email: user.email,
-            name: user.name,
-            image: user.image,
-            credits: 100,
-            lastLogin: new Date(),
-          },
         });
+
+        if (!existingUser) {
+          existingUser = await prisma.user.create({
+            data: {
+              email: user.email,
+              name: user.name,
+              image: user.image,
+              lastLogin: new Date(),
+            },
+          });
+        } else {
+          await prisma.user.update({
+            where: { email: user.email },
+            data: { lastLogin: new Date() },
+          });
+        }
 
         // Assign default USER role if no roles exist
         const userRoles = await prisma.userRole.findMany({
-          where: { userId: dbUser.id },
+          where: { userId: existingUser.id },
         });
 
         if (userRoles.length === 0) {
@@ -71,7 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (userRole) {
             await prisma.userRole.create({
               data: {
-                userId: dbUser.id,
+                userId: existingUser.id,
                 roleId: userRole.id,
               },
             });
