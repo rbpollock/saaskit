@@ -19,6 +19,15 @@ declare module "next-auth" {
   }
 }
 
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    credits: number;
+    roles: string[];
+    permissions: string[];
+  }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma) as any,
   providers: [
@@ -73,41 +82,66 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             });
           }
         }
-      }
-      return true;
-    },
-    async session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-        session.user.credits = user.credits;
 
-        // Fetch user roles and permissions
-        const userRoles = await prisma.userRole.findMany({
-          where: { userId: user.id },
-          include: {
-            role: {
-              include: {
-                rolePermissions: {
-                  include: {
-                    permission: true,
+        return true;
+      } catch (error) {
+        console.error("Sign in error:", error);
+        return false;
+      }
+    },
+    async jwt({ token, user, trigger }) {
+      if (user) {
+        token.id = user.id;
+        token.credits = user.credits || 100;
+      }
+
+      // Fetch user data from database on each JWT creation/update
+      if (token.email) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { email: token.email },
+            include: {
+              userRoles: {
+                include: {
+                  role: {
+                    include: {
+                      rolePermissions: {
+                        include: {
+                          permission: true,
+                        },
+                      },
+                    },
                   },
                 },
               },
             },
-          },
-        });
+          });
 
-        const roles = userRoles.map((ur) => ur.role.name);
-        const permissions = Array.from(
-          new Set(
-            userRoles.flatMap((ur) =>
-              ur.role.rolePermissions.map((rp) => rp.permission.name)
-            )
-          )
-        );
+          if (dbUser) {
+            token.id = dbUser.id;
+            token.credits = dbUser.credits;
+            token.roles = dbUser.userRoles.map((ur) => ur.role.name);
+            token.permissions = Array.from(
+              new Set(
+                dbUser.userRoles.flatMap((ur) =>
+                  ur.role.rolePermissions.map((rp) => rp.permission.name)
+                )
+              )
+            );
+          }
+        } catch (error) {
+          console.error("JWT callback error:", error);
+        }
+      }
 
-        session.user.roles = roles;
-        session.user.permissions = permissions;
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.credits = token.credits;
+        session.user.roles = token.roles || [];
+        session.user.permissions = token.permissions || [];
       }
       return session;
     },
@@ -117,6 +151,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     error: "/auth/error",
   },
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
 });
