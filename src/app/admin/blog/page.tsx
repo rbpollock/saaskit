@@ -11,7 +11,11 @@ export default async function BlogManagementPage() {
   const blogs = await prisma.blog.findMany({
     include: {
       author: true,
-      category: true,
+      categories: {
+        include: {
+          category: true,
+        },
+      },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -102,8 +106,14 @@ export default async function BlogManagementPage() {
                       <p className="text-sm">{blog.author.name || blog.author.email}</p>
                     </td>
                     <td className="p-2">
-                      {blog.category ? (
-                        <Badge variant="outline">{blog.category.name}</Badge>
+                      {blog.categories.length > 0 ? (
+                        <div className="flex gap-1 flex-wrap">
+                          {blog.categories.map((bc) => (
+                            <Badge key={bc.categoryId} variant="outline">
+                              {bc.category.name}
+                            </Badge>
+                          ))}
+                        </div>
                       ) : (
                         <span className="text-muted-foreground text-sm">Uncategorized</span>
                       )}

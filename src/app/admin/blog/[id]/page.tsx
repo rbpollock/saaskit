@@ -13,8 +13,15 @@ export default async function EditBlogPage({
   const [blog, categories] = await Promise.all([
     prisma.blog.findUnique({
       where: { id },
+      include: {
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+      },
     }),
-    prisma.blogCategory.findMany({
+    prisma.category.findMany({
       orderBy: { name: "asc" },
     }),
   ]);

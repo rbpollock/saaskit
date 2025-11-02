@@ -3,7 +3,7 @@ import { BlogForm } from "@/components/admin/blog-form";
 import { prisma } from "@/lib/prisma";
 
 export default async function NewBlogPage() {
-  const categories = await prisma.blogCategory.findMany({
+  const categories = await prisma.category.findMany({
     orderBy: { name: "asc" },
   });
 

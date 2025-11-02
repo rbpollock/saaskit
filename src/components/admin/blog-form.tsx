@@ -19,7 +19,7 @@ export function BlogForm({ blog, categories }: { blog?: any; categories: any[] }
     content: blog?.content || "",
     excerpt: blog?.excerpt || "",
     published: blog?.published || false,
-    categoryId: blog?.categoryId || "",
+    categoryId: blog?.categories?.[0]?.categoryId || "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {

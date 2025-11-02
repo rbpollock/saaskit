@@ -172,14 +172,25 @@ export async function createBlogPost(data: z.infer<typeof blogSchema>) {
 
   try {
     const validatedData = blogSchema.parse(data);
+    const { categoryId, ...blogData } = validatedData;
 
-    await prisma.blog.create({
+    const blog = await prisma.blog.create({
       data: {
-        ...validatedData,
+        ...blogData,
         authorId: session.user.id,
         publishedAt: validatedData.published ? new Date() : null,
       },
     });
+
+    // Create category relationship if categoryId provided
+    if (categoryId) {
+      await prisma.blogCategory.create({
+        data: {
+          blogId: blog.id,
+          categoryId: categoryId,
+        },
+      });
+    }
 
     revalidatePath("/admin/blog");
     revalidatePath("/blog");
@@ -194,14 +205,31 @@ export async function updateBlogPost(postId: string, data: z.infer<typeof blogSc
 
   try {
     const validatedData = blogSchema.parse(data);
+    const { categoryId, ...blogData } = validatedData;
 
     await prisma.blog.update({
       where: { id: postId },
       data: {
-        ...validatedData,
+        ...blogData,
         publishedAt: validatedData.published ? new Date() : null,
       },
     });
+
+    // Update category relationship
+    // First, delete all existing categories for this blog
+    await prisma.blogCategory.deleteMany({
+      where: { blogId: postId },
+    });
+
+    // Then create new category relationship if categoryId provided
+    if (categoryId) {
+      await prisma.blogCategory.create({
+        data: {
+          blogId: postId,
+          categoryId: categoryId,
+        },
+      });
+    }
 
     revalidatePath("/admin/blog");
     revalidatePath("/blog");
