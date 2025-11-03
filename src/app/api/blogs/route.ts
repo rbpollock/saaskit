@@ -8,7 +8,7 @@ const createBlogSchema = z.object({
   slug: z.string().min(1, "Slug is required"),
   content: z.string().min(1, "Content is required"),
   excerpt: z.string().optional(),
-  coverImage: z.string().url().optional(),
+  featuredImage: z.string().url().optional(),
   published: z.boolean().default(false),
   categoryIds: z.array(z.string()).optional(),
 });
@@ -73,7 +73,7 @@ const createBlogSchema = z.object({
  *                         type: string
  *                       excerpt:
  *                         type: string
- *                       coverImage:
+ *                       featuredImage:
  *                         type: string
  *                         nullable: true
  *                       published:
@@ -142,7 +142,7 @@ const createBlogSchema = z.object({
  *               excerpt:
  *                 type: string
  *                 example: A comprehensive guide to Next.js 15
- *               coverImage:
+ *               featuredImage:
  *                 type: string
  *                 format: uri
  *                 example: https://example.com/cover.jpg
@@ -270,7 +270,7 @@ export async function GET(req: Request) {
       title: blog.title,
       slug: blog.slug,
       excerpt: blog.excerpt,
-      coverImage: blog.coverImage,
+      featuredImage: blog.featuredImage,
       published: blog.published,
       views: blog.views,
       createdAt: blog.createdAt,
@@ -322,7 +322,7 @@ export async function POST(req: Request) {
 
     // Validate input
     const validatedData = createBlogSchema.parse(body);
-    const { title, slug, content, excerpt, coverImage, published, categoryIds } =
+    const { title, slug, content, excerpt, featuredImage, published, categoryIds } =
       validatedData;
 
     // Check if slug already exists
@@ -344,7 +344,7 @@ export async function POST(req: Request) {
         slug,
         content,
         excerpt,
-        coverImage,
+        featuredImage,
         published,
         authorId: session.user.id,
       },

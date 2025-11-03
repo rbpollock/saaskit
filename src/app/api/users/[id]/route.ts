@@ -255,9 +255,12 @@ export async function GET(
             id: user.subscription.id,
             status: user.subscription.status,
             currentPeriodEnd: user.subscription.currentPeriodEnd,
+            billingCycle: user.subscription.billingCycle,
             plan: {
               name: user.subscription.plan.name,
-              price: user.subscription.plan.price,
+              price: user.subscription.billingCycle === 'yearly'
+                ? user.subscription.plan.yearlyPrice
+                : user.subscription.plan.monthlyPrice,
               creditsPerMonth: user.subscription.plan.creditsPerMonth,
             },
           }

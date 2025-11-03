@@ -265,7 +265,7 @@ Content-Type: application/json
   "slug": "getting-started-nextjs-15",
   "content": "Next.js 15 brings exciting new features...",
   "excerpt": "A comprehensive guide to Next.js 15",
-  "coverImage": "https://example.com/image.jpg",
+  "featuredImage": "https://example.com/image.jpg",
   "published": true,
   "categoryIds": ["clx123..."]
 }`}</code>

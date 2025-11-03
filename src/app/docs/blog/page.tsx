@@ -32,7 +32,7 @@ export default function BlogSystemPage() {
   slug       String   @unique
   content    String
   excerpt    String?
-  coverImage String?
+  featuredImage String?
   published  Boolean  @default(false)
   views      Int      @default(0)
   authorId   String
@@ -93,7 +93,7 @@ export default function BlogSystemPage() {
   "slug": "getting-started-nextjs",
   "content": "Full content here...",
   "excerpt": "A beginner's guide",
-  "coverImage": "https://example.com/image.jpg",
+  "featuredImage": "https://example.com/image.jpg",
   "published": true,
   "categoryIds": ["clx123..."]
 }`}</code>
@@ -145,7 +145,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: blog.title,
       description: blog.excerpt,
-      images: [blog.coverImage],
+      images: [blog.featuredImage],
     },
   };
 }`}</code>

@@ -282,9 +282,12 @@ export async function GET(req: Request) {
         ? {
             id: user.subscription.id,
             status: user.subscription.status,
+            billingCycle: user.subscription.billingCycle,
             plan: {
               name: user.subscription.plan.name,
-              price: user.subscription.plan.price,
+              price: user.subscription.billingCycle === 'yearly'
+                ? user.subscription.plan.yearlyPrice
+                : user.subscription.plan.monthlyPrice,
             },
           }
         : null,

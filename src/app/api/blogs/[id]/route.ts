@@ -258,7 +258,7 @@ export async function GET(
       slug: blog.slug,
       content: blog.content,
       excerpt: blog.excerpt,
-      coverImage: blog.coverImage,
+      featuredImage: blog.featuredImage,
       published: blog.published,
       views: blog.views,
       createdAt: blog.createdAt,
