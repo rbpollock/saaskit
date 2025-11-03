@@ -99,7 +99,9 @@ export default async function SubscriptionsPage() {
                     <td className="p-2">
                       <Badge variant="default">{subscription.plan.name}</Badge>
                       <p className="text-sm text-muted-foreground mt-1">
-                        ${subscription.plan.price}/{subscription.plan.interval}
+                        ${subscription.billingCycle === 'yearly'
+                          ? subscription.plan.yearlyPrice.toFixed(0)
+                          : subscription.plan.monthlyPrice.toFixed(0)}/{subscription.billingCycle}
                       </p>
                     </td>
                     <td className="p-2">
