@@ -112,7 +112,6 @@ export default async function PaymentsPage({
                   <th className="text-left p-2">User</th>
                   <th className="text-left p-2">Amount</th>
                   <th className="text-left p-2">Status</th>
-                  <th className="text-left p-2">Payment Method</th>
                   <th className="text-left p-2">Date</th>
                   <th className="text-left p-2">Transaction ID</th>
                   <th className="text-right p-2">Actions</th>
@@ -143,7 +142,6 @@ export default async function PaymentsPage({
                         {payment.status}
                       </Badge>
                     </td>
-                    <td className="p-2 text-sm">{payment.paymentMethod || "N/A"}</td>
                     <td className="p-2 text-sm">
                       {format(new Date(payment.createdAt), "MMM d, yyyy HH:mm")}
                     </td>
