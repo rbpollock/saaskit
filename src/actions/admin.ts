@@ -140,11 +140,20 @@ export async function changeUserPlan(userId: string, planId: string) {
         data: { planId },
       });
     } else {
+      // Create new subscription with required fields
+      const now = new Date();
+      const periodEnd = new Date();
+      periodEnd.setMonth(periodEnd.getMonth() + 1); // 1 month from now
+
       await prisma.subscription.create({
         data: {
           userId,
           planId,
           status: "active",
+          billingCycle: "monthly",
+          currentPeriodStart: now,
+          currentPeriodEnd: periodEnd,
+          cancelAtPeriodEnd: false,
         },
       });
     }
