@@ -15,8 +15,12 @@ import {
   Globe,
   Check,
   Star,
+  Github,
+  Twitter,
+  Linkedin,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { Navbar } from "@/components/navbar";
 
 export default async function Home() {
   // Fetch plans for pricing section
@@ -26,8 +30,10 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <Navbar />
+
       {/* Hero Section with Animated Background */}
-      <main className="flex-1">
+      <main className="flex-1 pt-16">
         <section className="relative w-full overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 py-20 md:py-32 lg:py-40">
           {/* Animated background elements */}
           <div className="absolute inset-0 overflow-hidden">
@@ -125,7 +131,7 @@ export default async function Home() {
         </section>
 
         {/* Features Section with Cards */}
-        <section className="w-full py-16 md:py-24 lg:py-32">
+        <section id="features" className="w-full py-16 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="mb-12 text-center">
               <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
@@ -369,8 +375,13 @@ export default async function Home() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/docs" className="hover:text-foreground transition-colors">
+                    Documentation
+                  </Link>
+                </li>
+                <li>
                   <Link href="/api-docs" className="hover:text-foreground transition-colors">
-                    API Docs
+                    API Reference
                   </Link>
                 </li>
                 <li>
@@ -412,24 +423,54 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="mb-4 text-lg font-bold">Connect</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    Twitter
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition-colors">
-                    GitHub
-                  </Link>
-                </li>
-              </ul>
+              <div className="flex gap-4">
+                <Link
+                  href="https://twitter.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="h-5 w-5" />
+                </Link>
+                <Link
+                  href="https://github.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+                  aria-label="GitHub"
+                >
+                  <Github className="h-5 w-5" />
+                </Link>
+                <Link
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="h-5 w-5" />
+                </Link>
+              </div>
             </div>
           </div>
-          <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
-            <p>
-              © 2025 AI SaaS Starter Kit. Built with Next.js 15, Prisma, and TypeScript.
-            </p>
+          <div className="mt-12 border-t pt-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-sm text-muted-foreground">
+                © 2025 AI SaaS Starter Kit. Built with Next.js 15, Prisma, and TypeScript.
+              </p>
+              <div className="flex items-center gap-4">
+                <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Documentation
+                </Link>
+                <Link href="/api-docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  API
+                </Link>
+                <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Blog
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
