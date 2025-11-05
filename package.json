@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "(PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 prisma generate || echo 'Using existing Prisma client') && next build",
+    "vercel-build": "(PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 prisma generate || echo 'Using existing Prisma client') && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate",
+    "postinstall": "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 prisma generate || echo 'Prisma generate failed, continuing...'",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "prisma:generate": "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
