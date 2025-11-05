@@ -208,7 +208,7 @@ export async function GET(
     });
 
     const isAdmin = userRoles.some(
-      (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
     );
 
     if (!isAdmin) {
@@ -245,7 +245,7 @@ export async function GET(
       credits: user.credits,
       emailVerified: user.emailVerified,
       createdAt: user.createdAt,
-      roles: user.userRoles.map((ur) => ({
+      roles: user.userRoles.map((ur: any) => ({
         id: ur.role.id,
         name: ur.role.name,
         description: ur.role.description,
@@ -295,7 +295,7 @@ export async function PUT(
     });
 
     const isAdmin = userRoles.some(
-      (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
     );
 
     if (!isAdmin) {
@@ -380,7 +380,7 @@ export async function DELETE(
     });
 
     const isAdmin = userRoles.some(
-      (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
     );
 
     if (!isAdmin) {

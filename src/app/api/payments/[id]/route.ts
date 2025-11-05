@@ -85,7 +85,7 @@ export async function GET(
     });
 
     const isAdmin = userRoles.some(
-      (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
     );
 
     const { id } = await params;

@@ -205,7 +205,7 @@ export async function GET(
       });
 
       isAdmin = userRoles.some(
-        (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+        (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
       );
     }
 
@@ -264,7 +264,7 @@ export async function GET(
       createdAt: blog.createdAt,
       updatedAt: blog.updatedAt,
       author: blog.author,
-      categories: blog.categories.map((bc) => bc.category),
+      categories: blog.categories.map((bc: any) => bc.category),
     };
 
     return NextResponse.json(formattedBlog);
@@ -295,7 +295,7 @@ export async function PUT(
     });
 
     const isAdmin = userRoles.some(
-      (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
     );
 
     if (!isAdmin) {
@@ -401,7 +401,7 @@ export async function DELETE(
     });
 
     const isAdmin = userRoles.some(
-      (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
     );
 
     if (!isAdmin) {

@@ -48,7 +48,7 @@ export function ManageRolesForm({
     setIsSubmitting(false);
   };
 
-  const userRoleIds = userRoles.map((role) => role.id);
+  const userRoleIds = userRoles.map((role: any) => role.id);
   const availableRoles = allRoles.filter((role) => !userRoleIds.includes(role.id));
 
   return (
@@ -58,7 +58,7 @@ export function ManageRolesForm({
         <h3 className="text-sm font-medium mb-2">Current Roles</h3>
         {userRoles.length > 0 ? (
           <div className="flex flex-wrap gap-2">
-            {userRoles.map((role) => (
+            {userRoles.map((role: any) => (
               <Badge key={role.id} variant="default" className="gap-1">
                 {role.name}
                 <button
@@ -81,7 +81,7 @@ export function ManageRolesForm({
         <div>
           <h3 className="text-sm font-medium mb-2">Available Roles</h3>
           <div className="flex flex-wrap gap-2">
-            {availableRoles.map((role) => (
+            {availableRoles.map((role: any) => (
               <Button
                 key={role.id}
                 variant="outline"

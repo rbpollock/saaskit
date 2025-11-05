@@ -92,7 +92,7 @@ export default async function DashboardPage() {
         <CardContent>
           {user?.chats && user.chats.length > 0 ? (
             <div className="space-y-2">
-              {user.chats.map((chat) => (
+              {user.chats.map((chat: any) => (
                 <Link
                   key={chat.id}
                   href={`/dashboard/chat/${chat.id}`}

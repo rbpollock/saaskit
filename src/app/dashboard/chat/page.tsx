@@ -56,7 +56,7 @@ export default function ChatPage() {
         <div>Loading chats...</div>
       ) : chats.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {chats.map((chat) => (
+          {chats.map((chat: any) => (
             <Link key={chat.id} href={`/dashboard/chat/${chat.id}`}>
               <Card className="hover:border-primary transition-colors cursor-pointer h-full">
                 <CardHeader>

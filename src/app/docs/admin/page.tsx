@@ -106,7 +106,7 @@ export default function AdminPage() {
 });
 
 const isAdmin = userRoles.some(
-  (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+  (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
 );
 
 if (!isAdmin) {

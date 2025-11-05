@@ -42,10 +42,12 @@ import { prisma } from "@/lib/prisma";
  *                         items:
  *                           type: string
  *                         example: ["1000 credits/month", "Priority support", "Advanced features"]
- *                       stripePriceId:
- *                         type: string
- *                         nullable: true
- *                         example: price_1OXd9KExample123456
+ *                       monthlyPrice:
+ *                         type: number
+ *                         example: 19.00
+ *                       yearlyPrice:
+ *                         type: number
+ *                         example: 190.00
  *                       _count:
  *                         type: object
  *                         properties:
@@ -69,7 +71,7 @@ export async function GET() {
           },
         },
       },
-      orderBy: { price: "asc" },
+      orderBy: { monthlyPrice: "asc" },
     });
 
     return NextResponse.json({

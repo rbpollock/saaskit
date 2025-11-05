@@ -90,7 +90,7 @@ export default async function BillingPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {plan.features.map((feature) => (
+                  {plan.features.map((feature: any) => (
                     <li key={feature} className="flex items-start">
                       <Check className="h-4 w-4 text-primary mr-2 mt-0.5" />
                       <span className="text-sm">{feature}</span>
@@ -117,7 +117,7 @@ export default async function BillingPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {payments.map((payment) => (
+              {payments.map((payment: any) => (
                 <div
                   key={payment.id}
                   className="flex items-center justify-between border-b pb-4 last:border-0"

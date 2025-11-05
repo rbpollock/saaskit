@@ -27,7 +27,7 @@ export default async function RolesPage() {
       </div>
 
       <div className="grid gap-6">
-        {roles.map((role) => (
+        {roles.map((role: any) => (
           <Card key={role.id}>
             <CardHeader>
               <div className="flex justify-between items-start">
@@ -47,7 +47,7 @@ export default async function RolesPage() {
                   <h3 className="text-sm font-medium mb-2">Permissions</h3>
                   <div className="flex flex-wrap gap-2">
                     {role.rolePermissions.length > 0 ? (
-                      role.rolePermissions.map((rp) => (
+                      role.rolePermissions.map((rp: any) => (
                         <Badge key={rp.permissionId} variant="outline">
                           {rp.permission.name}
                         </Badge>
@@ -63,7 +63,7 @@ export default async function RolesPage() {
                   <div>
                     <h3 className="text-sm font-medium mb-2">Users with this role</h3>
                     <div className="space-y-2">
-                      {role.userRoles.slice(0, 5).map((ur) => (
+                      {role.userRoles.slice(0, 5).map((ur: any) => (
                         <div key={ur.userId} className="flex items-center gap-2 text-sm">
                           <span className="font-medium">{ur.user.name || "Anonymous"}</span>
                           <span className="text-muted-foreground">{ur.user.email}</span>

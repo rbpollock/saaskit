@@ -68,7 +68,7 @@ export async function sendMessage(
 
   // Prepare messages for AI
   const messages = [
-    ...chat.messages.map((m) => ({
+    ...chat.messages.map((m: { role: string; content: string }) => ({
       role: m.role as "system" | "user" | "assistant",
       content: m.content,
     })),

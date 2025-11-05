@@ -37,7 +37,7 @@ async function assignSuperAdmin() {
 
     // Check if user already has SUPER_ADMIN role
     const hasRole = user.userRoles.some(
-      (ur) => ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "SUPER_ADMIN"
     );
 
     if (hasRole) {

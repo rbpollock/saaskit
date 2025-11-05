@@ -128,7 +128,7 @@ export async function POST(
       include: { role: true },
     });
 
-    const isSuperAdmin = userRoles.some((ur) => ur.role.name === "SUPER_ADMIN");
+    const isSuperAdmin = userRoles.some((ur: { role: { name: string } }) => ur.role.name === "SUPER_ADMIN");
 
     if (!isSuperAdmin) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -220,7 +220,7 @@ export async function DELETE(
       include: { role: true },
     });
 
-    const isSuperAdmin = userRoles.some((ur) => ur.role.name === "SUPER_ADMIN");
+    const isSuperAdmin = userRoles.some((ur: { role: { name: string } }) => ur.role.name === "SUPER_ADMIN");
 
     if (!isSuperAdmin) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });

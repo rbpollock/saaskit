@@ -92,7 +92,7 @@ export default function DocsPage() {
               href: "/docs/blog",
               gradient: "from-pink-500 to-rose-500",
             },
-          ].map((feature) => (
+          ].map((feature: any) => (
             <Link
               key={feature.title}
               href={feature.href}

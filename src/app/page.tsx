@@ -229,7 +229,7 @@ export default async function Home() {
                     "Built-in blog with categories, SEO optimization, and markdown support. Perfect for content marketing.",
                   gradient: "from-pink-500 via-rose-500 to-pink-600",
                 },
-              ].map((feature, i) => (
+              ].map((feature: any, i: number) => (
                 <div
                   key={i}
                   className="group relative overflow-hidden rounded-2xl border bg-card p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
@@ -323,7 +323,7 @@ export default async function Home() {
             </div>
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-              {plans.map((plan, i) => (
+              {plans.map((plan: any, i: number) => (
                 <div
                   key={plan.id}
                   className={`group relative overflow-hidden rounded-3xl border-2 ${
@@ -361,7 +361,7 @@ export default async function Home() {
                       </div>
                       <span className="font-medium">{plan.creditsPerMonth.toLocaleString()} AI credits/month</span>
                     </div>
-                    {plan.features?.map((feature, j) => (
+                    {plan.features?.map((feature: any, j: number) => (
                       <div key={j} className="flex items-center gap-3">
                         <div className="flex-shrink-0">
                           <Check className="h-5 w-5 text-green-500" />

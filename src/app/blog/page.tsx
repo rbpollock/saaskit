@@ -28,7 +28,7 @@ export default async function BlogPage() {
 
         {blogs.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-            {blogs.map((blog) => (
+            {blogs.map((blog: any) => (
               <Link key={blog.id} href={`/blog/${blog.slug}`}>
                 <Card className="h-full hover:border-primary transition-colors cursor-pointer">
                   {blog.featuredImage && (
@@ -39,7 +39,7 @@ export default async function BlogPage() {
                   )}
                   <CardHeader>
                     <div className="flex gap-2 mb-2">
-                      {blog.categories.map((cat) => (
+                      {blog.categories.map((cat: any) => (
                         <Badge key={cat.categoryId} variant="secondary">
                           {cat.category.name}
                         </Badge>
