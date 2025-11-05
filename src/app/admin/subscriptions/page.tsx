@@ -17,9 +17,9 @@ export default async function SubscriptionsPage() {
 
   const stats = {
     total: subscriptions.length,
-    active: subscriptions.filter((s) => s.status === "active").length,
-    canceled: subscriptions.filter((s) => s.status === "canceled").length,
-    past_due: subscriptions.filter((s) => s.status === "past_due").length,
+    active: subscriptions.filter((s: { status: string }) => s.status === "active").length,
+    canceled: subscriptions.filter((s: { status: string }) => s.status === "canceled").length,
+    past_due: subscriptions.filter((s: { status: string }) => s.status === "past_due").length,
   };
 
   return (
@@ -88,7 +88,7 @@ export default async function SubscriptionsPage() {
                 </tr>
               </thead>
               <tbody>
-                {subscriptions.map((subscription) => (
+                {subscriptions.map((subscription: any) => (
                   <tr key={subscription.id} className="border-b hover:bg-muted/50">
                     <td className="p-2">
                       <div>

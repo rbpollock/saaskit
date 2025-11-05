@@ -208,7 +208,7 @@ export async function GET(req: Request) {
     });
 
     const isAdmin = userRoles.some(
-      (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
     );
 
     if (!isAdmin) {
@@ -267,14 +267,14 @@ export async function GET(req: Request) {
     ]);
 
     // Format response
-    const formattedUsers = users.map((user) => ({
+    const formattedUsers = users.map((user: any) => ({
       id: user.id,
       name: user.name,
       email: user.email,
       credits: user.credits,
       emailVerified: user.emailVerified,
       createdAt: user.createdAt,
-      roles: user.userRoles.map((ur) => ({
+      roles: user.userRoles.map((ur: any) => ({
         id: ur.role.id,
         name: ur.role.name,
       })),
@@ -326,7 +326,7 @@ export async function POST(req: Request) {
     });
 
     const isAdmin = userRoles.some(
-      (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
     );
 
     if (!isAdmin) {

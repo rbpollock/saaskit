@@ -206,7 +206,7 @@ export async function GET(req: Request) {
       });
 
       isAdmin = userRoles.some(
-        (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+        (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
       );
     }
 
@@ -265,7 +265,7 @@ export async function GET(req: Request) {
     ]);
 
     // Format response
-    const formattedBlogs = blogs.map((blog) => ({
+    const formattedBlogs = blogs.map((blog: any) => ({
       id: blog.id,
       title: blog.title,
       slug: blog.slug,
@@ -275,7 +275,7 @@ export async function GET(req: Request) {
       views: blog.views,
       createdAt: blog.createdAt,
       author: blog.author,
-      categories: blog.categories.map((bc) => bc.category),
+      categories: blog.categories.map((bc: any) => bc.category),
     }));
 
     return NextResponse.json({
@@ -311,7 +311,7 @@ export async function POST(req: Request) {
     });
 
     const isAdmin = userRoles.some(
-      (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
     );
 
     if (!isAdmin) {

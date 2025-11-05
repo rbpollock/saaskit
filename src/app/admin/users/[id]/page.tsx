@@ -73,7 +73,7 @@ export default async function UserDetailPage({
           <CardContent>
             <ManageRolesForm
               userId={user.id}
-              userRoles={user.userRoles.map((ur) => ur.role)}
+              userRoles={user.userRoles.map((ur: any) => ur.role)}
               allRoles={allRoles}
             />
           </CardContent>
@@ -131,7 +131,7 @@ export default async function UserDetailPage({
           <CardContent>
             {user.chats.length > 0 ? (
               <div className="space-y-2">
-                {user.chats.map((chat) => (
+                {user.chats.map((chat: any) => (
                   <div key={chat.id} className="flex justify-between text-sm border-b pb-2">
                     <span className="truncate">{chat.title}</span>
                     <span className="text-muted-foreground">
@@ -154,7 +154,7 @@ export default async function UserDetailPage({
           <CardContent>
             {user.payments.length > 0 ? (
               <div className="space-y-2">
-                {user.payments.map((payment) => (
+                {user.payments.map((payment: any) => (
                   <div key={payment.id} className="flex justify-between text-sm border-b pb-2">
                     <div>
                       <Badge variant={payment.status === "succeeded" ? "default" : "secondary"}>

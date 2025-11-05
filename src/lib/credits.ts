@@ -68,14 +68,14 @@ export async function getCreditUsageStats(userId: string) {
     take: 100,
   });
 
-  const totalUsed = usages.reduce((sum, usage) => sum + usage.credits, 0);
+  const totalUsed = usages.reduce((sum: number, usage: any) => sum + usage.credits, 0);
 
-  const byAction = usages.reduce((acc, usage) => {
+  const byAction = usages.reduce((acc: any, usage: any) => {
     acc[usage.action] = (acc[usage.action] || 0) + usage.credits;
     return acc;
   }, {} as Record<string, number>);
 
-  const byModel = usages.reduce((acc, usage) => {
+  const byModel = usages.reduce((acc: any, usage: any) => {
     if (usage.model) {
       acc[usage.model] = (acc[usage.model] || 0) + usage.credits;
     }

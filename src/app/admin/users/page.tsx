@@ -100,7 +100,7 @@ export default async function UsersPage({
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
+                {users.map((user: any) => (
                   <tr key={user.id} className="border-b hover:bg-muted/50">
                     <td className="p-2">
                       <div>
@@ -111,7 +111,7 @@ export default async function UsersPage({
                     <td className="p-2">
                       <div className="flex gap-1 flex-wrap">
                         {user.userRoles.length > 0 ? (
-                          user.userRoles.map((ur) => (
+                          user.userRoles.map((ur: any) => (
                             <Badge key={ur.roleId} variant="secondary">
                               {ur.role.name}
                             </Badge>

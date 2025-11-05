@@ -114,7 +114,7 @@ export function BlogForm({ blog, categories }: { blog?: any; categories: any[] }
           className="w-full px-3 py-2 border rounded-md"
         >
           <option value="">No Category</option>
-          {categories.map((category) => (
+          {categories.map((category: any) => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>

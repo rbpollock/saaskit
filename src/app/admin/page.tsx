@@ -99,7 +99,7 @@ export default async function AdminPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentUsers.map((user) => (
+            {recentUsers.map((user: any) => (
               <div
                 key={user.id}
                 className="flex items-center justify-between border-b pb-4 last:border-0"

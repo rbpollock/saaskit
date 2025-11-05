@@ -62,7 +62,7 @@ async function main() {
 
   // Admins get most permissions
   const adminPermissions = allPermissions.filter(
-    (p) => p.name !== "manage_roles" // Only super admin can manage roles
+    (p: { name: string }) => p.name !== "manage_roles" // Only super admin can manage roles
   );
 
   for (const permission of adminPermissions) {

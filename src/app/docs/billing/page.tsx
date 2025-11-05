@@ -123,7 +123,7 @@ NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS="price_xxx"`}</code>
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    priceId: selectedPlan.stripePriceId,
+    planId: selectedPlan.id,
     billingCycle: "monthly",
   }),
 });

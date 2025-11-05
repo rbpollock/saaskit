@@ -169,7 +169,7 @@ export async function POST(req: Request) {
     });
 
     const isAdmin = userRoles.some(
-      (ur) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
     );
 
     if (!isAdmin) {

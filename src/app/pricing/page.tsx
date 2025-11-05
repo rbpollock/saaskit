@@ -63,7 +63,7 @@ export default function PricingPage() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan) => (
+          {plans.map((plan: any) => (
             <Card
               key={plan.name}
               className={`relative ${
@@ -89,7 +89,7 @@ export default function PricingPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3">
-                  {plan.features.map((feature) => (
+                  {plan.features.map((feature: any) => (
                     <li key={feature} className="flex items-start">
                       <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>

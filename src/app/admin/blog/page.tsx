@@ -22,8 +22,8 @@ export default async function BlogManagementPage() {
 
   const stats = {
     total: blogs.length,
-    published: blogs.filter((b) => b.published).length,
-    draft: blogs.filter((b) => !b.published).length,
+    published: blogs.filter((b: { published: boolean }) => b.published).length,
+    draft: blogs.filter((b: { published: boolean }) => !b.published).length,
   };
 
   return (
@@ -92,7 +92,7 @@ export default async function BlogManagementPage() {
                 </tr>
               </thead>
               <tbody>
-                {blogs.map((blog) => (
+                {blogs.map((blog: any) => (
                   <tr key={blog.id} className="border-b hover:bg-muted/50">
                     <td className="p-2">
                       <div>
@@ -108,7 +108,7 @@ export default async function BlogManagementPage() {
                     <td className="p-2">
                       {blog.categories.length > 0 ? (
                         <div className="flex gap-1 flex-wrap">
-                          {blog.categories.map((bc) => (
+                          {blog.categories.map((bc: any) => (
                             <Badge key={bc.categoryId} variant="outline">
                               {bc.category.name}
                             </Badge>

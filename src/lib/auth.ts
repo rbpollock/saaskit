@@ -21,14 +21,15 @@ declare module "next-auth" {
   }
 }
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    id?: string;
-    credits?: number;
-    roles?: string[];
-    permissions?: string[];
-  }
-}
+// JWT types are handled differently in NextAuth v5
+// declare module "next-auth/jwt" {
+//   interface JWT {
+//     id?: string;
+//     credits?: number;
+//     roles?: string[];
+//     permissions?: string[];
+//   }
+// }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma) as any,

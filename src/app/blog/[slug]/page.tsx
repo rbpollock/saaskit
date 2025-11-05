@@ -11,7 +11,7 @@ export async function generateStaticParams() {
     select: { slug: true },
   });
 
-  return blogs.map((blog) => ({
+  return blogs.map((blog: any) => ({
     slug: blog.slug,
   }));
 }
@@ -68,7 +68,7 @@ export default async function BlogPostPage({
         {/* Categories */}
         {blog.categories.length > 0 && (
           <div className="flex gap-2 mb-4">
-            {blog.categories.map((cat) => (
+            {blog.categories.map((cat: any) => (
               <Badge key={cat.categoryId} variant="secondary">
                 {cat.category.name}
               </Badge>

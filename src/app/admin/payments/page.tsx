@@ -35,8 +35,8 @@ export default async function PaymentsPage({
     }),
   ]);
 
-  const succeededPayments = payments.filter((p) => p.status === "succeeded");
-  const refundedPayments = payments.filter((p) => p.status === "refunded");
+  const succeededPayments = payments.filter((p: { status: string }) => p.status === "succeeded");
+  const refundedPayments = payments.filter((p: { status: string }) => p.status === "refunded");
   const totalPages = Math.ceil(totalPayments / perPage);
 
   return (
@@ -118,7 +118,7 @@ export default async function PaymentsPage({
                 </tr>
               </thead>
               <tbody>
-                {payments.map((payment) => (
+                {payments.map((payment: any) => (
                   <tr key={payment.id} className="border-b hover:bg-muted/50">
                     <td className="p-2">
                       <div>

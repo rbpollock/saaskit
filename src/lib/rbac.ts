@@ -36,8 +36,8 @@ export async function getUserPermissions(userId: string): Promise<string[]> {
 
   return Array.from(
     new Set(
-      userRoles.flatMap((ur) =>
-        ur.role.rolePermissions.map((rp) => rp.permission.name)
+      userRoles.flatMap((ur: any) =>
+        ur.role.rolePermissions.map((rp: any) => rp.permission.name)
       )
     )
   );
