@@ -180,7 +180,8 @@ export async function GET(req: Request) {
             select: {
               id: true,
               name: true,
-              price: true,
+              monthlyPrice: true,
+              yearlyPrice: true,
               creditsPerMonth: true,
             },
           },

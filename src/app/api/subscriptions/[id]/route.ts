@@ -148,7 +148,8 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            price: true,
+            monthlyPrice: true,
+            yearlyPrice: true,
             creditsPerMonth: true,
           },
         },
