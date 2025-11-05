@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
     ],
   },
   serverExternalPackages: ["@prisma/client"],
+  // Explicitly set output mode for Vercel deployments
+  // This prevents static export issues
+  output: "standalone",
 };
 
 export default nextConfig;

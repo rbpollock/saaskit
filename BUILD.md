@@ -40,6 +40,12 @@ npm run build
 
 ### Vercel Deployment
 
+#### Important: Output Mode Configuration
+
+✅ **The project is pre-configured with `output: "standalone"` in `next.config.ts`** - This is required for Vercel deployment and prevents the `export-detail.json` error.
+
+#### Deployment Steps
+
 1. **Environment Variables**
 
    Make sure to set these environment variables in your Vercel project settings:
@@ -52,9 +58,16 @@ npm run build
    # ... other variables from .env.example
    ```
 
+   ⚠️ **Critical**: `DATABASE_URL` must be set in both **Build** and **Runtime** environment variables in Vercel.
+
 2. **Build Configuration**
 
    Vercel will automatically use the `vercel-build` script if available, otherwise it uses `build`.
+
+   The build process will:
+   - Attempt to generate Prisma client
+   - Fall back to existing client if generation fails
+   - Build Next.js with standalone output mode
 
 3. **Database Setup**
 
@@ -63,6 +76,12 @@ npm run build
    ```bash
    npx prisma migrate deploy
    ```
+
+#### Vercel-Specific Notes
+
+- The `output: "standalone"` configuration creates an optimized build for Vercel's serverless platform
+- This prevents static export errors with dynamic routes and API routes
+- Vercel will automatically detect and deploy the standalone output
 
 ### Other Platforms (Railway, Render, etc.)
 
@@ -86,17 +105,47 @@ The build script will automatically fall back to using the existing Prisma clien
 
 The postinstall script handles Prisma generation failures gracefully. If it fails during install, it will continue, and the build script will retry.
 
-### "export-detail.json" Error
+### "export-detail.json" Error on Vercel
 
-This error typically occurs when:
-- The build process is interrupted or fails during page data collection
-- DATABASE_URL is not set during build (required for API routes)
-- Prisma client is not properly generated
+**Error Message:**
+```
+Error: ENOENT: no such file or directory, lstat '/vercel/path0/.next/export-detail.json'
+Traced Next.js server files in: XX.XXXms
+```
+
+**Root Cause:**
+
+⚠️ **This error is caused by `next-swagger-doc` v0.4.1** - This is a known issue with the package.
 
 **Solution:**
-1. Ensure `DATABASE_URL` is set in your environment variables
-2. Verify Prisma client generation succeeds: `npm run prisma:generate`
-3. Check that all API routes can connect to the database
+
+✅ **The project is already configured with `next-swagger-doc@0.4.0`** - This fixes the issue.
+
+**If you encounter this error:**
+
+1. **Check your `next-swagger-doc` version:**
+   ```bash
+   npm list next-swagger-doc
+   ```
+
+2. **If it shows v0.4.1, downgrade to v0.4.0:**
+   ```bash
+   npm install next-swagger-doc@0.4.0
+   ```
+
+3. **Redeploy to Vercel**
+
+**Additional Checks:**
+- Ensure `DATABASE_URL` is set in your Vercel environment variables (both build and runtime)
+- Verify Prisma client generation succeeds: `npm run prisma:generate`
+- The `output: "standalone"` configuration in next.config.ts is also recommended for Vercel
+
+**Technical Details:**
+
+The issue was introduced in `next-swagger-doc` v0.4.1 and affects Next.js 15 deployments on Vercel. The package incorrectly triggers static export mode, which creates the export-detail.json file requirement. Version 0.4.0 does not have this issue.
+
+**References:**
+- GitHub Issue: https://github.com/jellydn/next-swagger-doc/issues/1157
 
 ### Database Connection Issues
 

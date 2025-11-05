@@ -36,20 +36,20 @@ export default async function Home() {
 
       {/* Hero Section with Enhanced Animated Background */}
       <main className="flex-1 pt-16">
-        <section className="relative w-full overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 py-24 md:py-32 lg:py-44">
+        <section className="relative w-full overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 animate-gradient py-24 md:py-32 lg:py-44">
           {/* Enhanced animated background with grid */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
-            <div className="absolute -left-4 top-1/4 h-96 w-96 animate-pulse rounded-full bg-pink-500/30 blur-3xl" />
-            <div className="absolute right-1/4 top-1/3 h-[500px] w-[500px] animate-pulse rounded-full bg-blue-500/20 blur-3xl" style={{ animationDelay: "1000ms" }} />
-            <div className="absolute bottom-1/4 left-1/3 h-[400px] w-[400px] animate-pulse rounded-full bg-purple-500/30 blur-3xl" style={{ animationDelay: "500ms" }} />
+            <div className="absolute -left-4 top-1/4 h-96 w-96 animate-float rounded-full bg-pink-500/30 blur-3xl" />
+            <div className="absolute right-1/4 top-1/3 h-[500px] w-[500px] animate-float rounded-full bg-blue-500/20 blur-3xl" style={{ animationDelay: "2000ms" }} />
+            <div className="absolute bottom-1/4 left-1/3 h-[400px] w-[400px] animate-float rounded-full bg-purple-500/30 blur-3xl" style={{ animationDelay: "1000ms" }} />
           </div>
 
           <div className="container relative z-10 px-4 md:px-6">
             <div className="flex flex-col items-center space-y-10 text-center">
               {/* Badge with shimmer effect */}
-              <div className="group inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-md transition-all hover:bg-white/20 hover:scale-105">
-                <Sparkles className="h-4 w-4 animate-pulse" />
+              <div className="group inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-md transition-smooth hover:bg-white/20 hover:scale-105 glass">
+                <Sparkles className="h-4 w-4 animate-glow" />
                 <span className="bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
                   Production-Ready AI SaaS Platform
                 </span>
@@ -153,12 +153,13 @@ export default async function Home() {
               ].map((stat, i) => (
                 <div
                   key={i}
-                  className="group relative overflow-hidden rounded-2xl border bg-card p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                  className="group relative overflow-hidden rounded-2xl border bg-card p-6 hover:shadow-xl transition-smooth hover:-translate-y-2 hover:border-primary/50"
+                  style={{ animationDelay: `${i * 100}ms` }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <stat.icon className="h-8 w-8 mb-4 text-primary" />
+                  <stat.icon className="h-8 w-8 mb-4 text-primary group-hover:scale-110 transition-smooth" />
                   <div className="relative z-10 text-center">
-                    <div className="text-4xl font-bold text-foreground mb-1">
+                    <div className="text-4xl font-bold gradient-text mb-1">
                       {stat.value}
                     </div>
                     <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
@@ -232,20 +233,24 @@ export default async function Home() {
               ].map((feature: any, i: number) => (
                 <div
                   key={i}
-                  className="group relative overflow-hidden rounded-2xl border bg-card p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                  className="group relative overflow-hidden rounded-2xl border bg-card p-8 hover:shadow-2xl transition-smooth hover:-translate-y-3 hover:border-primary/50"
+                  style={{ animationDelay: `${i * 150}ms` }}
                 >
                   {/* Gradient hover effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+
+                  {/* Shimmer effect on hover */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 animate-shimmer" />
 
                   <div className="relative z-10">
                     <div className="mb-6">
                       <div
-                        className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-lg group-hover:scale-110 transition-transform duration-500`}
+                        className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-smooth`}
                       >
                         <feature.icon className="h-7 w-7 text-white" />
                       </div>
                     </div>
-                    <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
+                    <h3 className="text-2xl font-bold mb-3 group-hover:gradient-text transition-colors">
                       {feature.title}
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
@@ -294,12 +299,13 @@ export default async function Home() {
               ].map((tech, i) => (
                 <div
                   key={i}
-                  className="group flex items-center gap-3 rounded-xl border bg-card p-5 hover:shadow-lg hover:border-primary/50 transition-all duration-300 hover:-translate-y-1"
+                  className="group flex items-center gap-3 rounded-xl border bg-card p-5 hover:shadow-lg hover:border-primary/50 transition-smooth hover:-translate-y-2 hover:scale-105"
+                  style={{ animationDelay: `${i * 100}ms` }}
                 >
                   <div className="flex-shrink-0">
-                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                    <div className="h-2 w-2 rounded-full bg-green-500 animate-glow group-hover:scale-150 transition-smooth" />
                   </div>
-                  <span className="font-semibold text-foreground group-hover:text-primary transition-colors">{tech}</span>
+                  <span className="font-semibold text-foreground group-hover:gradient-text transition-colors">{tech}</span>
                 </div>
               ))}
             </div>
@@ -328,12 +334,16 @@ export default async function Home() {
                   key={plan.id}
                   className={`group relative overflow-hidden rounded-3xl border-2 ${
                     i === 1
-                      ? "border-primary shadow-2xl shadow-primary/20 scale-105 bg-gradient-to-b from-primary/5 via-background to-background"
+                      ? "border-primary shadow-2xl shadow-primary/20 scale-105 bg-gradient-to-b from-primary/5 via-background to-background animate-gradient"
                       : "border-border bg-card hover:border-primary/50"
-                  } p-8 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2`}
+                  } p-8 transition-smooth hover:shadow-2xl hover:-translate-y-3 hover:scale-105`}
+                  style={{ animationDelay: `${i * 150}ms` }}
                 >
+                  {/* Glass effect overlay */}
+                  <div className="absolute inset-0 glass opacity-0 group-hover:opacity-100 transition-opacity" />
+
                   {i === 1 && (
-                    <div className="absolute -right-12 top-8 rotate-45 bg-primary px-16 py-2 text-xs font-bold text-primary-foreground shadow-lg">
+                    <div className="absolute -right-12 top-8 rotate-45 bg-gradient-to-r from-primary to-purple-600 px-16 py-2 text-xs font-bold text-primary-foreground shadow-lg animate-shimmer">
                       POPULAR
                     </div>
                   )}
@@ -345,9 +355,9 @@ export default async function Home() {
                     </p>
                   </div>
 
-                  <div className="mb-8">
+                  <div className="mb-8 relative z-10">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-6xl font-bold">
+                      <span className={`text-6xl font-bold ${i === 1 ? 'gradient-text' : ''}`}>
                         ${plan.monthlyPrice.toFixed(0)}
                       </span>
                       <span className="text-lg text-muted-foreground">/month</span>
@@ -371,17 +381,17 @@ export default async function Home() {
                     ))}
                   </div>
 
-                  <Link href="/auth/signin">
+                  <Link href="/auth/signin" className="relative z-10">
                     <Button
-                      className={`w-full py-6 text-base font-semibold transition-all duration-300 ${
+                      className={`w-full py-6 text-base font-semibold transition-smooth ${
                         i === 1
-                          ? "bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl hover:scale-105"
-                          : "bg-muted hover:bg-muted/80"
+                          ? "bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-lg hover:shadow-xl hover:scale-105"
+                          : "bg-muted hover:bg-muted/80 hover:scale-105"
                       }`}
                       size="lg"
                     >
                       Get Started
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
                 </div>
@@ -391,11 +401,11 @@ export default async function Home() {
         </section>
 
         {/* CTA Section with Enhanced Design */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 py-24 md:py-32">
+        <section className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 animate-gradient py-24 md:py-32">
           <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
           <div className="absolute inset-0">
-            <div className="absolute top-0 right-0 h-96 w-96 animate-pulse rounded-full bg-pink-500/20 blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-96 w-96 animate-pulse rounded-full bg-blue-500/20 blur-3xl" />
+            <div className="absolute top-0 right-0 h-96 w-96 animate-float rounded-full bg-pink-500/20 blur-3xl" />
+            <div className="absolute bottom-0 left-0 h-96 w-96 animate-float rounded-full bg-blue-500/20 blur-3xl" style={{ animationDelay: "3000ms" }} />
           </div>
 
           <div className="container relative z-10 px-4 md:px-6">
@@ -416,18 +426,21 @@ export default async function Home() {
                 <Link href="/auth/signin">
                   <Button
                     size="lg"
-                    className="group bg-white text-purple-600 hover:bg-purple-50 shadow-2xl hover:scale-105 transition-all duration-300 px-8 py-6 text-lg font-semibold"
+                    className="group relative overflow-hidden bg-white text-purple-600 hover:bg-purple-50 shadow-2xl hover:scale-105 transition-smooth px-8 py-6 text-lg font-semibold"
                   >
-                    <Rocket className="mr-2 h-5 w-5" />
-                    Start Free Trial
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-100 to-pink-100 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <span className="relative z-10 flex items-center">
+                      <Rocket className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
+                      Start Free Trial
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
                   </Button>
                 </Link>
                 <Link href="/docs">
                   <Button
                     variant="outline"
                     size="lg"
-                    className="border-2 border-white/30 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 hover:border-white/50 hover:scale-105 transition-all duration-300 px-8 py-6 text-lg font-semibold"
+                    className="glass border-2 border-white/30 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 hover:border-white/50 hover:scale-105 transition-smooth px-8 py-6 text-lg font-semibold"
                   >
                     Read Documentation
                   </Button>
@@ -504,7 +517,7 @@ export default async function Home() {
                   href="https://twitter.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110"
+                  className="p-3 rounded-xl bg-muted hover:bg-gradient-to-br hover:from-primary hover:to-purple-600 hover:text-primary-foreground transition-smooth hover:scale-110 hover:rotate-6"
                   aria-label="Twitter"
                 >
                   <Twitter className="h-5 w-5" />
@@ -513,7 +526,7 @@ export default async function Home() {
                   href="https://github.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110"
+                  className="p-3 rounded-xl bg-muted hover:bg-gradient-to-br hover:from-primary hover:to-purple-600 hover:text-primary-foreground transition-smooth hover:scale-110 hover:rotate-6"
                   aria-label="GitHub"
                 >
                   <Github className="h-5 w-5" />
@@ -522,7 +535,7 @@ export default async function Home() {
                   href="https://linkedin.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110"
+                  className="p-3 rounded-xl bg-muted hover:bg-gradient-to-br hover:from-primary hover:to-purple-600 hover:text-primary-foreground transition-smooth hover:scale-110 hover:rotate-6"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="h-5 w-5" />
