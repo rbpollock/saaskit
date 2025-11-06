@@ -6,6 +6,8 @@ import { Users, DollarSign, MessageSquare, TrendingUp, CreditCard, Activity, Arr
 import { hasRole } from "@/lib/rbac";
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminPage() {
   const session = await auth();
 
