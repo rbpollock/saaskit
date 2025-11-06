@@ -83,6 +83,26 @@ export async function POST(req: Request) {
       );
     }
 
+    // Check if PromotionalEmail table exists before proceeding
+    try {
+      await prisma.promotionalEmail.findFirst({ take: 1 });
+    } catch (dbError: any) {
+      if (dbError.code === "P2021" || dbError.message?.includes("does not exist")) {
+        return NextResponse.json(
+          {
+            error: "Marketing email feature not set up",
+            message: "The promotional_emails table doesn't exist in your database.",
+            instructions: {
+              local: "Run: npx prisma generate && npx prisma db push",
+              vercel: "See VERCEL_DEPLOYMENT_FIX.md for instructions",
+              checkSetup: "Visit /api/admin/marketing/check-setup for diagnostics"
+            }
+          },
+          { status: 503 }
+        );
+      }
+    }
+
     // Validate request body
     const body = await req.json();
     const validatedData = promotionalEmailSchema.parse(body);
@@ -299,18 +319,39 @@ export async function GET(req: Request) {
     }
 
     // Get promotional emails with sender info
-    const promotionalEmails = await prisma.promotionalEmail.findMany({
-      include: {
-        sentByUser: {
-          select: {
-            name: true,
-            email: true,
+    let promotionalEmails;
+    try {
+      promotionalEmails = await prisma.promotionalEmail.findMany({
+        include: {
+          sentByUser: {
+            select: {
+              name: true,
+              email: true,
+            },
           },
         },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 50,
-    });
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      });
+    } catch (dbError: any) {
+      if (dbError.code === "P2021" || dbError.message?.includes("does not exist")) {
+        // Table doesn't exist - return empty campaigns with setup instructions
+        return NextResponse.json(
+          {
+            campaigns: [],
+            setupRequired: true,
+            message: "Marketing email feature not set up yet",
+            instructions: {
+              local: "Run: npx prisma generate && npx prisma db push",
+              vercel: "See VERCEL_DEPLOYMENT_FIX.md",
+              checkSetup: "Visit /api/admin/marketing/check-setup"
+            }
+          },
+          { status: 200 }
+        );
+      }
+      throw dbError; // Re-throw if it's a different error
+    }
 
     return NextResponse.json(
       { campaigns: promotionalEmails },
