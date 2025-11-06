@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import * as bcrypt from "bcryptjs";
 import { z } from "zod";
-import { sendWelcomeEmail, sendAdminNotification } from "@/lib/email";
+import { sendVerificationEmail, sendAdminNotification } from "@/lib/email";
+import { createVerificationToken } from "@/lib/verification";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -109,14 +110,14 @@ export async function POST(req: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    // Create user (email NOT verified initially)
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
         credits: 100,
-        emailVerified: new Date(), // Auto-verify for simplicity
+        emailVerified: null, // User must verify email
       },
     });
 
@@ -134,9 +135,12 @@ export async function POST(req: Request) {
       });
     }
 
-    // Send welcome email to user (don't await to avoid blocking the response)
-    sendWelcomeEmail(user.name || "User", user.email).catch((error) =>
-      console.error("Failed to send welcome email:", error)
+    // Create verification token
+    const verificationToken = await createVerificationToken(user.email);
+
+    // Send verification email to user (don't await to avoid blocking the response)
+    sendVerificationEmail(user.name || "User", user.email, verificationToken).catch((error) =>
+      console.error("Failed to send verification email:", error)
     );
 
     // Send notification email to admin (don't await to avoid blocking the response)
@@ -146,7 +150,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       {
-        message: "User created successfully",
+        message: "Registration successful! Please check your email to verify your account.",
         user: {
           id: user.id,
           name: user.name,

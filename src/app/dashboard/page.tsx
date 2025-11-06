@@ -102,7 +102,7 @@ export default async function DashboardPage() {
   const creditsPercentage = Math.min(100, (usedCredits / maxCredits) * 100);
 
   return (
-    <div className="min-h-screen bg-background p-6 space-y-7">
+    <div className="space-y-7">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
