@@ -1,47 +1,100 @@
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { ProfileEditForm } from "@/components/profile-edit-form";
+import { Shield, Key } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default async function SettingsPage() {
   const session = await auth();
 
+  if (!session?.user) {
+    return null;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      name: true,
+      email: true,
+      image: true,
+      role: true,
+      createdAt: true,
+    },
+  });
+
+  if (!user) {
+    return null;
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-background p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Settings</h1>
-        <p className="text-muted-foreground">Manage your account settings</p>
+        <h1 className="text-3xl font-bold text-foreground">Settings</h1>
+        <p className="text-muted-foreground mt-1">Manage your account settings and preferences</p>
       </div>
 
-      <Card>
+      {/* Profile Edit Form */}
+      <ProfileEditForm user={user} />
+
+      {/* Account Information */}
+      <Card className="border-border">
         <CardHeader>
-          <CardTitle>Profile</CardTitle>
-          <CardDescription>Your account information</CardDescription>
+          <CardTitle className="text-foreground">Account Information</CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Your account details and security information
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div>
-            <label className="text-sm font-medium">Name</label>
-            <p className="text-sm text-muted-foreground">
-              {session?.user?.name || "Not set"}
-            </p>
+          <div className="flex items-center justify-between py-3 border-b border-border">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                <Shield className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground">Account Role</p>
+                <p className="text-sm text-muted-foreground">Your access level</p>
+              </div>
+            </div>
+            <Badge variant="secondary" className="capitalize">
+              {user.role.toLowerCase()}
+            </Badge>
           </div>
-          <div>
-            <label className="text-sm font-medium">Email</label>
-            <p className="text-sm text-muted-foreground">
-              {session?.user?.email}
+
+          <div className="flex items-center justify-between py-3 border-b border-border">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30">
+                <Key className="h-5 w-5 text-green-600 dark:text-green-400" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground">Member Since</p>
+                <p className="text-sm text-muted-foreground">Account creation date</p>
+              </div>
+            </div>
+            <p className="text-sm font-medium text-foreground">
+              {new Date(user.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </p>
           </div>
         </CardContent>
       </Card>
 
-      <Card>
+      {/* Appearance Settings */}
+      <Card className="border-border">
         <CardHeader>
-          <CardTitle>Appearance</CardTitle>
-          <CardDescription>Customize the look and feel</CardDescription>
+          <CardTitle className="text-foreground">Appearance</CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Customize the look and feel of your dashboard
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Theme</p>
+              <p className="font-medium text-foreground">Theme</p>
               <p className="text-sm text-muted-foreground">
                 Choose between light and dark mode
               </p>

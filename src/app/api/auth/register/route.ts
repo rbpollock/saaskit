@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import * as bcrypt from "bcryptjs";
 import { z } from "zod";
+import { sendWelcomeEmail, sendAdminNotification } from "@/lib/email";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -132,6 +133,16 @@ export async function POST(req: Request) {
         },
       });
     }
+
+    // Send welcome email to user (don't await to avoid blocking the response)
+    sendWelcomeEmail(user.name || "User", user.email).catch((error) =>
+      console.error("Failed to send welcome email:", error)
+    );
+
+    // Send notification email to admin (don't await to avoid blocking the response)
+    sendAdminNotification(user.name || "User", user.email).catch((error) =>
+      console.error("Failed to send admin notification:", error)
+    );
 
     return NextResponse.json(
       {
