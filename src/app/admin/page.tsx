@@ -116,78 +116,127 @@ export default async function AdminPage() {
   const chatGrowth = 23.1;
 
   return (
-    <div className="light min-h-screen bg-white p-6 space-y-6">
-      <div className="mb-8">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Admin Dashboard</h1>
-        <p className="text-lg text-gray-600">System overview and analytics</p>
+    <div className="light min-h-screen bg-gray-50 p-6 space-y-7">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-sm text-gray-600 mt-1">Welcome to your admin dashboard</p>
       </div>
 
-      {/* Stats Grid with Gradient Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {/* Stats Grid with Clean Cards */}
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {/* Total Users Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-600 to-purple-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <Users className="h-6 w-6" />
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Users</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-2">{totalUsers}</h3>
+              <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                {userGrowth > 0 ? (
+                  <>
+                    <span className="text-green-600 flex items-center">
+                      <ArrowUp className="h-3 w-3" />
+                      {userGrowth}%
+                    </span>
+                    <span>vs last month</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-red-600 flex items-center">
+                      <ArrowDown className="h-3 w-3" />
+                      {Math.abs(userGrowth)}%
+                    </span>
+                    <span>vs last month</span>
+                  </>
+                )}
+              </p>
             </div>
-            <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${userGrowth > 0 ? "bg-green-500/20" : "bg-red-500/20"}`}>
-              {userGrowth > 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
-              {Math.abs(userGrowth)}%
+            <div className="rounded-full bg-blue-50 p-3">
+              <Users className="h-6 w-6 text-blue-600" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold mb-1">{totalUsers}</div>
-          <div className="text-sm text-purple-100">Total Users</div>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
         </div>
 
         {/* Active Subscriptions Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-600 to-pink-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <TrendingUp className="h-6 w-6" />
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Active Subscriptions</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-2">{activeSubscriptions}</h3>
+              <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                {revenueGrowth > 0 ? (
+                  <>
+                    <span className="text-green-600 flex items-center">
+                      <ArrowUp className="h-3 w-3" />
+                      {revenueGrowth}%
+                    </span>
+                    <span>vs last month</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-red-600 flex items-center">
+                      <ArrowDown className="h-3 w-3" />
+                      {Math.abs(revenueGrowth)}%
+                    </span>
+                    <span>vs last month</span>
+                  </>
+                )}
+              </p>
             </div>
-            <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${revenueGrowth > 0 ? "bg-green-500/20" : "bg-red-500/20"}`}>
-              {revenueGrowth > 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
-              {Math.abs(revenueGrowth)}%
+            <div className="rounded-full bg-green-50 p-3">
+              <TrendingUp className="h-6 w-6 text-green-600" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold mb-1">{activeSubscriptions}</div>
-          <div className="text-sm text-pink-100">Active Subscriptions</div>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
         </div>
 
         {/* Total Chats Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-blue-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <MessageSquare className="h-6 w-6" />
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Chats</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-2">{totalChats}</h3>
+              <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                {chatGrowth > 0 ? (
+                  <>
+                    <span className="text-green-600 flex items-center">
+                      <ArrowUp className="h-3 w-3" />
+                      {chatGrowth}%
+                    </span>
+                    <span>vs last month</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-red-600 flex items-center">
+                      <ArrowDown className="h-3 w-3" />
+                      {Math.abs(chatGrowth)}%
+                    </span>
+                    <span>vs last month</span>
+                  </>
+                )}
+              </p>
             </div>
-            <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${chatGrowth > 0 ? "bg-green-500/20" : "bg-red-500/20"}`}>
-              {chatGrowth > 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
-              {Math.abs(chatGrowth)}%
+            <div className="rounded-full bg-purple-50 p-3">
+              <MessageSquare className="h-6 w-6 text-purple-600" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold mb-1">{totalChats}</div>
-          <div className="text-sm text-blue-100">Total Chats</div>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
         </div>
 
         {/* Total Revenue Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-600 to-cyan-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <DollarSign className="h-6 w-6" />
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-2">
+                ${totalRevenue._sum.amount?.toFixed(2) || "0.00"}
+              </h3>
+              <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
+                <Activity className="h-3 w-3" />
+                <span>Live tracking</span>
+              </p>
             </div>
-            <div className="flex items-center gap-1 rounded-full bg-green-500/20 px-2 py-1 text-xs font-bold">
-              <Activity className="h-3 w-3" />
-              Live
+            <div className="rounded-full bg-amber-50 p-3">
+              <DollarSign className="h-6 w-6 text-amber-600" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold mb-1">
-            ${totalRevenue._sum.amount?.toFixed(2) || "0.00"}
-          </div>
-          <div className="text-sm text-cyan-100">Total Revenue</div>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
         </div>
       </div>
 
@@ -199,34 +248,34 @@ export default async function AdminPage() {
       />
 
       {/* Recent Users */}
-      <Card className="rounded-3xl border-2 border-gray-200 shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-gray-900">Recent Users</CardTitle>
-          <CardDescription className="text-gray-600">Latest user registrations</CardDescription>
+      <Card className="rounded-lg border border-gray-200 shadow-sm">
+        <CardHeader className="border-b border-gray-200 bg-white">
+          <CardTitle className="text-lg font-semibold text-gray-900">Recent Users</CardTitle>
+          <CardDescription className="text-sm text-gray-600">Latest user registrations</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="p-0">
+          <div className="divide-y divide-gray-200">
             {recentUsers.map((user: any, index: number) => {
-              const colors = ["from-purple-500 to-purple-600", "from-pink-500 to-pink-600", "from-blue-500 to-blue-600", "from-cyan-500 to-cyan-600", "from-indigo-500 to-indigo-600"];
+              const avatarColors = ["bg-blue-100 text-blue-700", "bg-green-100 text-green-700", "bg-purple-100 text-purple-700", "bg-amber-100 text-amber-700", "bg-pink-100 text-pink-700"];
               return (
                 <div
                   key={user.id}
-                  className="flex items-center justify-between rounded-2xl border-2 border-gray-100 bg-gradient-to-r from-purple-50/50 to-pink-50/50 p-4 transition-all hover:border-purple-300 hover:shadow-md"
+                  className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${colors[index % colors.length]} text-white font-bold`}>
+                  <div className="flex items-center gap-4">
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-full ${avatarColors[index % avatarColors.length]} font-semibold text-sm`}>
                       {user.name?.charAt(0).toUpperCase() || "?"}
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900">{user.name || "Anonymous"}</p>
-                      <p className="text-sm text-gray-600">{user.email}</p>
+                      <p className="font-medium text-gray-900 text-sm">{user.name || "Anonymous"}</p>
+                      <p className="text-xs text-gray-500">{user.email}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-gray-900">
+                    <p className="text-sm font-medium text-gray-900">
                       {user.subscription?.plan.name || "Free"}
                     </p>
-                    <p className="text-xs text-gray-600">
+                    <p className="text-xs text-gray-500">
                       {user.credits} credits
                     </p>
                   </div>

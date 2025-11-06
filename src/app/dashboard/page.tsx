@@ -101,86 +101,83 @@ export default async function DashboardPage() {
   const creditsPercentage = Math.min(100, (usedCredits / maxCredits) * 100);
 
   return (
-    <div className="light min-h-screen bg-white p-6 space-y-6">
-      <div className="mb-8">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
-          Welcome back, {user?.name}! 👋
+    <div className="light min-h-screen bg-gray-50 p-6 space-y-7">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Welcome back, {user?.name}!
         </h1>
-        <p className="text-lg text-gray-600">Here's an overview of your account activity</p>
+        <p className="text-sm text-gray-600 mt-1">Track your account activity and usage</p>
       </div>
 
-      {/* Stats Grid with Gradient Cards */}
-      <div className="grid gap-6 md:grid-cols-3">
+      {/* Stats Grid with Clean Cards */}
+      <div className="grid gap-5 md:grid-cols-3">
         {/* Available Credits Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-600 to-purple-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <Coins className="h-6 w-6" />
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Available Credits</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-2">{user?.credits || 0}</h3>
             </div>
-            <div className="rounded-full bg-white/20 backdrop-blur-md px-3 py-1 text-xs font-bold">
-              {maxCredits} max
+            <div className="rounded-full bg-blue-50 p-3">
+              <Coins className="h-6 w-6 text-blue-600" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold mb-1">{user?.credits || 0}</div>
-          <div className="text-sm text-purple-100 mb-3">Available Credits</div>
-          <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-pink-400 to-yellow-300 rounded-full transition-all"
-              style={{ width: `${100 - creditsPercentage}%` }}
-            />
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs text-gray-600">
+              <span>Used: {usedCredits}</span>
+              <span>Max: {maxCredits}</span>
+            </div>
+            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-600 rounded-full transition-all"
+                style={{ width: `${100 - creditsPercentage}%` }}
+              />
+            </div>
           </div>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
         </div>
 
         {/* Total Chats Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-600 to-pink-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <MessageSquare className="h-6 w-6" />
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Conversations</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-2">{totalChats}</h3>
+              <p className="text-xs text-gray-500 mt-2">
+                {usedCredits || 0} credits used
+              </p>
             </div>
-            <div className="rounded-full bg-green-500/20 backdrop-blur-md px-3 py-1 text-xs font-bold flex items-center gap-1">
-              <TrendingUp className="h-3 w-3" />
-              Active
+            <div className="rounded-full bg-purple-50 p-3">
+              <MessageSquare className="h-6 w-6 text-purple-600" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold mb-1">{totalChats}</div>
-          <div className="text-sm text-pink-100">Total Conversations</div>
-          <p className="text-xs text-pink-200 mt-2">
-            {usedCredits || 0} credits used
-          </p>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
         </div>
 
         {/* Current Plan Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-blue-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <CreditCard className="h-6 w-6" />
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Current Plan</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-2">
+                {user?.subscription?.plan.name || "Free"}
+              </h3>
+              <p className="text-xs text-gray-500 mt-2">
+                {user?.subscription?.status || "No active subscription"}
+              </p>
             </div>
-            {user?.subscription?.plan.name !== "Free" && (
-              <div className="rounded-full bg-yellow-500/20 backdrop-blur-md px-3 py-1 text-xs font-bold flex items-center gap-1">
-                <Sparkles className="h-3 w-3" />
-                Pro
-              </div>
-            )}
-          </div>
-          <div className="text-3xl font-extrabold mb-1">
-            {user?.subscription?.plan.name || "Free"}
-          </div>
-          <div className="text-sm text-blue-100 mb-3">
-            {user?.subscription?.status || "No active subscription"}
+            <div className="rounded-full bg-green-50 p-3">
+              <CreditCard className="h-6 w-6 text-green-600" />
+            </div>
           </div>
           {user?.subscription?.plan.name === "Free" && (
-            <Link href="/dashboard/billing">
+            <Link href="/dashboard/billing" className="mt-4 block">
               <Button
                 size="sm"
-                className="bg-white/20 hover:bg-white/30 text-white border-0 text-xs font-bold"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               >
                 Upgrade Plan
               </Button>
             </Link>
           )}
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
         </div>
       </div>
 
@@ -191,55 +188,55 @@ export default async function DashboardPage() {
       />
 
       {/* Recent Chats */}
-      <Card className="rounded-3xl border-2 border-gray-200 shadow-lg">
-        <CardHeader>
+      <Card className="rounded-lg border border-gray-200 shadow-sm">
+        <CardHeader className="border-b border-gray-200 bg-white">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-2xl font-bold text-gray-900">Recent Chats</CardTitle>
-              <CardDescription className="text-gray-600">Your most recent AI conversations</CardDescription>
+              <CardTitle className="text-lg font-semibold text-gray-900">Recent Chats</CardTitle>
+              <CardDescription className="text-sm text-gray-600">Your most recent AI conversations</CardDescription>
             </div>
             <Link href="/dashboard/chat">
-              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                 <MessageSquare className="mr-2 h-4 w-4" />
                 New Chat
               </Button>
             </Link>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {user?.chats && user.chats.length > 0 ? (
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="divide-y divide-gray-200">
               {user.chats.slice(0, 6).map((chat: any, index: number) => (
                 <Link
                   key={chat.id}
                   href={`/dashboard/chat/${chat.id}`}
-                  className="group block rounded-2xl border-2 border-gray-100 bg-gradient-to-r from-purple-50/50 to-pink-50/50 p-4 transition-all hover:border-purple-300 hover:shadow-lg hover:-translate-y-1"
+                  className="group flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white font-bold shrink-0">
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600 shrink-0">
                       <MessageSquare className="h-5 w-5" />
                     </div>
-                    <div className="text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ArrowRight className="h-5 w-5" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 text-sm line-clamp-1">{chat.title}</p>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                        <Calendar className="h-3 w-3" />
+                        {new Date(chat.updatedAt).toLocaleDateString()}
+                      </div>
                     </div>
                   </div>
-                  <div className="font-bold text-gray-900 line-clamp-1 mb-1">{chat.title}</div>
-                  <div className="flex items-center gap-2 text-xs text-gray-600">
-                    <Calendar className="h-3 w-3" />
-                    {new Date(chat.updatedAt).toLocaleDateString()}
-                  </div>
+                  <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 transition-colors shrink-0" />
                 </Link>
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 p-12 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
-                <MessageSquare className="h-8 w-8 text-white" />
+            <div className="p-12 text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                <MessageSquare className="h-8 w-8 text-gray-400" />
               </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">No chats yet</h3>
-              <p className="text-gray-600 mb-4">Start your first AI conversation now!</p>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">No chats yet</h3>
+              <p className="text-sm text-gray-600 mb-4">Start your first AI conversation now!</p>
               <Link href="/dashboard/chat">
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                   <Zap className="mr-2 h-4 w-4" />
                   Start Your First Chat
                 </Button>
