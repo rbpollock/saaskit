@@ -1,10 +1,11 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageSquare, Coins, CreditCard, TrendingUp, Zap, Calendar, ArrowRight, Sparkles } from "lucide-react";
+import { MessageSquare, Coins, CreditCard, TrendingUp, Zap, Calendar, ArrowRight, Sparkles, Target, Clock, Star } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
+import { Badge } from "@/components/ui/badge";
 
 export const dynamic = 'force-dynamic';
 
@@ -101,214 +102,218 @@ export default async function DashboardPage() {
   const creditsPercentage = Math.min(100, (usedCredits / maxCredits) * 100);
 
   return (
-    <div className="light min-h-screen bg-white p-6 space-y-6">
-      <div className="mb-8">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
-          Welcome back, {user?.name}! 👋
-        </h1>
-        <p className="text-lg text-gray-600">Here's an overview of your account activity</p>
+    <div className="min-h-screen bg-background p-6 space-y-7">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">
+            Welcome back, {user?.name}!
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">Track your account activity and usage</p>
+        </div>
+        <Link href="/dashboard/chat">
+          <Button className="bg-blue-600 hover:bg-blue-700">
+            <Zap className="h-4 w-4 mr-2" />
+            Start New Chat
+          </Button>
+        </Link>
       </div>
 
-      {/* Stats Grid with Gradient Cards */}
-      <div className="grid gap-6 md:grid-cols-3">
+      {/* Stats Grid with Clean Cards */}
+      <div className="grid gap-5 md:grid-cols-3">
         {/* Available Credits Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-600 to-purple-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <Coins className="h-6 w-6" />
+        <Card className="border-border">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Available Credits</p>
+                <h3 className="text-2xl font-bold text-foreground mt-2">{user?.credits || 0}</h3>
+              </div>
+              <div className="rounded-full bg-blue-100 dark:bg-blue-900/30 p-3">
+                <Coins className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              </div>
             </div>
-            <div className="rounded-full bg-white/20 backdrop-blur-md px-3 py-1 text-xs font-bold">
-              {maxCredits} max
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Used: {usedCredits}</span>
+                <span>Max: {maxCredits}</span>
+              </div>
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-blue-600 rounded-full transition-all"
+                  style={{ width: `${100 - creditsPercentage}%` }}
+                />
+              </div>
             </div>
-          </div>
-          <div className="text-3xl font-extrabold mb-1">{user?.credits || 0}</div>
-          <div className="text-sm text-purple-100 mb-3">Available Credits</div>
-          <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-pink-400 to-yellow-300 rounded-full transition-all"
-              style={{ width: `${100 - creditsPercentage}%` }}
-            />
-          </div>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Total Chats Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-600 to-pink-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <MessageSquare className="h-6 w-6" />
+        <Card className="border-border">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Conversations</p>
+                <h3 className="text-2xl font-bold text-foreground mt-2">{totalChats}</h3>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {usedCredits || 0} credits used
+                </p>
+              </div>
+              <div className="rounded-full bg-purple-100 dark:bg-purple-900/30 p-3">
+                <MessageSquare className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              </div>
             </div>
-            <div className="rounded-full bg-green-500/20 backdrop-blur-md px-3 py-1 text-xs font-bold flex items-center gap-1">
-              <TrendingUp className="h-3 w-3" />
-              Active
-            </div>
-          </div>
-          <div className="text-3xl font-extrabold mb-1">{totalChats}</div>
-          <div className="text-sm text-pink-100">Total Conversations</div>
-          <p className="text-xs text-pink-200 mt-2">
-            {usedCredits || 0} credits used
-          </p>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Current Plan Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-blue-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <CreditCard className="h-6 w-6" />
-            </div>
-            {user?.subscription?.plan.name !== "Free" && (
-              <div className="rounded-full bg-yellow-500/20 backdrop-blur-md px-3 py-1 text-xs font-bold flex items-center gap-1">
-                <Sparkles className="h-3 w-3" />
-                Pro
+        <Card className="border-border">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Current Plan</p>
+                <h3 className="text-2xl font-bold text-foreground mt-2">
+                  {user?.subscription?.plan.name || "Free"}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {user?.subscription?.status || "No active subscription"}
+                </p>
               </div>
+              <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-3">
+                <CreditCard className="h-6 w-6 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+            {user?.subscription?.plan.name === "Free" && (
+              <Link href="/dashboard/billing" className="mt-4 block">
+                <Button
+                  size="sm"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Upgrade Plan
+                </Button>
+              </Link>
             )}
-          </div>
-          <div className="text-3xl font-extrabold mb-1">
-            {user?.subscription?.plan.name || "Free"}
-          </div>
-          <div className="text-sm text-blue-100 mb-3">
-            {user?.subscription?.status || "No active subscription"}
-          </div>
-          {user?.subscription?.plan.name === "Free" && (
-            <Link href="/dashboard/billing">
-              <Button
-                size="sm"
-                className="bg-white/20 hover:bg-white/30 text-white border-0 text-xs font-bold"
-              >
-                Upgrade Plan
-              </Button>
-            </Link>
-          )}
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Charts Section */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Credit Usage Chart */}
-        <Card className="rounded-3xl border-2 border-gray-200 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900">Credit Usage</CardTitle>
-            <CardDescription className="text-gray-600">Your credit consumption over the last 30 days</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {creditData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={250}>
-                <AreaChart data={creditData}>
-                  <defs>
-                    <linearGradient id="colorCredits" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#9333ea" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#9333ea" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="day" stroke="#6b7280" />
-                  <YAxis stroke="#6b7280" />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: "#fff", border: "2px solid #e5e7eb", borderRadius: "12px" }}
-                    formatter={(value: any) => [`${value} credits`, "Used"]}
-                  />
-                  <Area type="monotone" dataKey="credits" stroke="#9333ea" strokeWidth={3} fillOpacity={1} fill="url(#colorCredits)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-[250px] text-gray-500">
-                <Coins className="h-12 w-12 mb-3 text-gray-300" />
-                <p>No credit usage data yet</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+      <DashboardCharts
+        creditData={creditData}
+        chatActivityData={chatActivityData}
+      />
 
-        {/* Chat Activity Chart */}
-        <Card className="rounded-3xl border-2 border-gray-200 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900">Chat Activity</CardTitle>
-            <CardDescription className="text-gray-600">Your conversations over the last 7 days</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {chatActivityData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={chatActivityData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="day" stroke="#6b7280" />
-                  <YAxis stroke="#6b7280" />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: "#fff", border: "2px solid #e5e7eb", borderRadius: "12px" }}
-                    formatter={(value: any) => [`${value}`, "Chats"]}
-                  />
-                  <Bar dataKey="chats" fill="#ec4899" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-[250px] text-gray-500">
-                <MessageSquare className="h-12 w-12 mb-3 text-gray-300" />
-                <p>No recent chat activity</p>
+      {/* Recent Chats and Quick Actions */}
+      <div className="grid gap-5 lg:grid-cols-3">
+        {/* Recent Chats */}
+        <Card className="border-border lg:col-span-2">
+          <CardHeader className="border-b border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg font-semibold text-foreground">Recent Chats</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">Your most recent AI conversations</CardDescription>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Recent Chats */}
-      <Card className="rounded-3xl border-2 border-gray-200 shadow-lg">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-2xl font-bold text-gray-900">Recent Chats</CardTitle>
-              <CardDescription className="text-gray-600">Your most recent AI conversations</CardDescription>
-            </div>
-            <Link href="/dashboard/chat">
-              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                New Chat
-              </Button>
-            </Link>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {user?.chats && user.chats.length > 0 ? (
-            <div className="grid gap-3 md:grid-cols-2">
-              {user.chats.slice(0, 6).map((chat: any, index: number) => (
-                <Link
-                  key={chat.id}
-                  href={`/dashboard/chat/${chat.id}`}
-                  className="group block rounded-2xl border-2 border-gray-100 bg-gradient-to-r from-purple-50/50 to-pink-50/50 p-4 transition-all hover:border-purple-300 hover:shadow-lg hover:-translate-y-1"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white font-bold shrink-0">
-                      <MessageSquare className="h-5 w-5" />
-                    </div>
-                    <div className="text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ArrowRight className="h-5 w-5" />
-                    </div>
-                  </div>
-                  <div className="font-bold text-gray-900 line-clamp-1 mb-1">{chat.title}</div>
-                  <div className="flex items-center gap-2 text-xs text-gray-600">
-                    <Calendar className="h-3 w-3" />
-                    {new Date(chat.updatedAt).toLocaleDateString()}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 p-12 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
-                <MessageSquare className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">No chats yet</h3>
-              <p className="text-gray-600 mb-4">Start your first AI conversation now!</p>
               <Link href="/dashboard/chat">
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold">
-                  <Zap className="mr-2 h-4 w-4" />
-                  Start Your First Chat
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  New Chat
                 </Button>
               </Link>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent className="p-0">
+            {user?.chats && user.chats.length > 0 ? (
+              <div className="divide-y divide-border">
+                {user.chats.slice(0, 6).map((chat: any, index: number) => (
+                  <Link
+                    key={chat.id}
+                    href={`/dashboard/chat/${chat.id}`}
+                    className="group flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shrink-0">
+                        <MessageSquare className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground text-sm line-clamp-1">{chat.title}</p>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                          <Calendar className="h-3 w-3" />
+                          {new Date(chat.updatedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-blue-600 transition-colors shrink-0" />
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="p-12 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                  <MessageSquare className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold text-foreground">No chats yet</h3>
+                <p className="text-sm text-muted-foreground mb-4">Start your first AI conversation now!</p>
+                <Link href="/dashboard/chat">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                    <Zap className="mr-2 h-4 w-4" />
+                    Start Your First Chat
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card className="border-border">
+          <CardHeader className="border-b border-border">
+            <CardTitle className="text-lg font-semibold text-foreground">Quick Actions</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Frequently used features</CardDescription>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="space-y-2">
+              <Link href="/dashboard/chat">
+                <Button variant="outline" className="w-full justify-start">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  New Chat
+                </Button>
+              </Link>
+              <Link href="/dashboard/billing">
+                <Button variant="outline" className="w-full justify-start">
+                  <CreditCard className="mr-2 h-4 w-4" />
+                  Manage Billing
+                </Button>
+              </Link>
+              <Link href="/dashboard/settings">
+                <Button variant="outline" className="w-full justify-start">
+                  <Target className="mr-2 h-4 w-4" />
+                  Settings
+                </Button>
+              </Link>
+              <Button variant="outline" className="w-full justify-start">
+                <Star className="mr-2 h-4 w-4" />
+                Rate Our Service
+              </Button>
+            </div>
+
+            <div className="mt-6 p-4 rounded-lg bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5">
+                  <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">Upgrade to Pro</p>
+                  <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">Get unlimited credits and premium features</p>
+                  <Link href="/dashboard/billing">
+                    <Button size="sm" className="mt-3 bg-blue-600 hover:bg-blue-700 text-white">
+                      Upgrade Now
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

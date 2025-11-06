@@ -2,7 +2,18 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { hasRole } from "@/lib/rbac";
 import Link from "next/link";
-import { Home, Users, Shield, CreditCard, FileText, DollarSign, LayoutDashboard } from "lucide-react";
+import { SessionProvider } from "next-auth/react";
+import { UserMenu } from "@/components/user-menu";
+import {
+  Home,
+  Users,
+  Shield,
+  CreditCard,
+  BookOpen,
+  FileText,
+  LayoutDashboard,
+  Menu,
+} from "lucide-react";
 
 export default async function AdminLayout({
   children,
@@ -26,40 +37,63 @@ export default async function AdminLayout({
     { href: "/admin/users", label: "Users", icon: Users },
     { href: "/admin/roles", label: "Roles", icon: Shield },
     { href: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
-    { href: "/admin/blog", label: "Blog", icon: FileText },
-    { href: "/admin/payments", label: "Payments", icon: DollarSign },
+    { href: "/admin/blog", label: "Blog", icon: BookOpen },
+    { href: "/admin/payments", label: "Payments", icon: FileText },
   ];
 
   return (
-    <div className="min-h-screen flex">
-      {/* Sidebar */}
-      <aside className="w-64 border-r bg-muted/40">
-        <div className="flex h-16 items-center border-b px-6">
-          <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-            <Home className="h-5 w-5" />
-            <span>Back to App</span>
-          </Link>
-        </div>
-        <nav className="space-y-1 p-4">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted transition-colors"
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
+    <SessionProvider session={session}>
+      <div className="flex min-h-screen bg-gray-50">
+        {/* Dark Sidebar */}
+        <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-gray-900">
+          {/* Logo & Back Button */}
+          <div className="flex h-16 items-center border-b border-gray-800 px-6">
+            <Link href="/dashboard" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+              <Home className="h-5 w-5" />
+              <span className="text-sm font-medium">Back to App</span>
             </Link>
-          ))}
-        </nav>
-      </aside>
+          </div>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        <div className="container mx-auto p-8">
-          {children}
+          {/* Navigation */}
+          <nav className="space-y-1 p-4">
+            <div className="px-3 py-2 mb-2">
+              <p className="text-xs font-semibold uppercase text-gray-500">Admin Panel</p>
+            </div>
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                >
+                  <Icon className="h-5 w-5" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </aside>
+
+        {/* Main Content */}
+        <div className="ml-64 flex-1 flex flex-col">
+          {/* Top Navbar */}
+          <header className="sticky top-0 z-30 h-16 border-b border-gray-200 bg-white px-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button className="lg:hidden rounded-lg p-2 hover:bg-gray-100 transition-colors">
+                <Menu className="h-5 w-5 text-gray-600" />
+              </button>
+              <h1 className="text-lg font-semibold text-gray-900">Admin Dashboard</h1>
+            </div>
+            <UserMenu />
+          </header>
+
+          {/* Page content */}
+          <main className="flex-1 overflow-auto">
+            {children}
+          </main>
         </div>
-      </main>
-    </div>
+      </div>
+    </SessionProvider>
   );
 }

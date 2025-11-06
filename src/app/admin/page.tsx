@@ -2,9 +2,10 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, DollarSign, MessageSquare, TrendingUp, CreditCard, Activity, ArrowUp, ArrowDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Users, DollarSign, MessageSquare, TrendingUp, CreditCard, Activity, ArrowUp, ArrowDown, Clock, CheckCircle2, XCircle } from "lucide-react";
 import { hasRole } from "@/lib/rbac";
-import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { AdminCharts } from "@/components/admin/AdminCharts";
 
 export const dynamic = 'force-dynamic';
 
@@ -100,9 +101,6 @@ export default async function AdminPage() {
     };
   });
 
-  // Chart colors matching SaaS Pilot design
-  const COLORS = ["#9333ea", "#ec4899", "#3b82f6", "#06b6d4", "#8b5cf6"];
-
   const recentUsers = await prisma.user.findMany({
     take: 5,
     orderBy: { createdAt: "desc" },
@@ -119,199 +117,268 @@ export default async function AdminPage() {
   const chatGrowth = 23.1;
 
   return (
-    <div className="light min-h-screen bg-white p-6 space-y-6">
-      <div className="mb-8">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Admin Dashboard</h1>
-        <p className="text-lg text-gray-600">System overview and analytics</p>
+    <div className="min-h-screen bg-background p-6 space-y-7">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted-foreground mt-1">Welcome to your admin dashboard</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm">
+            <Activity className="h-4 w-4 mr-2" />
+            Export Data
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700" size="sm">
+            <Users className="h-4 w-4 mr-2" />
+            Add User
+          </Button>
+        </div>
       </div>
 
-      {/* Stats Grid with Gradient Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {/* Stats Grid with Clean Cards */}
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {/* Total Users Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-600 to-purple-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <Users className="h-6 w-6" />
+        <Card className="border-border">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Users</p>
+                <h3 className="text-2xl font-bold text-foreground mt-2">{totalUsers}</h3>
+                <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                  {userGrowth > 0 ? (
+                    <>
+                      <span className="text-green-600 flex items-center">
+                        <ArrowUp className="h-3 w-3" />
+                        {userGrowth}%
+                      </span>
+                      <span>vs last month</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-red-600 flex items-center">
+                        <ArrowDown className="h-3 w-3" />
+                        {Math.abs(userGrowth)}%
+                      </span>
+                      <span>vs last month</span>
+                    </>
+                  )}
+                </p>
+              </div>
+              <div className="rounded-full bg-blue-100 dark:bg-blue-900/30 p-3">
+                <Users className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              </div>
             </div>
-            <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${userGrowth > 0 ? "bg-green-500/20" : "bg-red-500/20"}`}>
-              {userGrowth > 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
-              {Math.abs(userGrowth)}%
-            </div>
-          </div>
-          <div className="text-3xl font-extrabold mb-1">{totalUsers}</div>
-          <div className="text-sm text-purple-100">Total Users</div>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Active Subscriptions Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-600 to-pink-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <TrendingUp className="h-6 w-6" />
+        <Card className="border-border">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Active Subscriptions</p>
+                <h3 className="text-2xl font-bold text-foreground mt-2">{activeSubscriptions}</h3>
+                <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                  {revenueGrowth > 0 ? (
+                    <>
+                      <span className="text-green-600 flex items-center">
+                        <ArrowUp className="h-3 w-3" />
+                        {revenueGrowth}%
+                      </span>
+                      <span>vs last month</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-red-600 flex items-center">
+                        <ArrowDown className="h-3 w-3" />
+                        {Math.abs(revenueGrowth)}%
+                      </span>
+                      <span>vs last month</span>
+                    </>
+                  )}
+                </p>
+              </div>
+              <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-3">
+                <TrendingUp className="h-6 w-6 text-green-600 dark:text-green-400" />
+              </div>
             </div>
-            <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${revenueGrowth > 0 ? "bg-green-500/20" : "bg-red-500/20"}`}>
-              {revenueGrowth > 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
-              {Math.abs(revenueGrowth)}%
-            </div>
-          </div>
-          <div className="text-3xl font-extrabold mb-1">{activeSubscriptions}</div>
-          <div className="text-sm text-pink-100">Active Subscriptions</div>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Total Chats Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-blue-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <MessageSquare className="h-6 w-6" />
+        <Card className="border-border">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Chats</p>
+                <h3 className="text-2xl font-bold text-foreground mt-2">{totalChats}</h3>
+                <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                  {chatGrowth > 0 ? (
+                    <>
+                      <span className="text-green-600 flex items-center">
+                        <ArrowUp className="h-3 w-3" />
+                        {chatGrowth}%
+                      </span>
+                      <span>vs last month</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-red-600 flex items-center">
+                        <ArrowDown className="h-3 w-3" />
+                        {Math.abs(chatGrowth)}%
+                      </span>
+                      <span>vs last month</span>
+                    </>
+                  )}
+                </p>
+              </div>
+              <div className="rounded-full bg-purple-100 dark:bg-purple-900/30 p-3">
+                <MessageSquare className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              </div>
             </div>
-            <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${chatGrowth > 0 ? "bg-green-500/20" : "bg-red-500/20"}`}>
-              {chatGrowth > 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
-              {Math.abs(chatGrowth)}%
-            </div>
-          </div>
-          <div className="text-3xl font-extrabold mb-1">{totalChats}</div>
-          <div className="text-sm text-blue-100">Total Chats</div>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Total Revenue Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-600 to-cyan-700 p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="rounded-2xl bg-white/20 backdrop-blur-md p-3">
-              <DollarSign className="h-6 w-6" />
+        <Card className="border-border">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                <h3 className="text-2xl font-bold text-foreground mt-2">
+                  ${totalRevenue._sum.amount?.toFixed(2) || "0.00"}
+                </h3>
+                <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
+                  <Activity className="h-3 w-3" />
+                  <span>Live tracking</span>
+                </p>
+              </div>
+              <div className="rounded-full bg-amber-100 dark:bg-amber-900/30 p-3">
+                <DollarSign className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+              </div>
             </div>
-            <div className="flex items-center gap-1 rounded-full bg-green-500/20 px-2 py-1 text-xs font-bold">
-              <Activity className="h-3 w-3" />
-              Live
-            </div>
-          </div>
-          <div className="text-3xl font-extrabold mb-1">
-            ${totalRevenue._sum.amount?.toFixed(2) || "0.00"}
-          </div>
-          <div className="text-sm text-cyan-100">Total Revenue</div>
-          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10 blur-xl" />
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Charts Section */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Revenue Over Time */}
-        <Card className="rounded-3xl border-2 border-gray-200 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900">Revenue Trends</CardTitle>
-            <CardDescription className="text-gray-600">Monthly revenue over the last 6 months</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={revenueData}>
-                <defs>
-                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#9333ea" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#9333ea" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" stroke="#6b7280" />
-                <YAxis stroke="#6b7280" />
-                <Tooltip
-                  contentStyle={{ backgroundColor: "#fff", border: "2px solid #e5e7eb", borderRadius: "12px" }}
-                  formatter={(value: any) => [`$${value}`, "Revenue"]}
-                />
-                <Area type="monotone" dataKey="revenue" stroke="#9333ea" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+      <AdminCharts
+        revenueData={revenueData}
+        userGrowthData={userGrowthData}
+        subscriptionData={subscriptionData}
+      />
 
-        {/* User Growth */}
-        <Card className="rounded-3xl border-2 border-gray-200 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900">User Growth</CardTitle>
-            <CardDescription className="text-gray-600">New user registrations by month</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={userGrowthData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" stroke="#6b7280" />
-                <YAxis stroke="#6b7280" />
-                <Tooltip
-                  contentStyle={{ backgroundColor: "#fff", border: "2px solid #e5e7eb", borderRadius: "12px" }}
-                  formatter={(value: any) => [`${value}`, "New Users"]}
-                />
-                <Bar dataKey="users" fill="#ec4899" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Subscription Distribution and Recent Users */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Subscription Distribution */}
-        <Card className="rounded-3xl border-2 border-gray-200 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900">Subscription Distribution</CardTitle>
-            <CardDescription className="text-gray-600">Active subscriptions by plan</CardDescription>
-          </CardHeader>
-          <CardContent className="flex items-center justify-center">
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={subscriptionData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {subscriptionData.map((entry: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{ backgroundColor: "#fff", border: "2px solid #e5e7eb", borderRadius: "12px" }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
+      {/* Recent Users and Activity */}
+      <div className="grid gap-5 lg:grid-cols-2">
         {/* Recent Users */}
-        <Card className="rounded-3xl border-2 border-gray-200 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900">Recent Users</CardTitle>
-            <CardDescription className="text-gray-600">Latest user registrations</CardDescription>
+        <Card className="border-border">
+          <CardHeader className="border-b border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg font-semibold text-foreground">Recent Users</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">Latest user registrations</CardDescription>
+              </div>
+              <Button variant="ghost" size="sm">View All</Button>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
+            <div className="divide-y divide-border">
+              {recentUsers.map((user: any, index: number) => {
+                const avatarColors = ["bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400", "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400", "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400", "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400", "bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400"];
+                return (
+                  <div
+                    key={user.id}
+                    className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={`flex h-11 w-11 items-center justify-center rounded-full ${avatarColors[index % avatarColors.length]} font-semibold text-sm`}>
+                        {user.name?.charAt(0).toUpperCase() || "?"}
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground text-sm">{user.name || "Anonymous"}</p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-foreground">
+                        {user.subscription?.plan.name || "Free"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {user.credits} credits
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Activity */}
+        <Card className="border-border">
+          <CardHeader className="border-b border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg font-semibold text-foreground">Recent Activity</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">Latest system activities</CardDescription>
+              </div>
+              <Button variant="ghost" size="sm">View All</Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
             <div className="space-y-4">
-              {recentUsers.map((user: any, index: number) => (
-                <div
-                  key={user.id}
-                  className="flex items-center justify-between rounded-2xl border-2 border-gray-100 bg-gradient-to-r from-purple-50/50 to-pink-50/50 p-4 transition-all hover:border-purple-300 hover:shadow-md"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${COLORS[index % COLORS.length] === "#9333ea" ? "from-purple-500 to-purple-600" : COLORS[index % COLORS.length] === "#ec4899" ? "from-pink-500 to-pink-600" : "from-blue-500 to-blue-600"} text-white font-bold`}>
-                      {user.name?.charAt(0).toUpperCase() || "?"}
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900">{user.name || "Anonymous"}</p>
-                      <p className="text-sm text-gray-600">{user.email}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-gray-900">
-                      {user.subscription?.plan.name || "Free"}
-                    </p>
-                    <p className="text-xs text-gray-600">
-                      {user.credits} credits
-                    </p>
-                  </div>
+              <div className="flex gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
-              ))}
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground">New user registered</p>
+                  <p className="text-xs text-muted-foreground">John Doe signed up for Pro plan</p>
+                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    2 minutes ago
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
+                  <DollarSign className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground">Payment received</p>
+                  <p className="text-xs text-muted-foreground">$99.00 from Jane Smith</p>
+                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    15 minutes ago
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
+                  <MessageSquare className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground">New chat session</p>
+                  <p className="text-xs text-muted-foreground">User started AI conversation</p>
+                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    1 hour ago
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                  <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground">Subscription cancelled</p>
+                  <p className="text-xs text-muted-foreground">Mike Johnson cancelled Pro plan</p>
+                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    3 hours ago
+                  </p>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

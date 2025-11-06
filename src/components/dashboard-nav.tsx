@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -61,42 +60,49 @@ export function DashboardNav() {
   const isAdmin = useIsAdmin();
 
   return (
-    <nav className="grid gap-2">
+    <nav className="space-y-1">
       {userNavItems.map((item) => {
         const Icon = item.icon;
+        const isActive = pathname === item.href;
         return (
-          <Link key={item.href} href={item.href}>
-            <Button
-              variant={pathname === item.href ? "secondary" : "ghost"}
-              className={cn(
-                "w-full justify-start",
-                pathname === item.href && "bg-secondary"
-              )}
-            >
-              <Icon className="mr-2 h-4 w-4" />
-              {item.title}
-            </Button>
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+              isActive
+                ? "bg-blue-600 text-white"
+                : "text-gray-300 hover:bg-gray-800 hover:text-white"
+            )}
+          >
+            <Icon className="h-5 w-5" />
+            {item.title}
           </Link>
         );
       })}
 
       {isAdmin && (
         <>
-          <div className="my-2 border-t" />
+          <div className="my-3 border-t border-gray-700" />
+          <div className="px-3 py-2">
+            <p className="text-xs font-semibold uppercase text-gray-500">Admin</p>
+          </div>
           {adminNavItems.map((item) => {
             const Icon = item.icon;
+            const isActive = pathname.startsWith(item.href);
             return (
-              <Link key={item.href} href={item.href}>
-                <Button
-                  variant={pathname.startsWith(item.href) ? "secondary" : "ghost"}
-                  className={cn(
-                    "w-full justify-start",
-                    pathname.startsWith(item.href) && "bg-secondary"
-                  )}
-                >
-                  <Icon className="mr-2 h-4 w-4" />
-                  {item.title}
-                </Button>
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                )}
+              >
+                <Icon className="h-5 w-5" />
+                {item.title}
               </Link>
             );
           })}
