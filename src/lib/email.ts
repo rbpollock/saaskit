@@ -58,6 +58,75 @@ export async function sendEmail(options: SendEmailOptions) {
 
 // Email templates
 export const emailTemplates = {
+  verificationEmail: (userName: string, verificationUrl: string) => ({
+    subject: "Verify Your Email - AI SaaS",
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Your Email</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+          .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+          .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px 20px; text-align: center; }
+          .header h1 { color: #ffffff; margin: 0; font-size: 28px; }
+          .content { padding: 40px 30px; }
+          .content h2 { color: #10b981; margin-top: 0; }
+          .content p { margin: 16px 0; color: #555; }
+          .button { display: inline-block; padding: 14px 36px; background-color: #10b981; color: #ffffff !important; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 24px 0; font-size: 16px; }
+          .button:hover { background-color: #059669; }
+          .info-box { background-color: #f0fdf4; border-left: 4px solid #10b981; padding: 16px 20px; border-radius: 4px; margin: 24px 0; }
+          .footer { background-color: #f9fafb; padding: 30px; text-align: center; font-size: 14px; color: #6b7280; border-top: 1px solid #e5e7eb; }
+          .footer a { color: #10b981; text-decoration: none; }
+          .code { font-family: monospace; background-color: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>✉️ Verify Your Email</h1>
+          </div>
+          <div class="content">
+            <h2>Hi ${userName}! 👋</h2>
+            <p>Thanks for signing up for <strong>AI SaaS</strong>! We're thrilled to have you join our community.</p>
+
+            <p>To complete your registration and start using all features, please verify your email address by clicking the button below:</p>
+
+            <center>
+              <a href="${verificationUrl}" class="button">
+                ✓ Verify Email Address
+              </a>
+            </center>
+
+            <div class="info-box">
+              <p style="margin: 0; font-size: 14px;"><strong>🔒 Security Note:</strong> This link will expire in 24 hours for your security.</p>
+            </div>
+
+            <p style="margin-top: 30px; font-size: 14px; color: #6b7280;">
+              If the button doesn't work, copy and paste this link into your browser:<br>
+              <span class="code">${verificationUrl}</span>
+            </p>
+
+            <p style="margin-top: 30px; font-size: 14px; color: #6b7280;">
+              If you didn't create an account with AI SaaS, you can safely ignore this email.
+            </p>
+
+            <p style="margin-top: 30px; color: #6b7280; font-size: 14px;">
+              <em>Best regards,<br>The AI SaaS Team</em>
+            </p>
+          </div>
+          <div class="footer">
+            <p>© ${new Date().getFullYear()} AI SaaS. All rights reserved.</p>
+            <p>This is an automated message, please do not reply to this email.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }),
+
   welcomeEmail: (userName: string, userEmail: string) => ({
     subject: "Welcome to AI SaaS - Get Started Today!",
     html: `
@@ -209,6 +278,18 @@ export async function sendAdminNotification(userName: string, userEmail: string)
   const template = emailTemplates.adminNotification(userName, userEmail);
   return await sendEmail({
     to: adminEmail,
+    subject: template.subject,
+    html: template.html,
+  });
+}
+
+// Email verification for new users
+export async function sendVerificationEmail(userName: string, userEmail: string, token: string) {
+  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/verify-email?token=${token}`;
+  const template = emailTemplates.verificationEmail(userName, verificationUrl);
+
+  return await sendEmail({
+    to: userEmail,
     subject: template.subject,
     html: template.html,
   });
