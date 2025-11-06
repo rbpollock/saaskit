@@ -36,6 +36,7 @@ model User {
   chats         Chat[]
   creditUsage   CreditUsage[]
   blogs         Blog[]
+  sentPromotionalEmails PromotionalEmail[] @relation("SentBy")
 
   @@map("users")
 }
@@ -386,4 +387,38 @@ model BlogTag {
 
   @@id([blogId, tagId])
   @@map("blog_tags")
+}
+
+// ============================================
+// MARKETING & PROMOTIONAL EMAILS
+// ============================================
+
+model PromotionalEmail {
+  id          String   @id @default(cuid())
+  subject     String
+  content     String   @db.Text
+
+  // Sender Info
+  sentBy      String
+  sentByUser  User     @relation("SentBy", fields: [sentBy], references: [id])
+
+  // Recipients
+  recipientType String  // all, verified, free, pro, business, custom
+  recipientEmails String[] // For custom recipient list
+
+  // Stats
+  totalRecipients Int    @default(0)
+  successCount    Int    @default(0)
+  failureCount    Int    @default(0)
+
+  // Status
+  status      String   @default("draft") // draft, sending, sent, failed
+
+  // Metadata
+  scheduledFor DateTime?
+  sentAt       DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("promotional_emails")
 }

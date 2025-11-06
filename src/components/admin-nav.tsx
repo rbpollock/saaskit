@@ -11,6 +11,7 @@ import {
   BookOpen,
   FileText,
   LayoutDashboard,
+  Mail,
 } from "lucide-react";
 import {
   Tooltip,
@@ -24,6 +25,7 @@ const adminNavItems = [
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/roles", label: "Roles", icon: Shield },
   { href: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
+  { href: "/admin/marketing", label: "Marketing", icon: Mail },
   { href: "/admin/blog", label: "Blog", icon: BookOpen },
   { href: "/admin/payments", label: "Payments", icon: FileText },
 ];

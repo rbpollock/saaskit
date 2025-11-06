@@ -263,6 +263,59 @@ export const emailTemplates = {
       </html>
     `,
   }),
+
+  promotionalEmail: (userName: string, subject: string, content: string, preheader?: string) => ({
+    subject: subject,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${subject}</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+          .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 20px; text-align: center; }
+          .header h1 { color: #ffffff; margin: 0; font-size: 28px; }
+          .content { padding: 40px 30px; }
+          .content h2 { color: #667eea; margin-top: 0; }
+          .content p { margin: 16px 0; color: #555; line-height: 1.8; }
+          .button { display: inline-block; padding: 14px 32px; background-color: #667eea; color: #ffffff !important; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; font-size: 16px; }
+          .button:hover { background-color: #5568d3; }
+          .highlight-box { background-color: #f0f4ff; border-left: 4px solid #667eea; padding: 20px; border-radius: 4px; margin: 24px 0; }
+          .footer { background-color: #f9fafb; padding: 30px; text-align: center; font-size: 14px; color: #6b7280; border-top: 1px solid #e5e7eb; }
+          .footer a { color: #667eea; text-decoration: none; }
+          .unsubscribe { font-size: 12px; color: #9ca3af; margin-top: 16px; }
+          img { max-width: 100%; height: auto; }
+        </style>
+      </head>
+      <body>
+        ${preheader ? `<div style="display:none;font-size:1px;color:#fefefe;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${preheader}</div>` : ''}
+        <div class="container">
+          <div class="header">
+            <h1>🎉 ${process.env.APP_NAME || "AI SaaS"}</h1>
+          </div>
+          <div class="content">
+            <h2>Hi ${userName}! 👋</h2>
+            ${content}
+          </div>
+          <div class="footer">
+            <p>© ${new Date().getFullYear()} ${process.env.APP_NAME || "AI SaaS"}. All rights reserved.</p>
+            <p>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/dashboard">Dashboard</a> |
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/dashboard/settings">Settings</a>
+            </p>
+            <p class="unsubscribe">
+              You're receiving this email because you're a valued member of ${process.env.APP_NAME || "AI SaaS"}.<br>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/dashboard/settings">Manage email preferences</a>
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }),
 };
 
 // Welcome email for new users
@@ -296,6 +349,23 @@ export async function sendAdminNotification(userName: string, userEmail: string)
 export async function sendVerificationEmail(userName: string, userEmail: string, token: string) {
   const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/verify-email?token=${token}`;
   const template = emailTemplates.verificationEmail(userName, verificationUrl);
+
+  return await sendEmail({
+    to: userEmail,
+    subject: template.subject,
+    html: template.html,
+  });
+}
+
+// Send promotional/marketing email
+export async function sendPromotionalEmail(
+  userName: string,
+  userEmail: string,
+  subject: string,
+  content: string,
+  preheader?: string
+) {
+  const template = emailTemplates.promotionalEmail(userName, subject, content, preheader);
 
   return await sendEmail({
     to: userEmail,
