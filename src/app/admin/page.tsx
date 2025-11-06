@@ -111,6 +111,115 @@ export default async function AdminPage() {
     },
   });
 
+  // Get real recent activity data
+  const recentActivity = [];
+
+  // Get recent user registrations
+  const newUsers = await prisma.user.findMany({
+    take: 3,
+    orderBy: { createdAt: "desc" },
+    select: {
+      name: true,
+      email: true,
+      createdAt: true,
+      subscription: {
+        include: { plan: true },
+      },
+    },
+  });
+
+  for (const user of newUsers) {
+    recentActivity.push({
+      type: "user_registration",
+      icon: "CheckCircle2",
+      title: "New user registered",
+      description: `${user.name || user.email} signed up${user.subscription?.plan ? ` for ${user.subscription.plan.name} plan` : ""}`,
+      timestamp: user.createdAt,
+      color: "green",
+    });
+  }
+
+  // Get recent successful payments
+  const recentPayments = await prisma.payment.findMany({
+    take: 3,
+    where: { status: "succeeded" },
+    orderBy: { createdAt: "desc" },
+    select: {
+      amount: true,
+      createdAt: true,
+      user: {
+        select: { name: true, email: true },
+      },
+    },
+  });
+
+  for (const payment of recentPayments) {
+    recentActivity.push({
+      type: "payment",
+      icon: "DollarSign",
+      title: "Payment received",
+      description: `$${payment.amount.toFixed(2)} from ${payment.user?.name || payment.user?.email || "User"}`,
+      timestamp: payment.createdAt,
+      color: "blue",
+    });
+  }
+
+  // Get recent chats
+  const recentChats = await prisma.chat.findMany({
+    take: 3,
+    orderBy: { createdAt: "desc" },
+    select: {
+      title: true,
+      createdAt: true,
+      user: {
+        select: { name: true, email: true },
+      },
+    },
+  });
+
+  for (const chat of recentChats) {
+    recentActivity.push({
+      type: "chat",
+      icon: "MessageSquare",
+      title: "New chat session",
+      description: `${chat.user?.name || "User"} started: ${chat.title}`,
+      timestamp: chat.createdAt,
+      color: "purple",
+    });
+  }
+
+  // Get recently cancelled subscriptions
+  const cancelledSubs = await prisma.subscription.findMany({
+    take: 2,
+    where: { status: "cancelled" },
+    orderBy: { updatedAt: "desc" },
+    select: {
+      updatedAt: true,
+      user: {
+        select: { name: true, email: true },
+      },
+      plan: {
+        select: { name: true },
+      },
+    },
+  });
+
+  for (const sub of cancelledSubs) {
+    recentActivity.push({
+      type: "cancellation",
+      icon: "XCircle",
+      title: "Subscription cancelled",
+      description: `${sub.user?.name || "User"} cancelled ${sub.plan.name} plan`,
+      timestamp: sub.updatedAt,
+      color: "red",
+    });
+  }
+
+  // Sort all activity by timestamp and take top 10
+  const sortedActivity = recentActivity
+    .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+    .slice(0, 10);
+
   // Calculate growth percentages (mock data for demo)
   const userGrowth = 12.5;
   const revenueGrowth = 8.3;
@@ -320,66 +429,64 @@ export default async function AdminPage() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-lg font-semibold text-foreground">Recent Activity</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">Latest system activities</CardDescription>
+                <CardDescription className="text-sm text-muted-foreground">Real-time system activities</CardDescription>
               </div>
               <Button variant="ghost" size="sm">View All</Button>
             </div>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground">New user registered</p>
-                  <p className="text-xs text-muted-foreground">John Doe signed up for Pro plan</p>
-                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    2 minutes ago
-                  </p>
-                </div>
+            {sortedActivity.length > 0 ? (
+              <div className="space-y-4">
+                {sortedActivity.map((activity: any, index: number) => {
+                  const Icon = activity.icon === "CheckCircle2" ? CheckCircle2 :
+                              activity.icon === "DollarSign" ? DollarSign :
+                              activity.icon === "MessageSquare" ? MessageSquare : XCircle;
+
+                  const colorClasses = {
+                    green: "bg-green-100 dark:bg-green-900/30",
+                    blue: "bg-blue-100 dark:bg-blue-900/30",
+                    purple: "bg-purple-100 dark:bg-purple-900/30",
+                    red: "bg-red-100 dark:bg-red-900/30",
+                  };
+
+                  const iconColorClasses = {
+                    green: "text-green-600 dark:text-green-400",
+                    blue: "text-blue-600 dark:text-blue-400",
+                    purple: "text-purple-600 dark:text-purple-400",
+                    red: "text-red-600 dark:text-red-400",
+                  };
+
+                  const timeAgo = (date: Date) => {
+                    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+                    if (seconds < 60) return "just now";
+                    if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+                    if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+                    return `${Math.floor(seconds / 86400)} days ago`;
+                  };
+
+                  return (
+                    <div key={index} className="flex gap-4">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-full ${colorClasses[activity.color as keyof typeof colorClasses]}`}>
+                        <Icon className={`h-5 w-5 ${iconColorClasses[activity.color as keyof typeof iconColorClasses]}`} />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-foreground">{activity.title}</p>
+                        <p className="text-xs text-muted-foreground">{activity.description}</p>
+                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {timeAgo(activity.timestamp)}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="flex gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
-                  <DollarSign className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground">Payment received</p>
-                  <p className="text-xs text-muted-foreground">$99.00 from Jane Smith</p>
-                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    15 minutes ago
-                  </p>
-                </div>
+            ) : (
+              <div className="text-center py-8">
+                <Activity className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                <p className="text-sm text-muted-foreground">No recent activity</p>
               </div>
-              <div className="flex gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
-                  <MessageSquare className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground">New chat session</p>
-                  <p className="text-xs text-muted-foreground">User started AI conversation</p>
-                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    1 hour ago
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                  <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground">Subscription cancelled</p>
-                  <p className="text-xs text-muted-foreground">Mike Johnson cancelled Pro plan</p>
-                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    3 hours ago
-                  </p>
-                </div>
-              </div>
-            </div>
+            )}
           </CardContent>
         </Card>
       </div>
