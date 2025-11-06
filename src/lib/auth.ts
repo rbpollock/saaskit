@@ -105,12 +105,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               image: user.image,
               credits: 100,
               lastLogin: new Date(),
+              emailVerified: new Date(), // OAuth providers already verify emails
             },
           });
         } else {
           await prisma.user.update({
             where: { email: user.email },
-            data: { lastLogin: new Date() },
+            data: {
+              lastLogin: new Date(),
+              // Ensure OAuth users have verified email
+              emailVerified: existingUser.emailVerified || new Date(),
+            },
           });
         }
 

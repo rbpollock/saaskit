@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,21 +9,44 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { AlertCircle, CheckCircle, Mail } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const [resendingEmail, setResendingEmail] = useState(false);
+  const [showUnverifiedAlert, setShowUnverifiedAlert] = useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const verified = searchParams.get("verified");
+  const verificationMessage = searchParams.get("message");
+  const errorParam = searchParams.get("error");
+  const registered = searchParams.get("registered");
+
+  // Show verification messages on mount
+  useEffect(() => {
+    if (verified === "true" && verificationMessage) {
+      toast.success(decodeURIComponent(verificationMessage));
+    } else if (errorParam) {
+      if (errorParam === "invalid_token" || errorParam === "missing_token") {
+        toast.error(verificationMessage ? decodeURIComponent(verificationMessage) : "Verification failed. Please try again.");
+      }
+    } else if (registered === "true") {
+      toast.info("Please check your email and verify your account before signing in.", { duration: 6000 });
+    }
+  }, [verified, verificationMessage, errorParam, registered]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setShowUnverifiedAlert(false);
 
     try {
       const result = await signIn("credentials", {
@@ -33,7 +56,14 @@ function SignInForm() {
       });
 
       if (result?.error) {
-        toast.error(result.error);
+        // Check if the error is about unverified email
+        if (result.error.toLowerCase().includes("verify your email")) {
+          setShowUnverifiedAlert(true);
+          setUnverifiedEmail(formData.email);
+          toast.error(result.error);
+        } else {
+          toast.error(result.error);
+        }
       } else if (result?.ok) {
         toast.success("Signed in successfully!");
         router.push(callbackUrl);
@@ -43,6 +73,32 @@ function SignInForm() {
       toast.error(error.message || "Something went wrong");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!unverifiedEmail) return;
+
+    setResendingEmail(true);
+    try {
+      const response = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: unverifiedEmail }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to resend verification email");
+      }
+
+      toast.success(data.message);
+      setShowUnverifiedAlert(false);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to resend verification email");
+    } finally {
+      setResendingEmail(false);
     }
   };
 
@@ -66,6 +122,30 @@ function SignInForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Unverified Email Alert */}
+          {showUnverifiedAlert && (
+            <Alert className="border-amber-500 bg-amber-50 dark:bg-amber-950/50">
+              <Mail className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-sm text-amber-800 dark:text-amber-200">
+                <div className="space-y-2">
+                  <p className="font-medium">Email not verified</p>
+                  <p className="text-xs">
+                    Please check your inbox for a verification email. Can&apos;t find it?
+                  </p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleResendVerification}
+                    disabled={resendingEmail}
+                    className="mt-2 border-amber-600 text-amber-700 hover:bg-amber-100 dark:border-amber-400 dark:text-amber-300"
+                  >
+                    {resendingEmail ? "Sending..." : "Resend Verification Email"}
+                  </Button>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Email/Password Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">

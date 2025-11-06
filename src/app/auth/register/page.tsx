@@ -51,8 +51,9 @@ export default function RegisterPage() {
         throw new Error(data.error || "Registration failed");
       }
 
-      toast.success("Account created successfully! Please sign in.");
-      router.push("/auth/signin");
+      toast.success(data.message || "Account created! Please check your email to verify your account.");
+      // Redirect to signin page with a message
+      router.push("/auth/signin?registered=true");
     } catch (error: any) {
       toast.error(error.message || "Something went wrong");
     } finally {
