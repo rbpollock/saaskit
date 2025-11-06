@@ -19,14 +19,21 @@ export default async function SettingsPage() {
       name: true,
       email: true,
       image: true,
-      role: true,
       createdAt: true,
+      userRoles: {
+        include: {
+          role: true,
+        },
+      },
     },
   });
 
   if (!user) {
     return null;
   }
+
+  // Get primary role (first role or USER as default)
+  const primaryRole = user.userRoles[0]?.role?.name || "USER";
 
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
@@ -58,7 +65,7 @@ export default async function SettingsPage() {
               </div>
             </div>
             <Badge variant="secondary" className="capitalize">
-              {user.role.toLowerCase()}
+              {primaryRole.toLowerCase()}
             </Badge>
           </div>
 
