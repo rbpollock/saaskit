@@ -72,7 +72,7 @@ export function DashboardNav() {
               "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
               isActive
                 ? "bg-blue-600 text-white"
-                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
             )}
           >
             <Icon className="h-5 w-5" />
@@ -83,9 +83,9 @@ export function DashboardNav() {
 
       {isAdmin && (
         <>
-          <div className="my-3 border-t border-gray-200" />
+          <div className="my-3 border-t border-gray-200 dark:border-gray-800" />
           <div className="px-3 py-2">
-            <p className="text-xs font-semibold uppercase text-gray-500">Admin</p>
+            <p className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Admin</p>
           </div>
           {adminNavItems.map((item) => {
             const Icon = item.icon;
@@ -98,7 +98,7 @@ export function DashboardNav() {
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                   isActive
                     ? "bg-blue-600 text-white"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
                 )}
               >
                 <Icon className="h-5 w-5" />
