@@ -38,7 +38,17 @@ export async function POST(req: Request) {
     const token = await createVerificationToken(email);
 
     // Send verification email
-    await sendVerificationEmail(user.name || "User", email, token);
+    try {
+      const emailResult = await sendVerificationEmail(user.name || "User", email, token);
+      if (!emailResult.success) {
+        console.error("Failed to send verification email:", emailResult.error);
+        throw new Error("Failed to send verification email");
+      }
+      console.log("✅ Verification email sent successfully to:", email);
+    } catch (error) {
+      console.error("Error sending verification email:", error);
+      throw error;
+    }
 
     return NextResponse.json(
       {

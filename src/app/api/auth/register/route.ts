@@ -138,10 +138,17 @@ export async function POST(req: Request) {
     // Create verification token
     const verificationToken = await createVerificationToken(user.email);
 
-    // Send verification email to user (don't await to avoid blocking the response)
-    sendVerificationEmail(user.name || "User", user.email, verificationToken).catch((error) =>
-      console.error("Failed to send verification email:", error)
-    );
+    // Send verification email to user
+    try {
+      const emailResult = await sendVerificationEmail(user.name || "User", user.email, verificationToken);
+      if (!emailResult.success) {
+        console.error("Failed to send verification email:", emailResult.error);
+      } else {
+        console.log("✅ Verification email sent successfully to:", user.email);
+      }
+    } catch (error) {
+      console.error("Error sending verification email:", error);
+    }
 
     // Send notification email to admin (don't await to avoid blocking the response)
     sendAdminNotification(user.name || "User", user.email).catch((error) =>

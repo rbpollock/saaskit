@@ -11,6 +11,15 @@ const smtpConfig = {
   },
 };
 
+// Log SMTP configuration (without password) for debugging
+console.log("📧 SMTP Configuration:", {
+  host: smtpConfig.host,
+  port: smtpConfig.port,
+  secure: smtpConfig.secure,
+  user: smtpConfig.auth.user,
+  hasPassword: !!smtpConfig.auth.pass,
+});
+
 // Create reusable transporter
 const transporter = nodemailer.createTransport(smtpConfig);
 
