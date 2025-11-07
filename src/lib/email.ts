@@ -1,6 +1,13 @@
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-// SMTP configuration from environment variables
+// Email provider detection
+const EMAIL_PROVIDER = process.env.RESEND_API_KEY ? "resend" : "smtp";
+
+// Resend configuration (production recommended)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+// SMTP configuration from environment variables (fallback)
 const smtpConfig = {
   host: process.env.SMTP_HOST || "smtp.gmail.com",
   port: parseInt(process.env.SMTP_PORT || "587"),
@@ -11,26 +18,40 @@ const smtpConfig = {
   },
 };
 
-// Log SMTP configuration (without password) for debugging
-console.log("📧 SMTP Configuration:", {
-  host: smtpConfig.host,
-  port: smtpConfig.port,
-  secure: smtpConfig.secure,
-  user: smtpConfig.auth.user,
-  hasPassword: !!smtpConfig.auth.pass,
+// Log email configuration (without sensitive data)
+console.log("📧 Email Configuration:", {
+  provider: EMAIL_PROVIDER,
+  ...(EMAIL_PROVIDER === "resend"
+    ? { service: "Resend", hasApiKey: !!process.env.RESEND_API_KEY }
+    : {
+        service: "SMTP",
+        host: smtpConfig.host,
+        port: smtpConfig.port,
+        secure: smtpConfig.secure,
+        user: smtpConfig.auth.user,
+        hasPassword: !!smtpConfig.auth.pass,
+      }),
 });
 
-// Create reusable transporter
-const transporter = nodemailer.createTransport(smtpConfig);
+// Create SMTP transporter (only if using SMTP)
+const transporter = EMAIL_PROVIDER === "smtp" ? nodemailer.createTransport(smtpConfig) : null;
 
-// Verify SMTP configuration
+// Verify email configuration
 export async function verifyEmailConfig() {
   try {
-    await transporter.verify();
-    console.log("✅ SMTP server is ready to send emails");
-    return true;
-  } catch (error) {
-    console.error("❌ SMTP configuration error:", error);
+    if (EMAIL_PROVIDER === "resend") {
+      // Resend doesn't need verification - API key is validated on send
+      console.log("✅ Resend is configured and ready");
+      return true;
+    } else {
+      if (!transporter) return false;
+      await transporter.verify();
+      console.log("✅ SMTP server is ready to send emails");
+      return true;
+    }
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("❌ Email configuration error:", errorMsg);
     return false;
   }
 }
@@ -43,24 +64,53 @@ interface SendEmailOptions {
   from?: string;
 }
 
-// Send email function
+// Send email function (supports both Resend and SMTP)
 export async function sendEmail(options: SendEmailOptions) {
   try {
-    const {to, subject, html, text, from} = options;
+    const { to, subject, html, text, from } = options;
+    const fromAddress = from || process.env.SMTP_FROM || `"${process.env.APP_NAME || "AI SaaS"}" <${process.env.SMTP_USER || "noreply@example.com"}>`;
 
-    const mailOptions = {
-      from: from || process.env.SMTP_FROM || `"${process.env.APP_NAME || "AI SaaS"}" <${process.env.SMTP_USER}>`,
-      to: Array.isArray(to) ? to.join(", ") : to,
-      subject,
-      html,
-      text: text || html.replace(/<[^>]*>/g, ""), // Strip HTML tags for text version
-    };
+    if (EMAIL_PROVIDER === "resend") {
+      // Use Resend API (production recommended - much faster and more reliable)
+      if (!resend) {
+        throw new Error("Resend is not configured");
+      }
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("✉️  Email sent successfully:", info.messageId);
-    return { success: true, messageId: info.messageId };
-  } catch (error) {
-    console.error("❌ Email send error:", error);
+      const { data, error } = await resend.emails.send({
+        from: fromAddress,
+        to: Array.isArray(to) ? to : [to],
+        subject,
+        html,
+        text: text || html.replace(/<[^>]*>/g, ""), // Strip HTML for text version
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("✉️  Email sent via Resend:", data?.id);
+      return { success: true, messageId: data?.id };
+    } else {
+      // Use SMTP (fallback for development/testing)
+      if (!transporter) {
+        throw new Error("SMTP transporter is not configured");
+      }
+
+      const mailOptions = {
+        from: fromAddress,
+        to: Array.isArray(to) ? to.join(", ") : to,
+        subject,
+        html,
+        text: text || html.replace(/<[^>]*>/g, ""),
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log("✉️  Email sent via SMTP:", info.messageId);
+      return { success: true, messageId: info.messageId };
+    }
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("❌ Email send error:", errorMsg);
     return { success: false, error };
   }
 }
