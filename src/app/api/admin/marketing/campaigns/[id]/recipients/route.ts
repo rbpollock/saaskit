@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
  */
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check authentication
@@ -31,7 +31,8 @@ export async function GET(
       );
     }
 
-    const campaignId = params.id;
+    // Await params in Next.js 15
+    const { id: campaignId } = await params;
 
     // Verify campaign exists
     const campaign = await prisma.promotionalEmail.findUnique({
