@@ -160,34 +160,35 @@ export async function POST(req: Request) {
 
         if (!plan) break;
 
-        // Create or update subscription
-        await prisma.subscription.upsert({
-          where: { userId },
-          create: {
-            userId,
-            planId: plan.id,
-            stripeSubscriptionId: subscription.id,
-            stripeCustomerId: subscription.customer as string,
-            status: subscription.status,
-            billingCycle: subscription.items.data[0].price.recurring?.interval || "month",
-            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-          },
-          update: {
-            planId: plan.id,
-            stripeSubscriptionId: subscription.id,
-            stripeCustomerId: subscription.customer as string,
-            status: subscription.status,
-            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-          },
-        });
-
-        // Update user credits
-        await prisma.user.update({
-          where: { id: userId },
-          data: { credits: { increment: plan.creditsPerMonth } },
-        });
+        // Create or update subscription and add credits atomically
+        // Wrapped in transaction to prevent race conditions
+        await prisma.$transaction([
+          prisma.subscription.upsert({
+            where: { userId },
+            create: {
+              userId,
+              planId: plan.id,
+              stripeSubscriptionId: subscription.id,
+              stripeCustomerId: subscription.customer as string,
+              status: subscription.status,
+              billingCycle: subscription.items.data?.[0]?.price?.recurring?.interval || "month",
+              currentPeriodStart: new Date(subscription.current_period_start * 1000),
+              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            },
+            update: {
+              planId: plan.id,
+              stripeSubscriptionId: subscription.id,
+              stripeCustomerId: subscription.customer as string,
+              status: subscription.status,
+              currentPeriodStart: new Date(subscription.current_period_start * 1000),
+              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            },
+          }),
+          prisma.user.update({
+            where: { id: userId },
+            data: { credits: { increment: plan.creditsPerMonth } },
+          }),
+        ]);
 
         break;
       }
@@ -233,25 +234,26 @@ export async function POST(req: Request) {
 
         if (!subscription) break;
 
-        // Record payment
-        await prisma.payment.create({
-          data: {
-            userId: subscription.userId,
-            stripePaymentId: invoice.payment_intent as string,
-            amount: invoice.amount_paid / 100,
-            currency: invoice.currency,
-            status: "succeeded",
-            description: `Payment for ${subscription.plan.name} plan`,
-            invoiceUrl: invoice.hosted_invoice_url,
-            receiptUrl: invoice.invoice_pdf,
-          },
-        });
-
-        // Refresh credits on renewal
-        await prisma.user.update({
-          where: { id: subscription.userId },
-          data: { credits: { increment: subscription.plan.creditsPerMonth } },
-        });
+        // Record payment and refresh credits atomically
+        // Wrapped in transaction to prevent race conditions
+        await prisma.$transaction([
+          prisma.payment.create({
+            data: {
+              userId: subscription.userId,
+              stripePaymentId: invoice.payment_intent as string,
+              amount: invoice.amount_paid / 100,
+              currency: invoice.currency,
+              status: "succeeded",
+              description: `Payment for ${subscription.plan.name} plan`,
+              invoiceUrl: invoice.hosted_invoice_url,
+              receiptUrl: invoice.invoice_pdf,
+            },
+          }),
+          prisma.user.update({
+            where: { id: subscription.userId },
+            data: { credits: { increment: subscription.plan.creditsPerMonth } },
+          }),
+        ]);
 
         break;
       }

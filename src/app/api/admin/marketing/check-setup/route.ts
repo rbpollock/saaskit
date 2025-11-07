@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth, isUserAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -17,9 +17,8 @@ export async function GET() {
       );
     }
 
-    // Check if user is admin
-    const userRoles = session.user.roles || [];
-    const isAdmin = userRoles.includes("ADMIN") || userRoles.includes("SUPER_ADMIN");
+    // Check if user is admin (securely from database)
+    const isAdmin = await isUserAdmin(session.user.id);
 
     if (!isAdmin) {
       return NextResponse.json(
