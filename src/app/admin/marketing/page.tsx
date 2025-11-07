@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Mail, Send, Users, CheckCircle, XCircle, Clock, Eye } from "lucide-react";
+import { Mail, Send, Users, CheckCircle, XCircle, Clock, Eye, ListIcon, AlertCircle } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -16,6 +16,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Campaign {
   id: string;
@@ -33,11 +48,25 @@ interface Campaign {
   };
 }
 
+interface EmailRecipient {
+  id: string;
+  recipientEmail: string;
+  recipientName: string | null;
+  status: string;
+  errorMessage: string | null;
+  sentAt: Date | null;
+  createdAt: Date;
+}
+
 export default function AdminMarketingPage() {
   const [loading, setLoading] = useState(false);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loadingCampaigns, setLoadingCampaigns] = useState(true);
   const [showPreview, setShowPreview] = useState(false);
+  const [showRecipientsDialog, setShowRecipientsDialog] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
+  const [recipients, setRecipients] = useState<EmailRecipient[]>([]);
+  const [loadingRecipients, setLoadingRecipients] = useState(false);
 
   const [formData, setFormData] = useState({
     subject: "",
@@ -63,6 +92,28 @@ export default function AdminMarketingPage() {
     } finally {
       setLoadingCampaigns(false);
     }
+  };
+
+  const fetchRecipients = async (campaignId: string) => {
+    setLoadingRecipients(true);
+    try {
+      const response = await fetch(`/api/admin/marketing/campaigns/${campaignId}/recipients`);
+      if (!response.ok) throw new Error("Failed to fetch recipients");
+
+      const data = await response.json();
+      setRecipients(data.recipients || []);
+    } catch (error) {
+      console.error("Error fetching recipients:", error);
+      toast.error("Failed to load recipient details");
+    } finally {
+      setLoadingRecipients(false);
+    }
+  };
+
+  const handleViewRecipients = (campaign: Campaign) => {
+    setSelectedCampaign(campaign);
+    setShowRecipientsDialog(true);
+    fetchRecipients(campaign.id);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -427,13 +478,124 @@ export default function AdminMarketingPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="ml-4">{getStatusBadge(campaign.status)}</div>
+                  <div className="flex items-center gap-2 ml-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleViewRecipients(campaign)}
+                    >
+                      <ListIcon className="h-4 w-4 mr-1" />
+                      View Recipients
+                    </Button>
+                    {getStatusBadge(campaign.status)}
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </CardContent>
       </Card>
+
+      {/* Recipients Dialog */}
+      <Dialog open={showRecipientsDialog} onOpenChange={setShowRecipientsDialog}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Campaign Recipients</DialogTitle>
+            <DialogDescription>
+              {selectedCampaign?.subject}
+            </DialogDescription>
+          </DialogHeader>
+
+          {loadingRecipients ? (
+            <div className="flex items-center justify-center py-8">
+              <Clock className="h-6 w-6 animate-spin text-muted-foreground" />
+              <span className="ml-2 text-muted-foreground">Loading recipients...</span>
+            </div>
+          ) : recipients.length === 0 ? (
+            <div className="text-center py-8">
+              <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
+              <p className="text-muted-foreground">
+                No recipient tracking data available for this campaign.
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">
+                This feature was added after this campaign was sent.
+              </p>
+            </div>
+          ) : (
+            <div>
+              <div className="flex items-center gap-4 mb-4 p-4 bg-muted rounded-lg">
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground">Total Recipients</p>
+                  <p className="text-2xl font-bold">{recipients.length}</p>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground">Successfully Sent</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {recipients.filter(r => r.status === "sent").length}
+                  </p>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground">Failed</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {recipients.filter(r => r.status === "failed").length}
+                  </p>
+                </div>
+              </div>
+
+              <div className="border rounded-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Recipient</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Sent At</TableHead>
+                      <TableHead>Error</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {recipients.map((recipient) => (
+                      <TableRow key={recipient.id}>
+                        <TableCell className="font-medium">
+                          {recipient.recipientName || "—"}
+                        </TableCell>
+                        <TableCell>{recipient.recipientEmail}</TableCell>
+                        <TableCell>
+                          {recipient.status === "sent" ? (
+                            <Badge variant="default" className="flex items-center gap-1 w-fit">
+                              <CheckCircle className="h-3 w-3" />
+                              Sent
+                            </Badge>
+                          ) : (
+                            <Badge variant="destructive" className="flex items-center gap-1 w-fit">
+                              <XCircle className="h-3 w-3" />
+                              Failed
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {recipient.sentAt
+                            ? new Date(recipient.sentAt).toLocaleString()
+                            : "—"}
+                        </TableCell>
+                        <TableCell className="max-w-xs truncate" title={recipient.errorMessage || ""}>
+                          {recipient.errorMessage ? (
+                            <span className="text-red-600 text-sm">
+                              {recipient.errorMessage}
+                            </span>
+                          ) : (
+                            "—"
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

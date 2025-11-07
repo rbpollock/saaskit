@@ -258,12 +258,44 @@ export async function POST(req: Request) {
             if (result.success) {
               successCount++;
               console.log(`✅ Email sent to ${recipient.email}`);
+
+              // Save recipient record with success status
+              try {
+                await prisma.emailRecipient.create({
+                  data: {
+                    promotionalEmailId: promotionalEmail.id,
+                    recipientEmail: recipient.email,
+                    recipientName: recipient.name,
+                    status: "sent",
+                    sentAt: new Date(),
+                  },
+                });
+              } catch (dbError) {
+                console.error(`Failed to save recipient record for ${recipient.email}:`, dbError);
+              }
+
               return { success: true };
             } else {
               failureCount++;
               const errorMsg = result.error instanceof Error ? result.error.message : String(result.error);
               failedEmails.push({ email: recipient.email, error: errorMsg });
               console.error(`❌ Failed to send to ${recipient.email}:`, errorMsg);
+
+              // Save recipient record with failure status
+              try {
+                await prisma.emailRecipient.create({
+                  data: {
+                    promotionalEmailId: promotionalEmail.id,
+                    recipientEmail: recipient.email,
+                    recipientName: recipient.name,
+                    status: "failed",
+                    errorMessage: errorMsg,
+                  },
+                });
+              } catch (dbError) {
+                console.error(`Failed to save recipient record for ${recipient.email}:`, dbError);
+              }
+
               return { success: false, error: errorMsg };
             }
           } catch (error: any) {
@@ -271,6 +303,22 @@ export async function POST(req: Request) {
             const errorMsg = error.message || String(error);
             failedEmails.push({ email: recipient.email, error: errorMsg });
             console.error(`❌ Error sending to ${recipient.email}:`, errorMsg);
+
+            // Save recipient record with failure status
+            try {
+              await prisma.emailRecipient.create({
+                data: {
+                  promotionalEmailId: promotionalEmail.id,
+                  recipientEmail: recipient.email,
+                  recipientName: recipient.name,
+                  status: "failed",
+                  errorMessage: errorMsg,
+                },
+              });
+            } catch (dbError) {
+              console.error(`Failed to save recipient record for ${recipient.email}:`, dbError);
+            }
+
             return { success: false, error: errorMsg };
           }
         })
