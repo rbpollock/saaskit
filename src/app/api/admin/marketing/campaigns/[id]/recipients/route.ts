@@ -5,6 +5,9 @@ import { prisma } from "@/lib/prisma";
 /**
  * Get recipient details for a specific campaign
  * GET /api/admin/marketing/campaigns/[id]/recipients
+ *
+ * @param req - The request object
+ * @param params - Route parameters (Next.js 15 async params)
  */
 export async function GET(
   req: Request,
