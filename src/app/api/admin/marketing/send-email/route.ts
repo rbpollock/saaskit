@@ -3,6 +3,7 @@ import { auth, isUserAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendPromotionalEmail } from "@/lib/email";
 import { z } from "zod";
+import { rateLimit } from "@/lib/rate-limit";
 
 const promotionalEmailSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
@@ -79,6 +80,27 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: "Forbidden. Admin access required." },
         { status: 403 }
+      );
+    }
+
+    // Rate limiting: 10 email campaigns per hour per admin
+    const rateLimitResult = rateLimit({
+      identifier: `marketing-email:${session.user.id}`,
+      limit: 10,
+      windowInSeconds: 3600, // 1 hour
+    });
+
+    if (!rateLimitResult.success) {
+      const resetIn = Math.ceil((rateLimitResult.reset - Date.now()) / 1000 / 60);
+      return NextResponse.json(
+        {
+          error: "Rate limit exceeded",
+          message: `Too many email campaigns. Please wait ${resetIn} minute(s) before sending another campaign.`,
+          retryAfter: rateLimitResult.reset,
+          limit: rateLimitResult.limit,
+          remaining: rateLimitResult.remaining,
+        },
+        { status: 429 }
       );
     }
 
