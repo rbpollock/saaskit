@@ -5,10 +5,13 @@ import { prisma } from "@/lib/prisma";
 /**
  * Get recipient details for a specific campaign
  * GET /api/admin/marketing/campaigns/[id]/recipients
+ *
+ * @param req - The request object
+ * @param params - Route parameters (Next.js 15 async params)
  */
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check authentication
@@ -31,7 +34,8 @@ export async function GET(
       );
     }
 
-    const campaignId = params.id;
+    // Await params in Next.js 15
+    const { id: campaignId } = await params;
 
     // Verify campaign exists
     const campaign = await prisma.promotionalEmail.findUnique({
@@ -54,7 +58,16 @@ export async function GET(
     }
 
     // Get all recipients for this campaign
-    let recipients;
+    let recipients: Array<{
+      id: string;
+      recipientEmail: string;
+      recipientName: string | null;
+      status: string;
+      errorMessage: string | null;
+      sentAt: Date | null;
+      createdAt: Date;
+    }> = [];
+
     try {
       recipients = await prisma.emailRecipient.findMany({
         where: { promotionalEmailId: campaignId },
