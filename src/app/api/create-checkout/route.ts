@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { createCheckoutSession } from "@/lib/stripe";
+import { z } from "zod";
+
+const checkoutSchema = z.object({
+  priceId: z.string().min(1, "Price ID is required").startsWith("price_", "Invalid Stripe price ID format"),
+  planName: z.enum(["Free", "Pro", "Business"], {
+    errorMap: () => ({ message: "Plan must be one of: Free, Pro, Business" })
+  }),
+});
 
 /**
  * @swagger
@@ -85,11 +93,19 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { priceId, planName } = await req.json();
+    // Parse and validate request body
+    const body = await req.json();
+    const validationResult = checkoutSchema.safeParse(body);
 
-    if (!priceId || !planName) {
-      return new NextResponse("Missing required fields", { status: 400 });
+    if (!validationResult.success) {
+      const errorMessage = validationResult.error.errors[0]?.message || "Invalid input";
+      return NextResponse.json(
+        { error: errorMessage, details: validationResult.error.errors },
+        { status: 400 }
+      );
     }
+
+    const { priceId, planName } = validationResult.data;
 
     const checkoutSession = await createCheckoutSession(
       session.user.id,
@@ -98,8 +114,9 @@ export async function POST(req: Request) {
     );
 
     return NextResponse.json({ url: checkoutSession.url });
-  } catch (error) {
-    console.error("Checkout error:", error);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error("Checkout error:", errorMessage);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

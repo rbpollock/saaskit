@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth, isUserAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendPromotionalEmail } from "@/lib/email";
 import { z } from "zod";
+import { rateLimit } from "@/lib/rate-limit";
 
 const promotionalEmailSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
@@ -72,14 +73,34 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if user is admin or super admin
-    const userRoles = session.user.roles || [];
-    const isAdmin = userRoles.includes("ADMIN") || userRoles.includes("SUPER_ADMIN");
+    // Check if user is admin or super admin (securely from database)
+    const isAdmin = await isUserAdmin(session.user.id);
 
     if (!isAdmin) {
       return NextResponse.json(
         { error: "Forbidden. Admin access required." },
         { status: 403 }
+      );
+    }
+
+    // Rate limiting: 10 email campaigns per hour per admin
+    const rateLimitResult = rateLimit({
+      identifier: `marketing-email:${session.user.id}`,
+      limit: 10,
+      windowInSeconds: 3600, // 1 hour
+    });
+
+    if (!rateLimitResult.success) {
+      const resetIn = Math.ceil((rateLimitResult.reset - Date.now()) / 1000 / 60);
+      return NextResponse.json(
+        {
+          error: "Rate limit exceeded",
+          message: `Too many email campaigns. Please wait ${resetIn} minute(s) before sending another campaign.`,
+          retryAfter: rateLimitResult.reset,
+          limit: rateLimitResult.limit,
+          remaining: rateLimitResult.remaining,
+        },
+        { status: 429 }
       );
     }
 
@@ -203,13 +224,12 @@ export async function POST(req: Request) {
       },
     });
 
-    // Send emails in batches (to avoid overwhelming the SMTP server)
+    // Track email sending results
     let successCount = 0;
     let failureCount = 0;
     const failedEmails: Array<{ email: string; error: string }> = [];
-    const batchSize = 10;
 
-    console.log(`📧 Sending promotional email to ${recipients.length} recipients...`);
+    console.log(`📧 Sending promotional email to ${recipients.length} recipients (1.5s delay between each)...`);
     console.log(`📧 SMTP Config: Host=${process.env.SMTP_HOST}, User=${process.env.SMTP_USER}`);
 
     // Check SMTP configuration before sending
@@ -241,96 +261,84 @@ export async function POST(req: Request) {
       );
     }
 
-    for (let i = 0; i < recipients.length; i += batchSize) {
-      const batch = recipients.slice(i, i + batchSize);
+    // Send emails one by one with delay to respect rate limits (Mailtrap free tier: 1 email/second)
+    for (let i = 0; i < recipients.length; i++) {
+      const recipient = recipients[i];
 
-      const results = await Promise.allSettled(
-        batch.map(async (recipient) => {
+      try {
+        const result = await sendPromotionalEmail(
+          recipient.name || "User",
+          recipient.email,
+          subject,
+          content,
+          preheader
+        );
+
+        if (result.success) {
+          successCount++;
+          console.log(`✅ [${i + 1}/${recipients.length}] Email sent to ${recipient.email}`);
+
+          // Save recipient record with success status
           try {
-            const result = await sendPromotionalEmail(
-              recipient.name || "User",
-              recipient.email,
-              subject,
-              content,
-              preheader
-            );
-
-            if (result.success) {
-              successCount++;
-              console.log(`✅ Email sent to ${recipient.email}`);
-
-              // Save recipient record with success status
-              try {
-                await prisma.emailRecipient.create({
-                  data: {
-                    promotionalEmailId: promotionalEmail.id,
-                    recipientEmail: recipient.email,
-                    recipientName: recipient.name,
-                    status: "sent",
-                    sentAt: new Date(),
-                  },
-                });
-              } catch (dbError) {
-                console.error(`Failed to save recipient record for ${recipient.email}:`, dbError);
-              }
-
-              return { success: true };
-            } else {
-              failureCount++;
-              const errorMsg = result.error instanceof Error ? result.error.message : String(result.error);
-              failedEmails.push({ email: recipient.email, error: errorMsg });
-              console.error(`❌ Failed to send to ${recipient.email}:`, errorMsg);
-
-              // Save recipient record with failure status
-              try {
-                await prisma.emailRecipient.create({
-                  data: {
-                    promotionalEmailId: promotionalEmail.id,
-                    recipientEmail: recipient.email,
-                    recipientName: recipient.name,
-                    status: "failed",
-                    errorMessage: errorMsg,
-                  },
-                });
-              } catch (dbError) {
-                console.error(`Failed to save recipient record for ${recipient.email}:`, dbError);
-              }
-
-              return { success: false, error: errorMsg };
-            }
-          } catch (error: any) {
-            failureCount++;
-            const errorMsg = error.message || String(error);
-            failedEmails.push({ email: recipient.email, error: errorMsg });
-            console.error(`❌ Error sending to ${recipient.email}:`, errorMsg);
-
-            // Save recipient record with failure status
-            try {
-              await prisma.emailRecipient.create({
-                data: {
-                  promotionalEmailId: promotionalEmail.id,
-                  recipientEmail: recipient.email,
-                  recipientName: recipient.name,
-                  status: "failed",
-                  errorMessage: errorMsg,
-                },
-              });
-            } catch (dbError) {
-              console.error(`Failed to save recipient record for ${recipient.email}:`, dbError);
-            }
-
-            return { success: false, error: errorMsg };
+            await prisma.emailRecipient.create({
+              data: {
+                promotionalEmailId: promotionalEmail.id,
+                recipientEmail: recipient.email,
+                recipientName: recipient.name,
+                status: "sent",
+                sentAt: new Date(),
+              },
+            });
+          } catch (dbError) {
+            console.error(`Failed to save recipient record for ${recipient.email}:`, dbError);
           }
-        })
-      );
+        } else {
+          failureCount++;
+          const errorMsg = result.error instanceof Error ? result.error.message : String(result.error);
+          failedEmails.push({ email: recipient.email, error: errorMsg });
+          console.error(`❌ [${i + 1}/${recipients.length}] Failed to send to ${recipient.email}:`, errorMsg);
 
-      // Log batch results
-      const batchSuccess = results.filter(r => r.status === 'fulfilled' && (r.value as any).success).length;
-      console.log(`📊 Batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(recipients.length / batchSize)}: ${batchSuccess}/${batch.length} sent`);
+          // Save recipient record with failure status
+          try {
+            await prisma.emailRecipient.create({
+              data: {
+                promotionalEmailId: promotionalEmail.id,
+                recipientEmail: recipient.email,
+                recipientName: recipient.name,
+                status: "failed",
+                errorMessage: errorMsg,
+              },
+            });
+          } catch (dbError) {
+            console.error(`Failed to save recipient record for ${recipient.email}:`, dbError);
+          }
+        }
+      } catch (error: any) {
+        failureCount++;
+        const errorMsg = error.message || String(error);
+        failedEmails.push({ email: recipient.email, error: errorMsg });
+        console.error(`❌ [${i + 1}/${recipients.length}] Error sending to ${recipient.email}:`, errorMsg);
 
-      // Small delay between batches to avoid rate limiting
-      if (i + batchSize < recipients.length) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Save recipient record with failure status
+        try {
+          await prisma.emailRecipient.create({
+            data: {
+              promotionalEmailId: promotionalEmail.id,
+              recipientEmail: recipient.email,
+              recipientName: recipient.name,
+              status: "failed",
+              errorMessage: errorMsg,
+            },
+          });
+        } catch (dbError) {
+          console.error(`Failed to save recipient record for ${recipient.email}:`, dbError);
+        }
+      }
+
+      // Delay between emails to respect rate limits
+      // Mailtrap free tier: 1 email/second, so we wait 1.5 seconds to be safe
+      if (i < recipients.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
       }
     }
 
@@ -417,9 +425,8 @@ export async function GET(req: Request) {
       );
     }
 
-    // Check if user is admin or super admin
-    const userRoles = session.user.roles || [];
-    const isAdmin = userRoles.includes("ADMIN") || userRoles.includes("SUPER_ADMIN");
+    // Check if user is admin or super admin (securely from database)
+    const isAdmin = await isUserAdmin(session.user.id);
 
     if (!isAdmin) {
       return NextResponse.json(

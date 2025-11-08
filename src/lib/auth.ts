@@ -214,3 +214,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt",
   },
 });
+
+/**
+ * Securely verify if a user has admin or super admin role
+ * Fetches from database to prevent JWT manipulation attacks
+ *
+ * @param userId - The user ID to check
+ * @returns Promise<boolean> - true if user is admin or super admin
+ */
+export async function isUserAdmin(userId: string): Promise<boolean> {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
+
+    if (!user) return false;
+
+    return user.userRoles.some(
+      (ur: { role: { name: string } }) => ur.role.name === "ADMIN" || ur.role.name === "SUPER_ADMIN"
+    );
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    return false;
+  }
+}

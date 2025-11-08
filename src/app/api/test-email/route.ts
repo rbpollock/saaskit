@@ -65,10 +65,12 @@ export async function GET() {
           <h2 style="color: #10b981;">✅ SMTP Configuration Test Successful!</h2>
           <p>Your email configuration is working correctly.</p>
           <p style="color: #6b7280; font-size: 14px;">
-            <strong>SMTP Host:</strong> ${process.env.SMTP_HOST}<br>
-            <strong>SMTP Port:</strong> ${process.env.SMTP_PORT}<br>
             <strong>Test sent to:</strong> ${testEmail}<br>
-            <strong>Time:</strong> ${new Date().toLocaleString()}
+            <strong>Time:</strong> ${new Date().toLocaleString()}<br>
+            <strong>Environment:</strong> ${process.env.NODE_ENV || 'production'}
+          </p>
+          <p style="color: #9ca3af; font-size: 12px; margin-top: 20px;">
+            Check your server logs for SMTP configuration details.
           </p>
         </div>
       `,
@@ -83,17 +85,14 @@ export async function GET() {
           success: false,
           error: "Failed to send test email",
           details: errorDetails,
-          smtpConfig: {
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT,
-            user: process.env.SMTP_USER,
-          },
+          // SECURITY: Do not expose SMTP credentials in HTTP response
+          // Check server logs for SMTP configuration details
           hint: errorDetails.includes("ECONNREFUSED")
-            ? "Cannot connect to SMTP server. Check host and port."
+            ? "Cannot connect to SMTP server. Check host and port in environment variables."
             : errorDetails.includes("ETIMEDOUT")
             ? "Connection timeout. Check network/firewall settings."
             : errorDetails.includes("auth")
-            ? "Authentication failed. Check SMTP_USER and SMTP_PASS."
+            ? "Authentication failed. Check SMTP_USER and SMTP_PASS in environment variables."
             : "Check Vercel logs for more details"
         },
         { status: 500 }
@@ -108,11 +107,8 @@ export async function GET() {
         message: "Test email sent successfully!",
         sentTo: testEmail,
         messageId: result.messageId,
-        smtpConfig: {
-          host: process.env.SMTP_HOST,
-          port: process.env.SMTP_PORT,
-          user: process.env.SMTP_USER,
-        }
+        // SECURITY: SMTP config available in server logs only
+        configVerified: true
       },
       { status: 200 }
     );
