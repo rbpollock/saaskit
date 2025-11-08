@@ -47,7 +47,7 @@ export default function DocsPage() {
 
       {/* Quick Start Card */}
       <div className="relative overflow-hidden rounded-2xl border-2 bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-indigo-500/10 p-8 lg:p-10 shadow-xl">
-        <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(white,transparent_85%)]" />
+        <div className="absolute inset-0 bg-grid-pattern [mask-image:radial-gradient(white,transparent_85%)]" />
         <div className="relative z-10">
           <div className="flex items-center gap-4 mb-6">
             <div className="p-4 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-violet-500/30">
@@ -286,7 +286,7 @@ export default function DocsPage() {
 
       {/* CTA Section */}
       <div className="relative overflow-hidden rounded-2xl border-2 bg-gradient-to-br from-primary/10 via-primary/5 to-background p-8 lg:p-12 text-center shadow-2xl">
-        <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(white,transparent_85%)]" />
+        <div className="absolute inset-0 bg-grid-pattern [mask-image:radial-gradient(white,transparent_85%)]" />
         <div className="relative z-10 space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
             <Sparkles className="h-4 w-4 text-primary" />

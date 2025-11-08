@@ -225,7 +225,7 @@ npx prisma db seed`}
 
       {/* Support */}
       <div className="relative overflow-hidden rounded-2xl border-2 bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-indigo-500/10 p-8 my-12">
-        <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(white,transparent_85%)]" />
+        <div className="absolute inset-0 bg-grid-pattern [mask-image:radial-gradient(white,transparent_85%)]" />
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg">
