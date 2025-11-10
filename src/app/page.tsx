@@ -31,6 +31,8 @@ import {
   Award,
   Target,
   Lightbulb,
+  X,
+  Infinity,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { useEffect, useState, useRef } from "react";
@@ -537,6 +539,345 @@ export default function Home() {
                   <span className="relative group-hover:text-white transition-colors text-sm md:text-base">{tech.name}</span>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="py-20 md:py-32 bg-gradient-to-b from-gray-50 to-white">
+          <div className="container px-4 md:px-6">
+            <div className="mx-auto mb-16 max-w-3xl text-center">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-5 py-2 text-sm font-bold text-emerald-700">
+                <CreditCard className="h-4 w-4" />
+                <span>Simple Pricing</span>
+              </div>
+              <h2 className="mb-6 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+                Choose your perfect plan
+              </h2>
+              <p className="text-xl text-gray-600 leading-relaxed">
+                Start free, scale as you grow. No hidden fees, cancel anytime.
+              </p>
+            </div>
+
+            <div className="mx-auto max-w-7xl grid md:grid-cols-3 gap-8">
+              {/* Starter Plan */}
+              <div className="group relative overflow-hidden rounded-3xl bg-white border-2 border-gray-200 p-8 shadow-lg hover:shadow-2xl hover:border-purple-300 transition-all hover:-translate-y-2 flex flex-col">
+                <div className="flex-1">
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-black text-gray-900 mb-2">Starter</h3>
+                    <p className="text-gray-600">Perfect for trying out</p>
+                  </div>
+
+                  <div className="mb-8">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-5xl font-black text-gray-900">$0</span>
+                      <span className="text-xl text-gray-600">/month</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">Free forever</p>
+                  </div>
+
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm">1,000 AI credits/month</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm">Basic AI models (GPT-3.5)</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm">5 projects</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm">Email support</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm">Community access</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-red-100">
+                        <X className="h-3.5 w-3.5 text-red-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-400 text-sm line-through">Advanced AI models</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-red-100">
+                        <X className="h-3.5 w-3.5 text-red-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-400 text-sm line-through">Priority support</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-red-100">
+                        <X className="h-3.5 w-3.5 text-red-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-400 text-sm line-through">Custom integrations</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-red-100">
+                        <X className="h-3.5 w-3.5 text-red-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-400 text-sm line-through">API access</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-red-100">
+                        <X className="h-3.5 w-3.5 text-red-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-400 text-sm line-through">White-label solution</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-red-100">
+                        <X className="h-3.5 w-3.5 text-red-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-400 text-sm line-through">Dedicated account manager</span>
+                    </div>
+                  </div>
+                </div>
+
+                <Link href="/auth/signin" className="mt-auto">
+                  <Button className="w-full h-12 text-base font-bold bg-gray-900 hover:bg-gray-800 text-white">
+                    Get Started Free
+                  </Button>
+                </Link>
+
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-gray-400 to-gray-600" />
+              </div>
+
+              {/* Professional Plan - Most Popular */}
+              <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-b from-purple-50 to-white border-2 border-purple-500 p-8 shadow-2xl hover:shadow-purple-500/50 transition-all hover:-translate-y-2 flex flex-col md:scale-105">
+                {/* Most Popular Badge */}
+                <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-10">
+                  <div className="relative">
+                    <div className="rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 px-6 py-2 text-xs font-black text-white shadow-xl animate-gradient bg-[length:200%_auto]">
+                      ⭐ MOST POPULAR
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-1">
+                  <div className="mb-6 mt-2">
+                    <h3 className="text-2xl font-black text-gray-900 mb-2">Professional</h3>
+                    <p className="text-gray-600">For growing businesses</p>
+                  </div>
+
+                  <div className="mb-8">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-5xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">$49</span>
+                      <span className="text-xl text-gray-600">/month</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">Billed monthly</p>
+                  </div>
+
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">50,000 AI credits/month</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">All AI models (GPT-4, Claude, Gemini)</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Unlimited projects</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Priority email support</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Community access</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Advanced AI models</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Priority support (24h response)</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Custom integrations</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Full API access</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-red-100">
+                        <X className="h-3.5 w-3.5 text-red-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-400 text-sm line-through">White-label solution</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-red-100">
+                        <X className="h-3.5 w-3.5 text-red-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-400 text-sm line-through">Dedicated account manager</span>
+                    </div>
+                  </div>
+                </div>
+
+                <Link href="/auth/signin" className="mt-auto">
+                  <Button className="w-full h-12 text-base font-black bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all border-0">
+                    Get Started Now
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500" />
+              </div>
+
+              {/* Enterprise Plan */}
+              <div className="group relative overflow-hidden rounded-3xl bg-white border-2 border-gray-200 p-8 shadow-lg hover:shadow-2xl hover:border-blue-300 transition-all hover:-translate-y-2 flex flex-col">
+                <div className="flex-1">
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-black text-gray-900 mb-2">Enterprise</h3>
+                    <p className="text-gray-600">For large organizations</p>
+                  </div>
+
+                  <div className="mb-8">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-5xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">$199</span>
+                      <span className="text-xl text-gray-600">/month</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">Custom plans available</p>
+                  </div>
+
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium flex items-center gap-1.5">
+                        <Infinity className="h-4 w-4" />
+                        Unlimited AI credits
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">All AI models + Early access</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Unlimited projects</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">24/7 phone & email support</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Private community access</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">All advanced AI models</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Priority support (1h response)</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Custom integrations + webhooks</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Full API access + webhooks</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">White-label solution</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-gray-700 text-sm font-medium">Dedicated account manager</span>
+                    </div>
+                  </div>
+                </div>
+
+                <Link href="/auth/signin" className="mt-auto">
+                  <Button className="w-full h-12 text-base font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white border-0">
+                    Contact Sales
+                  </Button>
+                </Link>
+
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500" />
+              </div>
+            </div>
+
+            {/* Additional Info */}
+            <div className="mt-12 text-center">
+              <p className="text-gray-600 mb-4">
+                All plans include free updates, security patches, and community support
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
+                <div className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-600" />
+                  <span>No credit card required</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-600" />
+                  <span>Cancel anytime</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-600" />
+                  <span>14-day money-back guarantee</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>
