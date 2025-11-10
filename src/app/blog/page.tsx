@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { BookOpen, Calendar, User, ArrowRight } from "lucide-react";
 
 export default async function BlogPage() {
@@ -114,6 +115,8 @@ export default async function BlogPage() {
           )}
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }
