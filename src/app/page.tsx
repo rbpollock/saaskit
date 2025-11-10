@@ -6,6 +6,7 @@ import {
   Rocket,
   Sparkles,
   Shield,
+  Zap,
   Bot,
   CreditCard,
   BarChart3,
