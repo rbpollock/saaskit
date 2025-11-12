@@ -19,7 +19,7 @@ export default async function BlogPage() {
   });
 
   return (
-    <div className="light min-h-screen bg-white">
+    <div className="light min-h-screen bg-white overflow-x-hidden">
       <Navbar />
 
       {/* Hero Section */}

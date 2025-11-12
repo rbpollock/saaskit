@@ -163,7 +163,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-white overflow-x-hidden">
       <Navbar />
 
       {/* Hero Section - Ultra Modern with 3D Effects */}
