@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "sonner";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -19,8 +19,8 @@ export default function RegisterPage() {
     confirmPassword: "",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
@@ -52,7 +52,6 @@ export default function RegisterPage() {
       }
 
       toast.success(data.message || "Account created! Please check your email to verify your account.");
-      // Redirect to signin page with a message
       router.push("/auth/signin?registered=true");
     } catch (error: any) {
       toast.error(error.message || "Something went wrong");
@@ -62,16 +61,17 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-muted">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-[#E5DBCF] px-4 text-[#1f1b18]">
+      <Card className="w-full max-w-md rounded-[1.8rem] border-[#b8ab9c] bg-[#efe6dc] shadow-[0_24px_60px_-40px_rgba(31,27,24,0.45)]">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
+          <CardTitle className="font-display text-center text-3xl text-[#1f1b18]">
             Create an Account
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-[#5a524a]">
             Enter your details to create your account
           </CardDescription>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -81,9 +81,7 @@ export default function RegisterPage() {
                 type="text"
                 placeholder="John Doe"
                 value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
+                onChange={(event) => setFormData({ ...formData, name: event.target.value })}
                 required
                 disabled={loading}
               />
@@ -96,9 +94,7 @@ export default function RegisterPage() {
                 type="email"
                 placeholder="john@example.com"
                 value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                onChange={(event) => setFormData({ ...formData, email: event.target.value })}
                 required
                 disabled={loading}
               />
@@ -111,9 +107,7 @@ export default function RegisterPage() {
                 type="password"
                 placeholder="••••••••"
                 value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
+                onChange={(event) => setFormData({ ...formData, password: event.target.value })}
                 required
                 disabled={loading}
                 minLength={8}
@@ -127,8 +121,8 @@ export default function RegisterPage() {
                 type="password"
                 placeholder="••••••••"
                 value={formData.confirmPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, confirmPassword: e.target.value })
+                onChange={(event) =>
+                  setFormData({ ...formData, confirmPassword: event.target.value })
                 }
                 required
                 disabled={loading}
@@ -136,7 +130,11 @@ export default function RegisterPage() {
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full rounded-full bg-[#1f1b18] text-[#f3eadf] hover:bg-[#312a25]"
+              disabled={loading}
+            >
               {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
@@ -144,18 +142,20 @@ export default function RegisterPage() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                <span className="w-full border-t border-[#c7b8aa]" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
+                <span className="bg-[#efe6dc] px-2 text-[#7a6f65]">Or continue with</span>
               </div>
             </div>
 
             <div className="mt-4 space-y-2">
               <form action="/api/auth/signin/google">
-                <Button variant="outline" className="w-full" type="submit">
+                <Button
+                  variant="outline"
+                  className="w-full rounded-full border-[#b8ab9c] bg-transparent hover:bg-[#e5dbcf]"
+                  type="submit"
+                >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"
@@ -179,7 +179,11 @@ export default function RegisterPage() {
               </form>
 
               <form action="/api/auth/signin/github">
-                <Button variant="outline" className="w-full" type="submit">
+                <Button
+                  variant="outline"
+                  className="w-full rounded-full border-[#b8ab9c] bg-transparent hover:bg-[#e5dbcf]"
+                  type="submit"
+                >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"
@@ -194,7 +198,7 @@ export default function RegisterPage() {
 
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
-            <Link href="/auth/signin" className="text-primary underline-offset-4 hover:underline">
+            <Link href="/auth/signin" className="text-[#1f1b18] underline-offset-4 hover:underline">
               Sign in
             </Link>
           </div>

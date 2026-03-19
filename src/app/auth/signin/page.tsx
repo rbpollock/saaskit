@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { Mail } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "sonner";
-import { AlertCircle, CheckCircle, Mail } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 function SignInForm() {
   const router = useRouter();
@@ -30,21 +30,26 @@ function SignInForm() {
   const errorParam = searchParams.get("error");
   const registered = searchParams.get("registered");
 
-  // Show verification messages on mount
   useEffect(() => {
     if (verified === "true" && verificationMessage) {
       toast.success(decodeURIComponent(verificationMessage));
     } else if (errorParam) {
       if (errorParam === "invalid_token" || errorParam === "missing_token") {
-        toast.error(verificationMessage ? decodeURIComponent(verificationMessage) : "Verification failed. Please try again.");
+        toast.error(
+          verificationMessage
+            ? decodeURIComponent(verificationMessage)
+            : "Verification failed. Please try again."
+        );
       }
     } else if (registered === "true") {
-      toast.info("Please check your email and verify your account before signing in.", { duration: 6000 });
+      toast.info("Please check your email and verify your account before signing in.", {
+        duration: 6000,
+      });
     }
   }, [verified, verificationMessage, errorParam, registered]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setLoading(true);
     setShowUnverifiedAlert(false);
 
@@ -56,7 +61,6 @@ function SignInForm() {
       });
 
       if (result?.error) {
-        // Check if the error is about unverified email
         if (result.error.toLowerCase().includes("verify your email")) {
           setShowUnverifiedAlert(true);
           setUnverifiedEmail(formData.email);
@@ -105,28 +109,28 @@ function SignInForm() {
   const handleOAuthSignIn = async (provider: "google" | "github") => {
     try {
       await signIn(provider, { callbackUrl });
-    } catch (error) {
+    } catch {
       toast.error("Failed to sign in");
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-muted">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-[#E5DBCF] px-4 text-[#1f1b18]">
+      <Card className="w-full max-w-md rounded-[1.8rem] border-[#b8ab9c] bg-[#efe6dc] shadow-[0_24px_60px_-40px_rgba(31,27,24,0.45)]">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
+          <CardTitle className="font-display text-center text-3xl text-[#1f1b18]">
             Welcome Back
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-[#5a524a]">
             Sign in to your account to continue
           </CardDescription>
         </CardHeader>
+
         <CardContent className="space-y-4">
-          {/* Unverified Email Alert */}
           {showUnverifiedAlert && (
-            <Alert className="border-amber-500 bg-amber-50 dark:bg-amber-950/50">
+            <Alert className="border-amber-500 bg-amber-50">
               <Mail className="h-4 w-4 text-amber-600" />
-              <AlertDescription className="text-sm text-amber-800 dark:text-amber-200">
+              <AlertDescription className="text-sm text-amber-800">
                 <div className="space-y-2">
                   <p className="font-medium">Email not verified</p>
                   <p className="text-xs">
@@ -137,7 +141,7 @@ function SignInForm() {
                     variant="outline"
                     onClick={handleResendVerification}
                     disabled={resendingEmail}
-                    className="mt-2 border-amber-600 text-amber-700 hover:bg-amber-100 dark:border-amber-400 dark:text-amber-300"
+                    className="mt-2 border-amber-600 text-amber-700 hover:bg-amber-100"
                   >
                     {resendingEmail ? "Sending..." : "Resend Verification Email"}
                   </Button>
@@ -146,7 +150,6 @@ function SignInForm() {
             </Alert>
           )}
 
-          {/* Email/Password Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -155,9 +158,7 @@ function SignInForm() {
                 type="email"
                 placeholder="john@example.com"
                 value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                onChange={(event) => setFormData({ ...formData, email: event.target.value })}
                 required
                 disabled={loading}
               />
@@ -170,36 +171,34 @@ function SignInForm() {
                 type="password"
                 placeholder="••••••••"
                 value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
+                onChange={(event) => setFormData({ ...formData, password: event.target.value })}
                 required
                 disabled={loading}
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full rounded-full bg-[#1f1b18] text-[#f3eadf] hover:bg-[#312a25]"
+              disabled={loading}
+            >
               {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
 
-          {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <span className="w-full border-t border-[#c7b8aa]" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
+              <span className="bg-[#efe6dc] px-2 text-[#7a6f65]">Or continue with</span>
             </div>
           </div>
 
-          {/* OAuth Buttons */}
           <div className="space-y-2">
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full rounded-full border-[#b8ab9c] bg-transparent hover:bg-[#e5dbcf]"
               onClick={() => handleOAuthSignIn("google")}
               type="button"
             >
@@ -226,7 +225,7 @@ function SignInForm() {
 
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full rounded-full border-[#b8ab9c] bg-transparent hover:bg-[#e5dbcf]"
               onClick={() => handleOAuthSignIn("github")}
               type="button"
             >
@@ -241,13 +240,13 @@ function SignInForm() {
           </div>
 
           <div className="mt-4 text-center text-sm">
-            Don't have an account?{" "}
-            <Link href="/auth/register" className="text-primary underline-offset-4 hover:underline">
+            Don&apos;t have an account?{" "}
+            <Link href="/auth/register" className="text-[#1f1b18] underline-offset-4 hover:underline">
               Sign up
             </Link>
           </div>
 
-          <div className="text-center text-sm text-muted-foreground">
+          <div className="text-center text-sm text-[#7a6f65]">
             By signing in, you agree to our Terms of Service and Privacy Policy
           </div>
         </CardContent>
@@ -258,20 +257,22 @@ function SignInForm() {
 
 export default function SignIn() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-muted">
-        <Card className="w-full max-w-md">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">
-              Welcome Back
-            </CardTitle>
-            <CardDescription className="text-center">
-              Loading...
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#E5DBCF] px-4 text-[#1f1b18]">
+          <Card className="w-full max-w-md rounded-[1.8rem] border-[#b8ab9c] bg-[#efe6dc] shadow-[0_24px_60px_-40px_rgba(31,27,24,0.45)]">
+            <CardHeader className="space-y-1">
+              <CardTitle className="font-display text-center text-3xl text-[#1f1b18]">
+                Welcome Back
+              </CardTitle>
+              <CardDescription className="text-center text-[#5a524a]">
+                Loading...
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      }
+    >
       <SignInForm />
     </Suspense>
   );

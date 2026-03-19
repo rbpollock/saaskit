@@ -206,7 +206,7 @@ export function FeatureCard({ icon, title, description, href, gradient, classNam
       <div className="flex items-start gap-4">
         <div className={cn(
           "p-3 rounded-xl shadow-lg",
-          gradient || "bg-gradient-to-br from-violet-600 to-indigo-600"
+          gradient || "bg-[#1f1b18] text-[#f3eadf]"
         )}>
           {icon}
         </div>
@@ -221,7 +221,7 @@ export function FeatureCard({ icon, title, description, href, gradient, classNam
       </div>
       <div className={cn(
         "absolute bottom-0 left-0 h-1 w-0 transition-all duration-300 group-hover:w-full rounded-full",
-        gradient || "bg-gradient-to-r from-violet-600 to-indigo-600"
+        gradient || "bg-[#1f1b18]"
       )} />
     </>
   );
@@ -271,7 +271,7 @@ interface StepProps {
 export function Step({ step, title, children, className }: StepProps) {
   return (
     <div className={cn("relative pl-10 pb-8 border-l-2 border-zinc-200 dark:border-zinc-800 last:border-0 last:pb-0", className)}>
-      <div className="absolute -left-[17px] top-0 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 text-white font-bold text-sm shadow-lg">
+      <div className="absolute -left-[17px] top-0 flex h-8 w-8 items-center justify-center rounded-full bg-[#1f1b18] text-white font-bold text-sm shadow-lg">
         {step}
       </div>
       <div className="space-y-2">

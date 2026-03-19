@@ -11,7 +11,7 @@ export default function ApiPage() {
         The AI SaaS Starter Kit provides a complete REST API for managing users, blogs, categories, subscriptions, and payments. All endpoints are documented with Swagger/OpenAPI and include authentication, validation, and error handling.
       </p>
 
-      <div className="not-prose rounded-xl border bg-gradient-to-br from-violet-500/10 to-indigo-500/10 p-6 my-6">
+      <div className="not-prose my-6 rounded-xl border border-[#c7b8aa] bg-[#efe6dc] p-6">
         <h3 className="font-bold text-lg mb-2">Interactive API Documentation</h3>
         <p className="text-muted-foreground mb-4">
           Explore and test all API endpoints with Swagger UI
@@ -19,7 +19,7 @@ export default function ApiPage() {
         <a
           href="/api-docs"
           target="_blank"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+          className="inline-flex items-center gap-2 rounded-full bg-[#1f1b18] px-4 py-2 text-sm font-medium text-[#f3eadf] transition-colors hover:bg-[#312a25]"
         >
           Open Swagger UI →
         </a>

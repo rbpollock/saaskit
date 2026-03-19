@@ -162,7 +162,7 @@ npx prisma db seed`}
             language="bash"
             title="Terminal"
           />
-          <Callout type="success" title="Success! 🎉">
+          <Callout type="success" title="Success">
             Your application is now running! Open{" "}
             <a href="http://localhost:3000" target="_blank" className="text-primary hover:underline font-semibold">
               http://localhost:3000
@@ -224,11 +224,10 @@ npx prisma db seed`}
       </div>
 
       {/* Support */}
-      <div className="relative overflow-hidden rounded-2xl border-2 bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-indigo-500/10 p-8 my-12">
-        <div className="absolute inset-0 bg-grid-pattern [mask-image:radial-gradient(white,transparent_85%)]" />
-        <div className="relative z-10">
+      <div className="rounded-2xl border border-[#c7b8aa] bg-[#efe6dc] p-8 my-12">
+        <div>
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg">
+            <div className="p-3 rounded-xl bg-[#1f1b18] shadow-lg">
               <Rocket className="h-6 w-6 text-white" />
             </div>
             <div>

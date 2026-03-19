@@ -1,1121 +1,340 @@
 "use client";
 
 import Link from "next/link";
+import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Rocket,
-  Sparkles,
-  Shield,
-  Zap,
-  Bot,
-  CreditCard,
-  BarChart3,
-  Code,
-  Globe,
-  Check,
-  Star,
   ArrowRight,
-  Layers,
-  Lock,
-  Database,
-  Cloud,
-  Mail,
-  Users,
-  TrendingUp,
-  MessageSquare,
+  Bot,
+  Check,
   ChevronDown,
-  Play,
-  Award,
-  Target,
-  Lightbulb,
-  Infinity,
-  X,
+  CirclePlay,
+  CreditCard,
+  LockKeyhole,
+  Mail,
+  Quote,
+  Sparkles,
+  Zap,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { useEffect, useState, useRef } from "react";
 
-// Animated Counter Component
-function AnimatedCounter({ end, duration = 2000, suffix = "" }: { end: number; duration?: number; suffix?: string }) {
-  const [count, setCount] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, [isVisible]);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    let startTime: number;
-    let animationFrame: number;
-
-    const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-
-      setCount(Math.floor(progress * end));
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(animate);
-
-    return () => cancelAnimationFrame(animationFrame);
-  }, [isVisible, end, duration]);
-
-  return (
-    <div ref={ref} className="text-5xl md:text-6xl font-extrabold">
-      {count}
-      {suffix}
-    </div>
-  );
-}
-
-// Testimonial data
-const testimonials = [
+const features = [
   {
-    name: "Sarah Johnson",
-    role: "Founder at TechStart",
-    image: "https://ui-avatars.com/api/?name=Sarah+Johnson&background=8b5cf6&color=fff&size=128",
-    content: "This starter kit saved us 3 months of development time. The AI integration is seamless and the code quality is exceptional.",
-    rating: 5,
+    title: "AI orchestration",
+    description: "Model access, prompt handling, and response flows in one clean surface.",
+    icon: Bot,
+    tone: "bg-[#1f1b18] text-[#f3eadf] border-[#1f1b18]",
   },
   {
-    name: "Michael Chen",
-    role: "CTO at DataFlow",
-    image: "https://ui-avatars.com/api/?name=Michael+Chen&background=3b82f6&color=fff&size=128",
-    content: "The best SaaS starter I've used. Authentication, payments, and admin dashboard work flawlessly out of the box.",
-    rating: 5,
+    title: "Authentication that feels finished",
+    description: "NextAuth, verification, and permissions without the usual rough edges.",
+    icon: LockKeyhole,
+    tone: "bg-[#efe6dc] text-[#1f1b18] border-[#baad9f]",
   },
   {
-    name: "Emily Rodriguez",
-    role: "Lead Developer at CloudSync",
-    image: "https://ui-avatars.com/api/?name=Emily+Rodriguez&background=ec4899&color=fff&size=128",
-    content: "Incredible documentation and support. We launched our MVP in just 2 weeks using this kit. Highly recommended!",
-    rating: 5,
+    title: "Billing with structure",
+    description: "Stripe subscriptions, credits, and payment handling already wired.",
+    icon: CreditCard,
+    tone: "bg-[#314337] text-[#f3eadf] border-[#314337]",
   },
 ];
 
-// FAQ data
 const faqs = [
   {
-    question: "What's included in the starter kit?",
-    answer: "The kit includes Next.js 15 setup, authentication with NextAuth v5, Stripe payment integration, admin dashboard, 50+ API endpoints, AI integration via OpenRouter, blog system, and comprehensive documentation.",
+    question: "What is included?",
+    answer:
+      "Authentication, billing, AI integration, admin tooling, docs routes, and the public marketing shell are already part of the project.",
   },
   {
-    question: "Can I use this for commercial projects?",
-    answer: "Yes! Once you purchase the starter kit, you can use it for unlimited commercial projects. There are no restrictions on what you build.",
+    question: "Can I use it commercially?",
+    answer:
+      "Yes. The starter is designed to be customized and used as the base for real products and client work.",
   },
   {
-    question: "What AI models are supported?",
-    answer: "Through OpenRouter integration, you get access to 200+ AI models including GPT-4, Claude, Gemini, Llama, and many more. Switch between models easily.",
-  },
-  {
-    question: "Do you provide support and updates?",
-    answer: "Yes! We provide ongoing support, regular updates, and maintain compatibility with the latest versions of Next.js, React, and other dependencies.",
-  },
-  {
-    question: "Is the code customizable?",
-    answer: "Absolutely! You get full access to the source code. Customize everything to match your brand and requirements. No vendor lock-in.",
+    question: "Can I keep refining the look?",
+    answer:
+      "Yes. The new design system is intentionally restrained so it can be pushed further without fighting the structure.",
   },
 ];
 
 export default function Home() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [email, setEmail] = useState("");
 
-  // Mouse tracking for parallax effects
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20,
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle newsletter signup
-    console.log("Newsletter signup:", email);
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setEmail("");
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white overflow-x-hidden">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-[#E5DBCF] text-[#1f1b18]">
       <Navbar />
 
-      {/* Hero Section - Ultra Modern with 3D Effects */}
-      <main className="flex-1">
-        <section className="relative overflow-hidden bg-gradient-to-br from-indigo-950 via-purple-900 to-blue-950 pt-32 pb-20 md:pt-48 md:pb-40">
-          {/* Animated mesh gradient background */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div
-              className="absolute -top-1/2 -right-1/4 h-[800px] w-[800px] rounded-full bg-purple-500/30 blur-3xl animate-pulse"
-              style={{ transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)` }}
-            />
-            <div
-              className="absolute top-1/3 -left-1/4 h-[600px] w-[600px] rounded-full bg-blue-500/30 blur-3xl animate-pulse"
-              style={{ transform: `translate(${-mousePosition.x}px, ${-mousePosition.y}px)`, animationDelay: "1s" }}
-            />
-            <div
-              className="absolute bottom-0 right-1/3 h-[500px] w-[500px] rounded-full bg-pink-500/20 blur-3xl animate-pulse"
-              style={{ transform: `translate(${mousePosition.x * 0.5}px, ${mousePosition.y * 0.5}px)`, animationDelay: "2s" }}
-            />
-
-            {/* Grid pattern overlay */}
-            <div className="absolute inset-0 bg-grid-pattern opacity-20" />
-          </div>
-
-          <div className="container relative z-10 px-4 md:px-6">
-            <div className="mx-auto max-w-6xl">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
-                {/* Left side - Content */}
-                <div className="text-center lg:text-left space-y-8">
-                  {/* Floating badge */}
-                  <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 px-5 py-2.5 text-sm font-semibold text-white shadow-2xl animate-fade-in-up">
-                    <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-r from-green-400 to-emerald-400">
-                      <Sparkles className="h-3.5 w-3.5 text-white" />
-                    </div>
-                    <span>Trusted by 10,000+ Developers</span>
-                    <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+      <main className="flex-1 pt-28">
+        <section className="pb-20 pt-6 md:pt-10">
+          <div className="container px-4 md:px-6">
+            <div className="rounded-[2.25rem] border border-[#b8ab9c] bg-[#efe6dc] p-6 shadow-[0_30px_80px_-40px_rgba(31,27,24,0.45)] md:p-10 lg:p-12">
+              <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+                <div className="space-y-8">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#b8ab9c] bg-[#e5dbcf] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-[#61584f]">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Premium AI SaaS starter
                   </div>
-
-                  {/* Main Heading with gradient */}
-                  <h1 className="text-5xl font-black tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl leading-[1.1] animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-                    Build Your
-                    <span className="block mt-2 bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
-                      AI SaaS Empire
-                    </span>
-                  </h1>
-
-                  <p className="text-xl md:text-2xl text-blue-100 leading-relaxed max-w-2xl mx-auto lg:mx-0 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-                    Ship production-ready SaaS products in days, not months. Complete Next.js 15 starter with AI, payments, auth, and analytics.
-                  </p>
-
-                  {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+                  <div className="space-y-5">
+                    <p className="text-sm uppercase tracking-[0.4em] text-[#73685e]">
+                      Editorial interface. Production stack.
+                    </p>
+                    <h1 className="font-display max-w-4xl text-5xl leading-[0.95] sm:text-6xl lg:text-7xl">
+                      Premium design without gradients, noise, or visual clutter.
+                    </h1>
+                    <p className="max-w-2xl text-lg leading-8 text-[#4f4942] md:text-xl">
+                      The whole landing experience now leans on dark text, a warm `#E5DBCF` canvas, solid surfaces, and calmer hierarchy.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-4 sm:flex-row">
                     <Link href="/auth/signin">
-                      <Button
-                        size="lg"
-                        className="group relative h-16 px-10 text-lg font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 hover:from-purple-600 hover:via-pink-600 hover:to-purple-600 text-white shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-105 bg-[length:200%_auto] animate-gradient border-0"
-                      >
-                        <Rocket className="mr-2 h-6 w-6" />
-                        Start Building Free
-                        <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                      <Button className="h-14 rounded-full bg-[#1f1b18] px-8 text-base font-semibold text-[#f3eadf] hover:bg-[#312a25]">
+                        Start building
+                        <ArrowRight className="h-4 w-4" />
                       </Button>
                     </Link>
-                    <Link href="#demo">
+                    <Link href="#features">
                       <Button
-                        size="lg"
                         variant="outline"
-                        className="h-16 px-10 text-lg font-bold border-2 border-white/30 bg-white/10 text-white backdrop-blur-xl hover:bg-white/20 hover:border-white/50 shadow-xl"
+                        className="h-14 rounded-full border-[#6b6259] bg-transparent px-8 text-base font-semibold text-[#1f1b18] hover:bg-[#ddd2c6] hover:text-[#1f1b18]"
                       >
-                        <Play className="mr-2 h-5 w-5" />
-                        Watch Demo
+                        See the system
+                        <CirclePlay className="h-4 w-4" />
                       </Button>
                     </Link>
                   </div>
-
-                  {/* Social Proof */}
-                  <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-blue-100 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-                    <div className="flex items-center gap-2">
-                      <div className="flex -space-x-2">
-                        {[...Array(5)].map((_, i) => (
-                          <div
-                            key={i}
-                            className="h-10 w-10 rounded-full border-2 border-purple-900 bg-gradient-to-br from-purple-400 to-pink-400 shadow-lg"
-                          />
-                        ))}
+                  <div className="grid gap-4 md:grid-cols-3">
+                    {[
+                      ["15 days", "from repo to launch"],
+                      ["200+", "models on one rail"],
+                      ["99.9%", "operational posture"],
+                    ].map(([value, label]) => (
+                      <div
+                        key={label}
+                        className="rounded-[1.4rem] border border-[#c8bbad] bg-[#e5dbcf] p-5"
+                      >
+                        <div className="text-3xl font-semibold">{value}</div>
+                        <div className="mt-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#5f564d]">
+                          {label}
+                        </div>
                       </div>
-                      <span className="text-sm font-bold">10,000+ users</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                        ))}
-                      </div>
-                      <span className="text-sm font-bold ml-1">5.0 (200+ reviews)</span>
-                    </div>
+                    ))}
                   </div>
                 </div>
 
-                {/* Right side - 3D Floating Cards */}
-                <div className="hidden lg:block relative h-[600px]">
-                  {/* Floating feature cards with 3D effect */}
-                  <div className="absolute top-0 right-0 w-72 p-6 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl animate-float">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500">
-                        <Zap className="h-6 w-6 text-white" />
-                      </div>
+                <div className="space-y-5">
+                  <div className="rounded-[2rem] border border-[#2b2521] bg-[#1f1b18] p-6 text-[#f3eadf] md:p-8">
+                    <div className="flex items-center justify-between border-b border-[#3b342e] pb-5">
                       <div>
-                        <div className="text-white font-bold text-lg">Lightning Fast</div>
-                        <div className="text-blue-200 text-sm">Next.js 15 + React 19</div>
+                        <p className="text-xs uppercase tracking-[0.32em] text-[#b7a995]">
+                          Operator view
+                        </p>
+                        <h2 className="font-display mt-3 text-3xl leading-none">
+                          Launch console
+                        </h2>
+                      </div>
+                      <div className="rounded-full border border-[#3b342e] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#d3c5b5]">
+                        Ready
                       </div>
                     </div>
-                    <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                      <div className="h-full w-[95%] bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full animate-pulse" />
-                    </div>
-                  </div>
-
-                  <div className="absolute top-32 right-12 w-64 p-6 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl animate-float" style={{ animationDelay: "1s" }}>
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500">
-                        <Bot className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <div className="text-white font-bold text-lg">AI Powered</div>
-                        <div className="text-blue-200 text-sm">200+ Models</div>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      {["GPT-4", "Claude", "Gemini"].map((model, i) => (
-                        <div key={i} className="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-semibold">
-                          {model}
+                    <div className="mt-6 space-y-3">
+                      {[
+                        "AI routing and actions",
+                        "Access control and verification",
+                        "Stripe subscriptions and credits",
+                        "Admin surfaces and reporting",
+                      ].map((item) => (
+                        <div
+                          key={item}
+                          className="flex items-center gap-3 rounded-[1.25rem] border border-[#3b342e] bg-[#26211d] px-4 py-3"
+                        >
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#314337]">
+                            <Check className="h-3.5 w-3.5" />
+                          </div>
+                          <span className="text-sm text-[#efe5da]">{item}</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <div className="absolute bottom-32 right-0 w-60 p-6 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl animate-float" style={{ animationDelay: "2s" }}>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="text-white font-bold">Revenue</div>
-                      <TrendingUp className="h-5 w-5 text-green-400" />
-                    </div>
-                    <div className="text-4xl font-black text-white mb-2">$24.5K</div>
-                    <div className="text-green-400 text-sm font-semibold">+23.5% this month</div>
-                  </div>
-
-                  <div className="absolute bottom-0 right-20 w-56 p-5 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl animate-float" style={{ animationDelay: "0.5s" }}>
+                  <div className="rounded-[1.6rem] border border-[#b8ab9c] bg-[#f4eee6] p-5">
                     <div className="flex items-center gap-3">
-                      <Shield className="h-10 w-10 text-green-400" />
-                      <div>
-                        <div className="text-white font-bold text-lg">99.9% Uptime</div>
-                        <div className="text-green-400 text-sm font-semibold">Enterprise Ready</div>
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#314337] text-[#f3eadf]">
+                        <Zap className="h-5 w-5" />
                       </div>
+                      <p className="text-base leading-7 text-[#1f1b18]">
+                        Premium here means restraint: fewer effects, stronger spacing, darker type, and surfaces that feel deliberate.
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Bottom wave */}
-          <div className="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-              <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
-            </svg>
+        <section id="features" className="border-y border-[#c7b8aa] bg-[#ede3d8] py-20">
+          <div className="container px-4 md:px-6">
+            <div className="mb-10 max-w-3xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.34em] text-[#6e6359]">
+                System design
+              </p>
+              <h2 className="font-display mt-4 text-4xl sm:text-5xl">
+                Solid surfaces, sharp contrast, and a calmer product story.
+              </h2>
+            </div>
+            <div className="grid gap-6 lg:grid-cols-3">
+              {features.map((feature) => {
+                const Icon = feature.icon;
+
+                return (
+                  <div
+                    key={feature.title}
+                    className={`rounded-[2rem] border p-7 shadow-[0_20px_44px_-36px_rgba(31,27,24,0.5)] ${feature.tone}`}
+                  >
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black/10">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="mt-6 text-2xl font-semibold leading-tight">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-4 text-base leading-7 opacity-85">
+                      {feature.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </section>
 
-        {/* Bento Grid Features Section */}
-        <section className="py-20 md:py-32 bg-white">
+        <section className="py-20">
           <div className="container px-4 md:px-6">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-purple-100 px-5 py-2 text-sm font-bold text-purple-700">
-                <Layers className="h-4 w-4" />
-                <span>Complete SaaS Platform</span>
-              </div>
-              <h2 className="mb-6 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-                Everything you need.
-                <span className="block bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
-                  Nothing you don't.
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Production-ready features that scale from MVP to enterprise
-              </p>
-            </div>
-
-            {/* Bento Grid Layout */}
-            <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Large Card - AI Integration */}
-              <div className="lg:col-span-2 lg:row-span-2 group relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-500 p-10 text-white shadow-2xl hover:shadow-blue-500/50 transition-all hover:scale-[1.02]">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-                <div className="relative">
-                  <div className="inline-flex p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6 group-hover:scale-110 transition-transform">
-                    <Bot className="h-12 w-12" />
+            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+              <div className="space-y-6">
+                <div className="rounded-[2rem] border border-[#b9ab9d] bg-[#efe6dc] p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1f1b18] text-[#f3eadf]">
+                      <Quote className="h-5 w-5" />
+                    </div>
+                    <p className="text-lg leading-8 text-[#332d29]">
+                      Premium does not mean louder. It means fewer bad decisions and a cleaner sense of control.
+                    </p>
                   </div>
-                  <h3 className="text-4xl font-black mb-4">AI Integration</h3>
-                  <p className="text-xl text-blue-100 mb-8 leading-relaxed max-w-xl">
-                    Access 200+ AI models including GPT-4, Claude, Gemini, and Llama through a unified OpenRouter API. Switch models instantly without code changes.
+                </div>
+                <div className="rounded-[2rem] border border-[#2b2521] bg-[#1f1b18] p-7 text-[#f3eadf]">
+                  <p className="text-sm font-semibold uppercase tracking-[0.34em] text-[#b7a995]">
+                    Included
                   </p>
-                  <div className="flex flex-wrap gap-3">
-                    <div className="px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm font-semibold">GPT-4 Turbo</div>
-                    <div className="px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm font-semibold">Claude 3.5</div>
-                    <div className="px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm font-semibold">Gemini Pro</div>
-                    <div className="px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm font-semibold">Llama 3</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Authentication */}
-              <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 p-8 text-white shadow-xl hover:shadow-purple-500/50 transition-all hover:scale-[1.02]">
-                <div className="inline-flex p-3 rounded-xl bg-white/20 backdrop-blur-sm mb-4 group-hover:scale-110 transition-transform">
-                  <Lock className="h-8 w-8" />
-                </div>
-                <h3 className="text-2xl font-black mb-3">Secure Auth</h3>
-                <p className="text-purple-100 leading-relaxed">
-                  NextAuth v5 with OAuth (Google, GitHub) and email. Complete RBAC system.
-                </p>
-              </div>
-
-              {/* Payments */}
-              <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-500 to-red-500 p-8 text-white shadow-xl hover:shadow-orange-500/50 transition-all hover:scale-[1.02]">
-                <div className="inline-flex p-3 rounded-xl bg-white/20 backdrop-blur-sm mb-4 group-hover:scale-110 transition-transform">
-                  <CreditCard className="h-8 w-8" />
-                </div>
-                <h3 className="text-2xl font-black mb-3">Stripe Payments</h3>
-                <p className="text-orange-100 leading-relaxed">
-                  Full subscription management with webhooks and credits system.
-                </p>
-              </div>
-
-              {/* Admin Dashboard */}
-              <div className="lg:col-span-2 group relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-500 to-emerald-500 p-8 text-white shadow-xl hover:shadow-green-500/50 transition-all hover:scale-[1.02]">
-                <div className="inline-flex p-3 rounded-xl bg-white/20 backdrop-blur-sm mb-4 group-hover:scale-110 transition-transform">
-                  <BarChart3 className="h-10 w-10" />
-                </div>
-                <h3 className="text-3xl font-black mb-4">Admin Dashboard</h3>
-                <p className="text-xl text-green-100 leading-relaxed mb-6 max-w-2xl">
-                  Complete CRUD for users, subscriptions, payments, and content. Real-time analytics and charts powered by Recharts.
-                </p>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl bg-white/20 backdrop-blur-sm">
-                    <Users className="h-6 w-6 mb-2" />
-                    <div className="text-2xl font-bold">2.4K</div>
-                    <div className="text-sm text-green-100">Users</div>
-                  </div>
-                  <div className="p-4 rounded-xl bg-white/20 backdrop-blur-sm">
-                    <TrendingUp className="h-6 w-6 mb-2" />
-                    <div className="text-2xl font-bold">$12K</div>
-                    <div className="text-sm text-green-100">Revenue</div>
-                  </div>
-                  <div className="p-4 rounded-xl bg-white/20 backdrop-blur-sm">
-                    <Target className="h-6 w-6 mb-2" />
-                    <div className="text-2xl font-bold">94%</div>
-                    <div className="text-sm text-green-100">Growth</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* API */}
-              <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-500 to-purple-500 p-8 text-white shadow-xl hover:shadow-violet-500/50 transition-all hover:scale-[1.02]">
-                <div className="inline-flex p-3 rounded-xl bg-white/20 backdrop-blur-sm mb-4 group-hover:scale-110 transition-transform">
-                  <Code className="h-8 w-8" />
-                </div>
-                <h3 className="text-2xl font-black mb-3">50+ API Routes</h3>
-                <p className="text-purple-100 leading-relaxed">
-                  RESTful API with Swagger docs. Full CRUD with pagination.
-                </p>
-              </div>
-
-              {/* Database */}
-              <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-600 p-8 text-white shadow-xl hover:shadow-blue-500/50 transition-all hover:scale-[1.02]">
-                <div className="inline-flex p-3 rounded-xl bg-white/20 backdrop-blur-sm mb-4 group-hover:scale-110 transition-transform">
-                  <Database className="h-8 w-8" />
-                </div>
-                <h3 className="text-2xl font-black mb-3">Prisma + PostgreSQL</h3>
-                <p className="text-blue-100 leading-relaxed">
-                  Type-safe database access with modern ORM and migrations.
-                </p>
-              </div>
-
-              {/* Blog System */}
-              <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-500 to-rose-500 p-8 text-white shadow-xl hover:shadow-pink-500/50 transition-all hover:scale-[1.02]">
-                <div className="inline-flex p-3 rounded-xl bg-white/20 backdrop-blur-sm mb-4 group-hover:scale-110 transition-transform">
-                  <Globe className="h-8 w-8" />
-                </div>
-                <h3 className="text-2xl font-black mb-3">Blog & CMS</h3>
-                <p className="text-pink-100 leading-relaxed">
-                  Built-in blog with SEO optimization and markdown support.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Animated Statistics */}
-        <section className="py-20 md:py-32 bg-gradient-to-b from-gray-50 to-white">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <h2 className="mb-6 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl">
-                Trusted by developers worldwide
-              </h2>
-              <p className="text-xl text-gray-600">
-                Join thousands who've shipped faster with our platform
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
-              <div className="text-center group">
-                <div className="mb-3 text-transparent bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text">
-                  <AnimatedCounter end={10000} suffix="+" />
-                </div>
-                <div className="text-gray-600 font-semibold text-lg">Active Users</div>
-              </div>
-              <div className="text-center group">
-                <div className="mb-3 text-transparent bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text">
-                  <AnimatedCounter end={500} suffix="+" />
-                </div>
-                <div className="text-gray-600 font-semibold text-lg">Products Launched</div>
-              </div>
-              <div className="text-center group">
-                <div className="mb-3 text-transparent bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text">
-                  <AnimatedCounter end={99} suffix=".9%" />
-                </div>
-                <div className="text-gray-600 font-semibold text-lg">Uptime SLA</div>
-              </div>
-              <div className="text-center group">
-                <div className="mb-3 text-transparent bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text">
-                  <AnimatedCounter end={24} suffix="/7" />
-                </div>
-                <div className="text-gray-600 font-semibold text-lg">Support Available</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Tech Stack Showcase */}
-        <section className="py-20 md:py-32 bg-white">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-blue-100 px-5 py-2 text-sm font-bold text-blue-700">
-                <Code className="h-4 w-4" />
-                <span>Modern Tech Stack</span>
-              </div>
-              <h2 className="mb-6 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl">
-                Built with the best tools
-              </h2>
-              <p className="text-xl text-gray-600">
-                Production-grade stack for performance and scalability
-              </p>
-            </div>
-
-            <div className="mx-auto max-w-5xl grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-              {[
-                { name: "Next.js 15", color: "from-black to-gray-800" },
-                { name: "React 19", color: "from-blue-500 to-cyan-500" },
-                { name: "TypeScript", color: "from-blue-600 to-blue-700" },
-                { name: "Tailwind CSS v4", color: "from-cyan-500 to-blue-500" },
-                { name: "Prisma ORM", color: "from-indigo-600 to-purple-600" },
-                { name: "PostgreSQL", color: "from-blue-700 to-indigo-700" },
-                { name: "NextAuth v5", color: "from-purple-600 to-pink-600" },
-                { name: "Stripe", color: "from-purple-500 to-indigo-500" },
-                { name: "OpenRouter", color: "from-green-500 to-emerald-500" },
-                { name: "Swagger", color: "from-green-600 to-teal-600" },
-                { name: "shadcn/ui", color: "from-gray-800 to-gray-900" },
-                { name: "Zod", color: "from-blue-600 to-purple-600" },
-              ].map((tech, i) => (
-                <div
-                  key={i}
-                  className="group relative overflow-hidden rounded-2xl border-2 border-gray-200 bg-white p-6 text-center font-bold text-gray-900 transition-all hover:border-transparent hover:shadow-2xl hover:scale-110 hover:-translate-y-2"
-                >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${tech.color} opacity-0 group-hover:opacity-100 transition-opacity`} />
-                  <span className="relative group-hover:text-white transition-colors text-sm md:text-base">{tech.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing Section - Modern Design */}
-        <section className="py-20 md:py-32 bg-white">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-100 to-green-100 px-5 py-2 text-sm font-bold text-emerald-700 border border-emerald-200">
-                <CreditCard className="h-4 w-4" />
-                <span>Simple & Transparent Pricing</span>
-              </div>
-              <h2 className="mb-6 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-                Choose the perfect plan
-                <span className="block bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent mt-2">
-                  for your needs
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Start free, upgrade as you grow. All plans include core features.
-              </p>
-            </div>
-
-            <div className="mx-auto max-w-7xl">
-              <div className="grid md:grid-cols-3 gap-8 items-start">
-                {/* Starter Plan */}
-                <div className="group relative h-full">
-                  <div className="relative h-full rounded-3xl bg-gradient-to-br from-gray-50 to-gray-100 p-8 shadow-xl border-2 border-gray-200 hover:border-gray-300 transition-all hover:shadow-2xl hover:-translate-y-1 flex flex-col">
-                    {/* Plan Header */}
-                    <div className="mb-6">
-                      <div className="inline-flex items-center gap-2 rounded-full bg-gray-200 px-3 py-1 mb-4">
-                        <span className="text-xs font-bold text-gray-700">FREE PLAN</span>
+                  <div className="mt-5 space-y-3">
+                    {[
+                      "Authentication, roles, and admin access",
+                      "Billing, credits, and webhook handling",
+                      "AI model wiring and actions",
+                      "Marketing, blog, and docs routes",
+                    ].map((item) => (
+                      <div key={item} className="flex items-start gap-3">
+                        <div className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#314337]">
+                          <Check className="h-3 w-3" />
+                        </div>
+                        <span>{item}</span>
                       </div>
-                      <h3 className="text-3xl font-black text-gray-900 mb-2">Starter</h3>
-                      <p className="text-gray-600">Perfect for getting started</p>
-                    </div>
-
-                    {/* Price */}
-                    <div className="mb-8">
-                      <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-6xl font-black text-gray-900">$0</span>
-                        <span className="text-xl text-gray-600">/month</span>
-                      </div>
-                      <p className="text-sm font-semibold text-emerald-600">Free forever • No credit card</p>
-                    </div>
-
-                    {/* Features */}
-                    <div className="space-y-3 mb-8 flex-1">
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-700 font-medium">1,000 AI credits/month</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-700 font-medium">Basic AI models (GPT-3.5)</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-700 font-medium">5 projects maximum</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-700 font-medium">Email support</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-700 font-medium">Community access</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center">
-                          <X className="h-3 w-3 text-gray-500" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-400">Advanced AI models</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center">
-                          <X className="h-3 w-3 text-gray-500" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-400">Priority support</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center">
-                          <X className="h-3 w-3 text-gray-500" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-400">Custom integrations</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center">
-                          <X className="h-3 w-3 text-gray-500" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-400">API access</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center">
-                          <X className="h-3 w-3 text-gray-500" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-400">White-label solution</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center">
-                          <X className="h-3 w-3 text-gray-500" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-400">Dedicated account manager</span>
-                      </div>
-                    </div>
-
-                    {/* CTA Button */}
-                    <Link href="/auth/signin" className="mt-4">
-                      <Button className="w-full h-14 text-base font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl transition-all">
-                        Start Free Trial
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Professional Plan - Most Popular */}
-                <div className="group relative h-full md:-mt-4">
-                  {/* Popular Badge - More visible */}
-                  <div className="relative mb-4">
-                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-20">
-                      <div className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 px-6 py-2.5 shadow-2xl">
-                        <Star className="h-4 w-4 fill-yellow-300 text-yellow-300" />
-                        <span className="text-sm font-black text-white tracking-wide">MOST POPULAR</span>
-                        <Star className="h-4 w-4 fill-yellow-300 text-yellow-300" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="relative h-full rounded-3xl bg-gradient-to-br from-purple-600 via-purple-500 to-pink-600 p-[3px] shadow-2xl hover:shadow-purple-500/50 transition-all hover:-translate-y-1 mt-8">
-                    <div className="h-full rounded-[calc(1.5rem-3px)] bg-white p-8 flex flex-col">
-                      {/* Plan Header */}
-                      <div className="mb-6">
-                        <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 px-3 py-1 mb-4">
-                          <span className="text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">BEST VALUE</span>
-                        </div>
-                        <h3 className="text-3xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">Professional</h3>
-                        <p className="text-gray-700 font-medium">For growing businesses</p>
-                      </div>
-
-                      {/* Price */}
-                      <div className="mb-8">
-                        <div className="flex items-baseline gap-2 mb-2">
-                          <span className="text-6xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">$49</span>
-                          <span className="text-xl text-gray-600">/month</span>
-                        </div>
-                        <p className="text-sm font-semibold text-purple-600">Billed monthly • Cancel anytime</p>
-                      </div>
-
-                      {/* Features */}
-                      <div className="space-y-3 mb-8 flex-1">
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-900 font-semibold">50,000 AI credits/month</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-900 font-semibold">All AI models (GPT-4, Claude, Gemini)</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-900 font-semibold">Unlimited projects</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-900 font-semibold">Priority email support (24h)</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-900 font-semibold">Community access</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-900 font-semibold">Advanced AI models</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-900 font-semibold">Priority support</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-900 font-semibold">Custom integrations</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-900 font-semibold">Full API access</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center">
-                            <X className="h-3 w-3 text-gray-400" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-400">White-label solution</span>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center">
-                            <X className="h-3 w-3 text-gray-400" strokeWidth={3} />
-                          </div>
-                          <span className="text-gray-400">Dedicated account manager</span>
-                        </div>
-                      </div>
-
-                      {/* CTA Button */}
-                      <Link href="/auth/signin" className="mt-4">
-                        <Button className="w-full h-14 text-base font-black bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl hover:shadow-2xl hover:scale-105 transition-all border-0">
-                          Get Started Now
-                          <ArrowRight className="ml-2 h-5 w-5" />
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Enterprise Plan */}
-                <div className="group relative h-full">
-                  <div className="relative h-full rounded-3xl bg-gradient-to-br from-blue-50 to-cyan-50 p-8 shadow-xl border-2 border-blue-200 hover:border-blue-300 transition-all hover:shadow-2xl hover:-translate-y-1 flex flex-col">
-                    {/* Plan Header */}
-                    <div className="mb-6">
-                      <div className="inline-flex items-center gap-2 rounded-full bg-blue-200 px-3 py-1 mb-4">
-                        <span className="text-xs font-bold text-blue-700">ENTERPRISE</span>
-                      </div>
-                      <h3 className="text-3xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">Enterprise</h3>
-                      <p className="text-gray-700 font-medium">For large organizations</p>
-                    </div>
-
-                    {/* Price */}
-                    <div className="mb-8">
-                      <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-6xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">$199</span>
-                        <span className="text-xl text-gray-600">/month</span>
-                      </div>
-                      <p className="text-sm font-semibold text-blue-600">Custom plans available</p>
-                    </div>
-
-                    {/* Features */}
-                    <div className="space-y-3 mb-8 flex-1">
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold flex items-center gap-1.5">
-                          <Infinity className="h-4 w-4 text-blue-600" />
-                          Unlimited AI credits
-                        </span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold">All AI models + Early access</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold">Unlimited projects</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold">24/7 phone & email support</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold">Private community access</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold">All advanced AI models</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold">Priority support (1h response)</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold">Custom integrations + webhooks</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold">Full API access + webhooks</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold">White-label solution</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                          <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                        </div>
-                        <span className="text-gray-900 font-semibold">Dedicated account manager</span>
-                      </div>
-                    </div>
-
-                    {/* CTA Button */}
-                    <Link href="/auth/signin" className="mt-4">
-                      <Button className="w-full h-14 text-base font-bold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg hover:shadow-xl transition-all border-0">
-                        Contact Sales Team
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Trust Badges */}
-            <div className="mt-16 text-center">
-              <p className="text-gray-700 font-semibold mb-6 text-lg">
-                All plans include 14-day money-back guarantee
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-8">
-                <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-green-50 border border-green-200">
-                  <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                    <Check className="h-4 w-4 text-white" strokeWidth={3} />
-                  </div>
-                  <span className="text-gray-700 font-semibold">No credit card required</span>
-                </div>
-                <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-blue-50 border border-blue-200">
-                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
-                    <Check className="h-4 w-4 text-white" strokeWidth={3} />
-                  </div>
-                  <span className="text-gray-700 font-semibold">Cancel anytime</span>
-                </div>
-                <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-purple-50 border border-purple-200">
-                  <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">
-                    <Check className="h-4 w-4 text-white" strokeWidth={3} />
-                  </div>
-                  <span className="text-gray-700 font-semibold">Free updates forever</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials Section */}
-        <section className="py-20 md:py-32 bg-gradient-to-b from-gray-50 to-white">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-yellow-100 px-5 py-2 text-sm font-bold text-yellow-700">
-                <Star className="h-4 w-4 fill-yellow-700" />
-                <span>Wall of Love</span>
-              </div>
-              <h2 className="mb-6 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl">
-                Loved by developers
-              </h2>
-              <p className="text-xl text-gray-600">
-                See what our customers are saying about us
-              </p>
-            </div>
-
-            <div className="mx-auto max-w-6xl grid md:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, i) => (
-                <div
-                  key={i}
-                  className="group relative overflow-hidden rounded-3xl bg-white border-2 border-gray-200 p-8 shadow-lg hover:shadow-2xl hover:border-purple-500 transition-all hover:-translate-y-2"
-                >
-                  {/* Rating */}
-                  <div className="flex gap-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, j) => (
-                      <Star key={j} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
-
-                  {/* Content */}
-                  <p className="text-gray-700 leading-relaxed mb-6 text-lg">
-                    "{testimonial.content}"
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full border-2 border-purple-500"
-                    />
-                    <div>
-                      <div className="font-bold text-gray-900">{testimonial.name}</div>
-                      <div className="text-sm text-gray-600">{testimonial.role}</div>
-                    </div>
-                  </div>
-
-                  {/* Gradient accent */}
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500" />
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-20 md:py-32 bg-white">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-5 py-2 text-sm font-bold text-green-700">
-                <MessageSquare className="h-4 w-4" />
-                <span>FAQ</span>
               </div>
-              <h2 className="mb-6 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-xl text-gray-600">
-                Everything you need to know about our starter kit
-              </p>
-            </div>
 
-            <div className="mx-auto max-w-3xl space-y-4">
-              {faqs.map((faq, i) => (
-                <div
-                  key={i}
-                  className="group rounded-2xl border-2 border-gray-200 bg-white overflow-hidden hover:border-purple-500 transition-colors"
-                >
-                  <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full flex items-center justify-between p-6 text-left"
-                  >
-                    <span className="text-lg font-bold text-gray-900 pr-8">{faq.question}</span>
-                    <ChevronDown
-                      className={`h-6 w-6 text-gray-600 flex-shrink-0 transition-transform ${
-                        openFaq === i ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-                  <div
-                    className={`overflow-hidden transition-all ${
-                      openFaq === i ? "max-h-96" : "max-h-0"
-                    }`}
-                  >
-                    <div className="px-6 pb-6 text-gray-600 leading-relaxed">
-                      {faq.answer}
-                    </div>
-                  </div>
+              <div className="rounded-[2rem] border border-[#b9ab9d] bg-[#efe6dc] p-6 md:p-8">
+                <p className="text-sm font-semibold uppercase tracking-[0.34em] text-[#6e6359]">
+                  FAQ
+                </p>
+                <h2 className="font-display mt-4 text-4xl">Common questions</h2>
+                <div className="mt-8 space-y-4">
+                  {faqs.map((faq, index) => {
+                    const isOpen = openFaq === index;
+
+                    return (
+                      <div
+                        key={faq.question}
+                        className="overflow-hidden rounded-[1.5rem] border border-[#c7b8aa] bg-[#f4ede5]"
+                      >
+                        <button
+                          onClick={() => setOpenFaq(isOpen ? null : index)}
+                          className="flex w-full items-center justify-between gap-6 px-6 py-5 text-left"
+                        >
+                          <span className="text-lg font-semibold text-[#1f1b18]">
+                            {faq.question}
+                          </span>
+                          <ChevronDown
+                            className={`h-5 w-5 flex-shrink-0 text-[#5f564d] transition-transform ${
+                              isOpen ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+                        {isOpen && (
+                          <p className="px-6 pb-6 text-base leading-7 text-[#5a524a]">
+                            {faq.answer}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Newsletter Section */}
-        <section className="py-20 md:py-32 bg-gradient-to-b from-gray-50 to-white">
+        <section className="pb-24">
           <div className="container px-4 md:px-6">
-            <div className="mx-auto max-w-4xl">
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600 p-12 md:p-16 shadow-2xl">
-                {/* Background decorations */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-
-                <div className="relative text-center">
-                  <div className="mb-6 inline-flex p-4 rounded-2xl bg-white/20 backdrop-blur-sm">
-                    <Mail className="h-10 w-10 text-white" />
-                  </div>
-                  <h2 className="mb-6 text-4xl md:text-5xl font-black text-white">
-                    Get early access
-                  </h2>
-                  <p className="mb-8 text-xl text-purple-100 max-w-2xl mx-auto leading-relaxed">
-                    Join our newsletter and be the first to know about new features, updates, and exclusive deals.
+            <div className="rounded-[2.2rem] border border-[#2b2521] bg-[#1f1b18] p-8 text-[#f3eadf] md:p-12">
+              <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.34em] text-[#b7a995]">
+                    Stay close to the updates
                   </p>
-
-                  <form onSubmit={handleNewsletterSubmit} className="max-w-md mx-auto">
-                    <div className="flex flex-col sm:flex-row gap-3">
+                  <h2 className="font-display mt-5 text-4xl leading-tight sm:text-5xl">
+                    The new surface is quieter, warmer, and more premium by design.
+                  </h2>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4 rounded-[1.8rem] border border-[#3b342e] bg-[#26211d] p-6">
+                  <label
+                    htmlFor="email"
+                    className="text-sm font-semibold uppercase tracking-[0.24em] text-[#b7a995]"
+                  >
+                    Email address
+                  </label>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <div className="relative flex-1">
+                      <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9f9385]" />
                       <input
+                        id="email"
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(event) => setEmail(event.target.value)}
                         placeholder="Enter your email"
                         required
-                        className="flex-1 h-14 px-6 rounded-xl bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white placeholder:text-white/60 focus:outline-none focus:border-white transition-colors"
+                        className="h-14 w-full rounded-full border border-[#4a4139] bg-[#1f1b18] pl-11 pr-5 text-base text-[#f3eadf] placeholder:text-[#8d8174] focus:border-[#d4c5b5] focus:outline-none"
                       />
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="h-14 px-8 font-bold bg-white text-purple-600 hover:bg-purple-50 shadow-xl hover:scale-105 transition-all"
-                      >
-                        Subscribe
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </Button>
                     </div>
-                  </form>
-
-                  <p className="mt-4 text-sm text-purple-200">
-                    No spam. Unsubscribe anytime.
+                    <Button
+                      type="submit"
+                      className="h-14 rounded-full bg-[#f3eadf] px-7 text-base font-semibold text-[#1f1b18] hover:bg-[#e1d6ca]"
+                    >
+                      Subscribe
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm leading-6 text-[#9f9385]">
+                    No spam. Only product notes, releases, and useful updates.
                   </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 py-20 md:py-32">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-purple-500/20 blur-3xl" />
-            <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-blue-500/20 blur-3xl" />
-          </div>
-
-          <div className="container relative z-10 px-4 md:px-6">
-            <div className="mx-auto max-w-4xl text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-2 text-sm font-bold text-white">
-                <Award className="h-4 w-4" />
-                <span>Limited Time Offer</span>
-              </div>
-
-              <h2 className="mb-6 text-4xl font-black tracking-tight text-white sm:text-5xl md:text-6xl">
-                Start building your SaaS today
-              </h2>
-              <p className="mb-10 text-xl md:text-2xl text-purple-100 leading-relaxed max-w-2xl mx-auto">
-                Join 10,000+ developers who've shipped faster. Get started in minutes with our production-ready starter kit.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href="/auth/signin">
-                  <Button
-                    size="lg"
-                    className="group h-16 px-10 text-lg font-black bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-105 border-0"
-                  >
-                    <Rocket className="mr-2 h-6 w-6" />
-                    Start Free Trial
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-                <Link href="/docs">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="h-16 px-10 text-lg font-bold border-2 border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:border-white/50"
-                  >
-                    <Lightbulb className="mr-2 h-5 w-5" />
-                    View Documentation
-                  </Button>
-                </Link>
-              </div>
-
-              <div className="mt-8 flex items-center justify-center gap-8 text-sm text-purple-200">
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-green-400" />
-                  <span>No credit card required</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-green-400" />
-                  <span>Cancel anytime</span>
-                </div>
+                </form>
               </div>
             </div>
           </div>

@@ -1,24 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import {
   BookOpen,
-  Rocket,
-  Shield,
-  CreditCard,
-  Code,
-  Database,
-  Settings,
-  FileText,
-  Zap,
   Cloud,
+  Code,
+  CreditCard,
+  Database,
+  FileText,
   Menu,
+  Rocket,
+  Settings,
+  Shield,
   X,
+  Zap,
 } from "lucide-react";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { Navbar } from "@/components/navbar";
 
 const navigation = [
   {
@@ -53,40 +53,36 @@ function SidebarNav({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <div className="py-6 pr-6 lg:py-8">
-      <div className="mb-6 px-2">
-        <h3 className="text-lg font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-          Documentation
-        </h3>
-        <p className="text-xs text-muted-foreground mt-1">
-          Everything you need to build with SaasKit
+    <div className="py-6 pr-0 lg:py-8">
+      <div className="mb-6 rounded-[1.6rem] border border-[#c7b8aa] bg-[#f4ede5] px-5 py-5">
+        <h3 className="font-display text-2xl text-[#1f1b18]">Documentation</h3>
+        <p className="mt-2 text-sm leading-6 text-[#6e6359]">
+          Product setup, integration notes, and implementation guides.
         </p>
       </div>
 
       {navigation.map((section) => (
         <div key={section.title} className="mb-8">
-          <h4 className="mb-3 px-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <h4 className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.24em] text-[#7a6f65]">
             {section.title}
           </h4>
           <ul className="space-y-1">
             {section.items.map((item) => {
               const isActive = pathname === item.href;
+
               return (
                 <li key={item.href}>
                   <Link
                     href={item.href}
                     onClick={onItemClick}
                     className={cn(
-                      "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                      "group flex items-center gap-3 rounded-[1rem] px-4 py-3 text-sm font-medium transition-all",
                       isActive
-                        ? "bg-gradient-to-r from-violet-600/10 to-indigo-600/10 text-primary border-l-2 border-primary"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground border-l-2 border-transparent"
+                        ? "bg-[#1f1b18] text-[#f3eadf]"
+                        : "text-[#5f564d] hover:bg-[#e8ddd1] hover:text-[#1f1b18]"
                     )}
                   >
-                    <item.icon className={cn(
-                      "h-4 w-4 transition-transform group-hover:scale-110",
-                      isActive && "text-primary"
-                    )} />
+                    <item.icon className="h-4 w-4" />
                     <span>{item.name}</span>
                   </Link>
                 </li>
@@ -96,25 +92,20 @@ function SidebarNav({ onItemClick }: { onItemClick?: () => void }) {
         </div>
       ))}
 
-      {/* Quick Links */}
-      <div className="mt-8 px-2 pt-6 border-t">
-        <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+      <div className="mt-8 rounded-[1.6rem] border border-[#c7b8aa] bg-[#f4ede5] px-5 py-5">
+        <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7a6f65]">
           Resources
         </h4>
-        <ul className="space-y-2 text-sm">
-          <li>
-            <Link href="/api-docs" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-              <Code className="h-3.5 w-3.5" />
-              API Reference
-            </Link>
-          </li>
-          <li>
-            <Link href="/blog" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-              <FileText className="h-3.5 w-3.5" />
-              Blog
-            </Link>
-          </li>
-        </ul>
+        <div className="mt-4 space-y-3 text-sm">
+          <Link href="/api-docs" className="flex items-center gap-2 text-[#5f564d] transition-colors hover:text-[#1f1b18]">
+            <Code className="h-4 w-4" />
+            API Reference
+          </Link>
+          <Link href="/blog" className="flex items-center gap-2 text-[#5f564d] transition-colors hover:text-[#1f1b18]">
+            <FileText className="h-4 w-4" />
+            Blog
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -128,17 +119,16 @@ export default function DocsLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-[#E5DBCF] text-[#1f1b18]">
       <Navbar />
 
-      <div className="flex-1 pt-16">
-        {/* Mobile Menu Button */}
-        <div className="sticky top-16 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b md:hidden">
+      <div className="flex-1 pt-20">
+        <div className="sticky top-16 z-40 border-b border-[#c7b8aa] bg-[#E5DBCF]/95 backdrop-blur md:hidden">
           <div className="container flex items-center justify-between py-4">
-            <h2 className="font-semibold">Documentation</h2>
+            <h2 className="font-display text-2xl text-[#1f1b18]">Documentation</h2>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 hover:bg-muted rounded-lg transition-colors"
+              className="rounded-xl p-2 transition-colors hover:bg-[#ddd2c6]"
               aria-label="Toggle sidebar"
             >
               {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -146,22 +136,21 @@ export default function DocsLayout({
           </div>
         </div>
 
-        <div className="container flex-1 items-start md:grid md:grid-cols-[260px_minmax(0,1fr)] md:gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
-          {/* Sidebar Navigation - Desktop */}
-          <aside className="fixed top-16 z-30 hidden h-[calc(100vh-4rem)] w-full shrink-0 overflow-y-auto border-r md:sticky md:block md:w-[260px] lg:w-[280px]">
-            <SidebarNav />
+        <div className="container py-6 md:grid md:grid-cols-[280px_minmax(0,1fr)] md:gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-10 lg:py-8">
+          <aside className="hidden md:block">
+            <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
+              <SidebarNav />
+            </div>
           </aside>
 
-          {/* Sidebar Navigation - Mobile */}
           {sidebarOpen && (
-            <aside className="fixed inset-0 top-[8.5rem] z-30 bg-background overflow-y-auto border-r md:hidden">
+            <aside className="fixed inset-0 top-[8.5rem] z-30 overflow-y-auto bg-[#E5DBCF] px-4 pb-8 md:hidden">
               <SidebarNav onItemClick={() => setSidebarOpen(false)} />
             </aside>
           )}
 
-          {/* Main Content */}
-          <main className="relative py-6 lg:py-8 xl:py-10">
-            <div className="mx-auto w-full min-w-0 max-w-4xl">
+          <main className="min-w-0">
+            <div className="rounded-[2rem] border border-[#c7b8aa] bg-[#f7f1e9] p-6 shadow-[0_24px_50px_-42px_rgba(31,27,24,0.35)] md:p-8 lg:p-10">
               {children}
             </div>
           </main>
