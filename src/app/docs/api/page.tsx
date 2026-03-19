@@ -1,6 +1,6 @@
 export default function ApiPage() {
   return (
-    <div className="prose prose-slate dark:prose-invert max-w-none">
+    <div className="docs-content">
       <h1>REST API</h1>
       <p className="lead">
         Comprehensive REST API with 50+ documented endpoints, OpenAPI specification, and Swagger UI.

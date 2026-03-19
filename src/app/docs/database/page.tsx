@@ -1,6 +1,6 @@
 export default function DatabasePage() {
   return (
-    <div className="prose prose-slate dark:prose-invert max-w-none">
+    <div className="docs-content">
       <h1>Database & Prisma</h1>
       <p className="lead">
         PostgreSQL database with Prisma ORM, type-safe queries, and automatic migrations.

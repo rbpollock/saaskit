@@ -1,6 +1,6 @@
 export default function BillingPage() {
   return (
-    <div className="prose prose-slate dark:prose-invert max-w-none">
+    <div className="docs-content">
       <h1>Billing & Subscriptions</h1>
       <p className="lead">
         Complete Stripe integration with subscription management, payment processing, and credit-based billing system.
@@ -24,13 +24,14 @@ export default function BillingPage() {
       <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm">
         <code>{`# Stripe API Keys
 STRIPE_SECRET_KEY="sk_test_your_secret_key"
-STRIPE_PUBLISHABLE_KEY="pk_test_your_publishable_key"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_your_publishable_key"
 STRIPE_WEBHOOK_SECRET="whsec_your_webhook_secret"
 
-# Stripe Price IDs (from your products)
-NEXT_PUBLIC_STRIPE_PRICE_ID_BASIC="price_xxx"
-NEXT_PUBLIC_STRIPE_PRICE_ID_PRO="price_xxx"
-NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS="price_xxx"`}</code>
+# Stripe Price IDs
+STRIPE_PRO_MONTHLY_PRICE_ID="price_xxx"
+STRIPE_PRO_YEARLY_PRICE_ID="price_xxx"
+STRIPE_BUSINESS_MONTHLY_PRICE_ID="price_xxx"
+STRIPE_BUSINESS_YEARLY_PRICE_ID="price_xxx"`}</code>
       </pre>
 
       <h3>3. Create Products and Prices</h3>

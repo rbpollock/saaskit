@@ -9,12 +9,11 @@ import {
   Copy,
   Check,
   ChevronRight,
-  ExternalLink
+  ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-// Callout Component
 interface CalloutProps {
   type?: "info" | "warning" | "success" | "danger" | "note";
   title?: string;
@@ -25,33 +24,33 @@ interface CalloutProps {
 export function Callout({ type = "info", title, children, className }: CalloutProps) {
   const styles = {
     info: {
-      container: "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900",
-      icon: "text-blue-600 dark:text-blue-400",
-      title: "text-blue-900 dark:text-blue-300",
+      container: "border-[#c7b8aa] bg-[#f3ebe2]",
+      icon: "text-[#1f1b18]",
+      title: "text-[#1f1b18]",
       Icon: Info,
     },
     warning: {
-      container: "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-900",
-      icon: "text-yellow-600 dark:text-yellow-400",
-      title: "text-yellow-900 dark:text-yellow-300",
+      container: "border-[#c89f62] bg-[#f2e5d2]",
+      icon: "text-[#8a5d1f]",
+      title: "text-[#5d3a0e]",
       Icon: AlertTriangle,
     },
     success: {
-      container: "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-900",
-      icon: "text-green-600 dark:text-green-400",
-      title: "text-green-900 dark:text-green-300",
+      container: "border-[#92a483] bg-[#e8eee2]",
+      icon: "text-[#41533a]",
+      title: "text-[#2f3f29]",
       Icon: CheckCircle2,
     },
     danger: {
-      container: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900",
-      icon: "text-red-600 dark:text-red-400",
-      title: "text-red-900 dark:text-red-300",
+      container: "border-[#c38a79] bg-[#f3e4de]",
+      icon: "text-[#8a4f43]",
+      title: "text-[#6d352a]",
       Icon: AlertCircle,
     },
     note: {
-      container: "bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-900",
-      icon: "text-purple-600 dark:text-purple-400",
-      title: "text-purple-900 dark:text-purple-300",
+      container: "border-[#d5c7ba] bg-[#f7f0e7]",
+      icon: "text-[#5c554d]",
+      title: "text-[#1f1b18]",
       Icon: Info,
     },
   };
@@ -59,25 +58,28 @@ export function Callout({ type = "info", title, children, className }: CalloutPr
   const style = styles[type];
 
   return (
-    <div className={cn("rounded-lg border-l-4 p-4 my-6", style.container, className)}>
+    <div
+      className={cn(
+        "my-6 rounded-[1.35rem] border px-5 py-4 shadow-[0_18px_40px_-34px_rgba(31,27,24,0.35)]",
+        style.container,
+        className
+      )}
+    >
       <div className="flex gap-3">
-        <style.Icon className={cn("h-5 w-5 mt-0.5 flex-shrink-0", style.icon)} />
+        <style.Icon className={cn("mt-0.5 h-5 w-5 flex-shrink-0", style.icon)} />
         <div className="flex-1">
           {title && (
-            <h5 className={cn("font-semibold mb-1", style.title)}>
+            <h5 className={cn("mb-1 text-sm font-semibold uppercase tracking-[0.16em]", style.title)}>
               {title}
             </h5>
           )}
-          <div className="text-sm leading-relaxed [&>p]:mb-0">
-            {children}
-          </div>
+          <div className="text-sm leading-7 text-[#5b534b] [&>p]:mb-0">{children}</div>
         </div>
       </div>
     </div>
   );
 }
 
-// Code Block Component
 interface CodeBlockProps {
   code: string;
   language?: string;
@@ -93,7 +95,7 @@ export function CodeBlock({
   title,
   showLineNumbers = false,
   highlightLines = [],
-  className
+  className,
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
@@ -106,30 +108,33 @@ export function CodeBlock({
   const lines = code.split("\n");
 
   return (
-    <div className={cn("rounded-xl border bg-zinc-950 dark:bg-zinc-900 overflow-hidden my-6 shadow-lg", className)}>
+    <div
+      className={cn(
+        "my-6 overflow-hidden rounded-[1.5rem] border border-[#2b2521] bg-[#1f1b18] shadow-[0_26px_60px_-44px_rgba(31,27,24,0.65)]",
+        className
+      )}
+    >
       {title && (
-        <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-800 bg-zinc-900/50">
-          <span className="text-sm font-medium text-zinc-300">{title}</span>
-          <span className="text-xs text-zinc-500 uppercase">{language}</span>
+        <div className="flex items-center justify-between border-b border-[#3b342e] bg-[#241f1b] px-5 py-3">
+          <span className="text-sm font-medium text-[#f3eadf]">{title}</span>
+          <span className="rounded-full border border-[#4d463f] px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#bdb1a4]">
+            {language}
+          </span>
         </div>
       )}
-      <div className="relative group">
+      <div className="group relative">
         <button
           onClick={copyToClipboard}
-          className="absolute right-4 top-4 p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 transition-all opacity-0 group-hover:opacity-100"
+          className="absolute right-4 top-4 rounded-xl border border-[#4d463f] bg-[#2b2521] p-2 text-[#c9beb2] transition-all hover:bg-[#342d28] hover:text-[#f3eadf] md:opacity-0 md:group-hover:opacity-100"
           aria-label="Copy code"
         >
-          {copied ? (
-            <Check className="h-4 w-4 text-green-400" />
-          ) : (
-            <Copy className="h-4 w-4" />
-          )}
+          {copied ? <Check className="h-4 w-4 text-[#d8ead2]" /> : <Copy className="h-4 w-4" />}
         </button>
-        <pre className="p-4 overflow-x-auto text-sm leading-relaxed">
-          <code className="text-zinc-100 font-mono">
+        <pre className="overflow-x-auto p-5 text-sm leading-7">
+          <code className="font-mono text-[#f3eadf]">
             {showLineNumbers ? (
               <div className="flex">
-                <div className="select-none pr-4 text-zinc-600 text-right">
+                <div className="select-none pr-4 text-right text-[#756d66]">
                   {lines.map((_, i) => (
                     <div key={i}>{i + 1}</div>
                   ))}
@@ -139,7 +144,8 @@ export function CodeBlock({
                     <div
                       key={i}
                       className={cn(
-                        highlightLines.includes(i + 1) && "bg-blue-500/10 -mx-4 px-4 border-l-2 border-blue-500"
+                        highlightLines.includes(i + 1) &&
+                          "-mx-5 border-l-2 border-[#d8c7b6] bg-[#2d2722] px-5"
                       )}
                     >
                       {line}
@@ -157,16 +163,14 @@ export function CodeBlock({
   );
 }
 
-// Inline Code Component
 export function InlineCode({ children }: { children: React.ReactNode }) {
   return (
-    <code className="px-1.5 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-pink-600 dark:text-pink-400 font-mono text-sm border border-zinc-200 dark:border-zinc-700">
+    <code className="rounded-md border border-[#d8cabc] bg-[#efe6dc] px-1.5 py-0.5 font-mono text-sm text-[#78421f]">
       {children}
     </code>
   );
 }
 
-// Badge Component
 interface BadgeProps {
   variant?: "default" | "success" | "warning" | "danger" | "info" | "purple";
   children: React.ReactNode;
@@ -175,22 +179,27 @@ interface BadgeProps {
 
 export function DocBadge({ variant = "default", children, className }: BadgeProps) {
   const styles = {
-    default: "bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200",
-    success: "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800",
-    warning: "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800",
-    danger: "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800",
-    info: "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800",
-    purple: "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800",
+    default: "border-[#d5c7ba] bg-[#f4ede5] text-[#4f473f]",
+    success: "border-[#aab99b] bg-[#e7eee0] text-[#395034]",
+    warning: "border-[#d0b183] bg-[#f2e7d8] text-[#7a5418]",
+    danger: "border-[#cca091] bg-[#f4e4de] text-[#8a4f43]",
+    info: "border-[#c8bbb0] bg-[#efe6dc] text-[#1f1b18]",
+    purple: "border-[#c5b7c8] bg-[#eee5ef] text-[#615067]",
   };
 
   return (
-    <span className={cn("inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border", styles[variant], className)}>
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]",
+        styles[variant],
+        className
+      )}
+    >
       {children}
     </span>
   );
 }
 
-// Feature Card Component
 interface FeatureCardProps {
   icon: React.ReactNode;
   title: string;
@@ -204,25 +213,25 @@ export function FeatureCard({ icon, title, description, href, gradient, classNam
   const content = (
     <>
       <div className="flex items-start gap-4">
-        <div className={cn(
-          "p-3 rounded-xl shadow-lg",
-          gradient || "bg-[#1f1b18] text-[#f3eadf]"
-        )}>
+        <div
+          className={cn(
+            "rounded-2xl p-3 shadow-[0_18px_30px_-24px_rgba(31,27,24,0.45)]",
+            gradient || "bg-[#1f1b18] text-[#f3eadf]"
+          )}
+        >
           {icon}
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
-            {title}
-          </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {description}
-          </p>
+          <h3 className="mb-2 text-lg font-semibold text-[#1f1b18]">{title}</h3>
+          <p className="text-sm leading-7 text-[#5b534b]">{description}</p>
         </div>
       </div>
-      <div className={cn(
-        "absolute bottom-0 left-0 h-1 w-0 transition-all duration-300 group-hover:w-full rounded-full",
-        gradient || "bg-[#1f1b18]"
-      )} />
+      <div
+        className={cn(
+          "absolute bottom-0 left-0 h-1 w-0 rounded-full transition-all duration-300 group-hover:w-full",
+          gradient || "bg-[#1f1b18]"
+        )}
+      />
     </>
   );
 
@@ -231,7 +240,7 @@ export function FeatureCard({ icon, title, description, href, gradient, classNam
       <Link
         href={href}
         className={cn(
-          "group relative overflow-hidden rounded-xl border bg-card p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 block",
+          "group relative block overflow-hidden rounded-[1.55rem] border border-[#c7b8aa] bg-[#f6efe7] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#8d7e72] hover:shadow-[0_24px_50px_-40px_rgba(31,27,24,0.35)]",
           className
         )}
       >
@@ -241,24 +250,24 @@ export function FeatureCard({ icon, title, description, href, gradient, classNam
   }
 
   return (
-    <div className={cn("relative overflow-hidden rounded-xl border bg-card p-6 shadow-sm", className)}>
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-[1.55rem] border border-[#c7b8aa] bg-[#f6efe7] p-6 shadow-[0_18px_36px_-34px_rgba(31,27,24,0.3)]",
+        className
+      )}
+    >
       {content}
     </div>
   );
 }
 
-// Steps Component
 interface StepsProps {
   children: React.ReactNode;
   className?: string;
 }
 
 export function Steps({ children, className }: StepsProps) {
-  return (
-    <div className={cn("space-y-6 my-8", className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn("my-8 space-y-6", className)}>{children}</div>;
 }
 
 interface StepProps {
@@ -270,21 +279,23 @@ interface StepProps {
 
 export function Step({ step, title, children, className }: StepProps) {
   return (
-    <div className={cn("relative pl-10 pb-8 border-l-2 border-zinc-200 dark:border-zinc-800 last:border-0 last:pb-0", className)}>
-      <div className="absolute -left-[17px] top-0 flex h-8 w-8 items-center justify-center rounded-full bg-[#1f1b18] text-white font-bold text-sm shadow-lg">
+    <div
+      className={cn(
+        "relative border-l border-[#d3c6ba] pb-8 pl-10 last:border-0 last:pb-0",
+        className
+      )}
+    >
+      <div className="absolute -left-[18px] top-0 flex h-9 w-9 items-center justify-center rounded-full border border-[#2b2521] bg-[#1f1b18] text-sm font-bold text-[#f3eadf] shadow-[0_14px_30px_-22px_rgba(31,27,24,0.6)]">
         {step}
       </div>
-      <div className="space-y-2">
-        <h3 className="font-semibold text-lg">{title}</h3>
-        <div className="text-muted-foreground text-sm leading-relaxed">
-          {children}
-        </div>
+      <div className="space-y-2 pt-0.5">
+        <h3 className="text-lg font-semibold text-[#1f1b18]">{title}</h3>
+        <div className="text-sm leading-7 text-[#5b534b]">{children}</div>
       </div>
     </div>
   );
 }
 
-// Table of Contents Component
 interface TocItem {
   id: string;
   title: string;
@@ -298,15 +309,22 @@ interface TableOfContentsProps {
 
 export function TableOfContents({ items, className }: TableOfContentsProps) {
   return (
-    <div className={cn("sticky top-24 space-y-2", className)}>
-      <h4 className="font-semibold text-sm mb-4 text-foreground">On This Page</h4>
+    <div
+      className={cn(
+        "sticky top-24 space-y-2 rounded-[1.4rem] border border-[#c7b8aa] bg-[#f4ede5] p-5",
+        className
+      )}
+    >
+      <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#7a6f65]">
+        On this page
+      </h4>
       <nav className="space-y-1">
         {items.map((item) => (
           <a
             key={item.id}
             href={`#${item.id}`}
             className={cn(
-              "block text-sm text-muted-foreground hover:text-foreground transition-colors py-1",
+              "block py-1 text-sm text-[#5b534b] transition-colors hover:text-[#1f1b18]",
               item.level === 2 && "pl-0",
               item.level === 3 && "pl-4",
               item.level > 3 && "pl-8"
@@ -320,7 +338,6 @@ export function TableOfContents({ items, className }: TableOfContentsProps) {
   );
 }
 
-// Breadcrumbs Component
 interface BreadcrumbItem {
   label: string;
   href?: string;
@@ -333,16 +350,21 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
   return (
-    <nav className={cn("flex items-center space-x-2 text-sm text-muted-foreground mb-6", className)}>
+    <nav
+      className={cn(
+        "mb-6 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#84786d]",
+        className
+      )}
+    >
       {items.map((item, index) => (
-        <div key={index} className="flex items-center">
-          {index > 0 && <ChevronRight className="h-4 w-4 mx-2" />}
+        <div key={index} className="flex items-center gap-2">
+          {index > 0 && <ChevronRight className="h-3.5 w-3.5" />}
           {item.href ? (
-            <Link href={item.href} className="hover:text-foreground transition-colors">
+            <Link href={item.href} className="transition-colors hover:text-[#1f1b18]">
               {item.label}
             </Link>
           ) : (
-            <span className="text-foreground font-medium">{item.label}</span>
+            <span className="text-[#1f1b18]">{item.label}</span>
           )}
         </div>
       ))}
@@ -350,7 +372,6 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
   );
 }
 
-// API Method Badge
 interface ApiMethodProps {
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   className?: string;
@@ -358,21 +379,26 @@ interface ApiMethodProps {
 
 export function ApiMethod({ method, className }: ApiMethodProps) {
   const styles = {
-    GET: "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700",
-    POST: "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700",
-    PUT: "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-700",
-    DELETE: "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700",
-    PATCH: "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700",
+    GET: "border-[#bcc9d7] bg-[#e9eef3] text-[#35506a]",
+    POST: "border-[#aab99b] bg-[#e7eee0] text-[#395034]",
+    PUT: "border-[#d0b183] bg-[#f2e7d8] text-[#7a5418]",
+    DELETE: "border-[#cca091] bg-[#f4e4de] text-[#8a4f43]",
+    PATCH: "border-[#c5b7c8] bg-[#eee5ef] text-[#615067]",
   };
 
   return (
-    <span className={cn("inline-flex items-center px-3 py-1 rounded-md text-xs font-bold border", styles[method], className)}>
+    <span
+      className={cn(
+        "inline-flex items-center rounded-md border px-3 py-1 text-xs font-bold tracking-[0.12em]",
+        styles[method],
+        className
+      )}
+    >
       {method}
     </span>
   );
 }
 
-// Link Card Component
 interface LinkCardProps {
   title: string;
   description: string;
@@ -388,27 +414,24 @@ export function LinkCard({ title, description, href, external = false, className
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       className={cn(
-        "group block p-6 rounded-xl border bg-card hover:bg-muted/50 transition-all duration-200 hover:shadow-lg hover:border-primary/50",
+        "group block rounded-[1.45rem] border border-[#c7b8aa] bg-[#f6efe7] p-6 transition-all duration-200 hover:-translate-y-1 hover:border-[#8d7e72] hover:bg-[#fbf7f1] hover:shadow-[0_22px_44px_-36px_rgba(31,27,24,0.38)]",
         className
       )}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
-          <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
+          <h3 className="mb-2 flex items-center gap-2 text-lg font-semibold text-[#1f1b18]">
             {title}
             {external && <ExternalLink className="h-4 w-4" />}
           </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {description}
-          </p>
+          <p className="text-sm leading-7 text-[#5b534b]">{description}</p>
         </div>
-        <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0" />
+        <ChevronRight className="h-5 w-5 flex-shrink-0 text-[#84786d] transition-all group-hover:translate-x-1 group-hover:text-[#1f1b18]" />
       </div>
     </Link>
   );
 }
 
-// Grid Layout for Cards
 interface CardGridProps {
   cols?: 1 | 2 | 3 | 4;
   children: React.ReactNode;
@@ -423,9 +446,5 @@ export function CardGrid({ cols = 2, children, className }: CardGridProps) {
     4: "sm:grid-cols-2 lg:grid-cols-4",
   };
 
-  return (
-    <div className={cn("grid gap-6", gridCols[cols], className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn("grid gap-6", gridCols[cols], className)}>{children}</div>;
 }

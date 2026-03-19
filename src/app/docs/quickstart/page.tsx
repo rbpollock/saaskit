@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { ArrowRight, Check, Clock, Terminal, Package, Database as DatabaseIcon, Rocket } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Clock3,
+  Database,
+  Rocket,
+  Shield,
+  Zap,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Callout,
@@ -23,227 +31,223 @@ export default function QuickStartPage() {
         ]}
       />
 
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <h1 className="!mb-0">Quick Start Guide</h1>
+      <div className="mb-10">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
           <DocBadge variant="success">
-            <Clock className="h-3 w-3 mr-1 inline" />
-            5 minutes
+            <Clock3 className="mr-1 h-3 w-3" />
+            Fast setup
           </DocBadge>
+          <DocBadge variant="info">Repo-accurate</DocBadge>
         </div>
-        <p className="text-xl text-muted-foreground leading-relaxed">
-          Get your AI SaaS application up and running in less than 5 minutes.
+        <h1>Quick start for getting the starter running with the right defaults.</h1>
+        <p className="text-xl leading-8 text-[#5b534b]">
+          This guide gets you from fresh clone to a working local environment with the database bootstrapped,
+          authentication configured at the platform level, and the product ready for service integrations.
         </p>
       </div>
 
-      <Callout type="info" title="What you'll build">
-        By the end of this guide, you'll have a fully functional SaaS application with authentication, billing, database, and AI integration running locally.
+      <Callout type="info" title="Outcome">
+        By the end of this guide you will have the app running locally, Prisma synced to PostgreSQL, starter data
+        seeded, and the core environment variables in place.
       </Callout>
 
-      {/* Prerequisites */}
-      <h2>Prerequisites</h2>
-      <p>Before you begin, make sure you have the following installed:</p>
-
       <CardGrid cols={3}>
-        <div className="p-4 rounded-xl border bg-card">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-green-100 dark:bg-green-950">
-              <Terminal className="h-4 w-4 text-green-600 dark:text-green-400" />
-            </div>
-            <h4 className="font-semibold !mt-0 !mb-0">Node.js</h4>
+        <div className="rounded-[1.45rem] border border-[#c7b8aa] bg-[#f6efe7] p-5">
+          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1f1b18] text-[#f3eadf]">
+            <Rocket className="h-5 w-5" />
           </div>
-          <p className="text-sm text-muted-foreground !mb-0">Version 18.17 or later</p>
+          <h3 className="!mt-0 !mb-2 text-lg font-semibold">Install</h3>
+          <p className="!mb-0 text-sm leading-7 text-[#5b534b]">
+            Clone the repository and install dependencies with the existing npm workflow.
+          </p>
         </div>
-        <div className="p-4 rounded-xl border bg-card">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-950">
-              <DatabaseIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-            </div>
-            <h4 className="font-semibold !mt-0 !mb-0">PostgreSQL</h4>
+        <div className="rounded-[1.45rem] border border-[#c7b8aa] bg-[#f6efe7] p-5">
+          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1f1b18] text-[#f3eadf]">
+            <Database className="h-5 w-5" />
           </div>
-          <p className="text-sm text-muted-foreground !mb-0">Database server</p>
+          <h3 className="!mt-0 !mb-2 text-lg font-semibold">Bootstrap</h3>
+          <p className="!mb-0 text-sm leading-7 text-[#5b534b]">
+            Generate Prisma client, push the schema, and seed roles, plans, and starter content.
+          </p>
         </div>
-        <div className="p-4 rounded-xl border bg-card">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-950">
-              <Package className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-            </div>
-            <h4 className="font-semibold !mt-0 !mb-0">Git</h4>
+        <div className="rounded-[1.45rem] border border-[#c7b8aa] bg-[#f6efe7] p-5">
+          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1f1b18] text-[#f3eadf]">
+            <Shield className="h-5 w-5" />
           </div>
-          <p className="text-sm text-muted-foreground !mb-0">Version control</p>
+          <h3 className="!mt-0 !mb-2 text-lg font-semibold">Connect</h3>
+          <p className="!mb-0 text-sm leading-7 text-[#5b534b]">
+            Add OAuth, Stripe, email, and OpenRouter credentials once the local app is healthy.
+          </p>
         </div>
       </CardGrid>
 
-      <h2>Installation Steps</h2>
+      <h2>Setup flow</h2>
 
       <Steps>
-        <Step step={1} title="Clone the Repository">
-          <p>Clone the repository to your local machine:</p>
+        <Step step={1} title="Clone the repository and install dependencies">
+          <p>Start with a normal npm install in a clean working directory.</p>
           <CodeBlock
-            code="git clone https://github.com/yourusername/ai-saas-starter.git\ncd ai-saas-starter"
+            code={`git clone <your-repository-url> saaskit
+cd saaskit
+npm install`}
             language="bash"
             title="Terminal"
           />
         </Step>
 
-        <Step step={2} title="Install Dependencies">
-          <p>Install all required packages using npm:</p>
+        <Step step={2} title="Copy the environment file and add the core variables">
+          <p>For the first boot, focus on the base app configuration and one working email provider.</p>
           <CodeBlock
-            code="npm install"
-            language="bash"
-            title="Terminal"
-          />
-          <Callout type="note">
-            This will install all dependencies listed in <InlineCode>package.json</InlineCode>. The installation may take a few minutes.
-          </Callout>
-        </Step>
-
-        <Step step={3} title="Configure Environment Variables">
-          <p>Copy the example environment file and configure your variables:</p>
-          <CodeBlock
-            code="cp .env.example .env"
-            language="bash"
-            title="Terminal"
-          />
-          <p>Update the following required variables in your <InlineCode>.env</InlineCode> file:</p>
-          <CodeBlock
-            code={`# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
-
-# NextAuth
-NEXTAUTH_SECRET="your-secret-key"
+            code={`# Core application
+DATABASE_URL="postgresql://user:password@localhost:5432/saaskit?schema=public"
 NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="replace-with-a-strong-secret"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+APP_NAME="AI SaaS"
 
-# OAuth Providers
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-GITHUB_CLIENT_ID="your-github-client-id"
-GITHUB_CLIENT_SECRET="your-github-client-secret"
+# Email: preferred production option
+RESEND_API_KEY="re_..."
 
-# Stripe
-STRIPE_SECRET_KEY="your-stripe-secret-key"
-STRIPE_PUBLISHABLE_KEY="your-stripe-publishable-key"
-STRIPE_WEBHOOK_SECRET="your-webhook-secret"
-
-# OpenRouter AI
-OPENROUTER_API_KEY="your-openrouter-api-key"`}
+# Or use SMTP instead
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_SECURE="false"
+SMTP_USER="you@example.com"
+SMTP_PASS="app-password"
+SMTP_FROM="AI SaaS <you@example.com>"
+ADMIN_EMAIL="ops@example.com"`}
             language="bash"
             title=".env"
           />
-          <Callout type="warning" title="Security Note">
-            Never commit your <InlineCode>.env</InlineCode> file to version control. It contains sensitive credentials.
+          <Callout type="note" title="Keep the first pass minimal">
+            You can add OAuth, Stripe, and OpenRouter after the app is running. The full variable map lives in the
+            installation guide and in <InlineCode>.env.example</InlineCode>.
           </Callout>
         </Step>
 
-        <Step step={4} title="Set Up Database">
-          <p>Initialize your database with Prisma:</p>
+        <Step step={3} title="Generate Prisma client and bootstrap the database">
+          <p>The current repository uses schema push plus seed for initial setup.</p>
           <CodeBlock
-            code={`# Generate Prisma Client
-npx prisma generate
-
-# Run database migrations
-npx prisma migrate dev
-
-# Seed the database (optional)
-npx prisma db seed`}
+            code={`npm run prisma:generate
+npm run db:push
+npm run db:seed`}
             language="bash"
             title="Terminal"
             showLineNumbers={true}
           />
-          <Callout type="info">
-            The seed command is optional but recommended for development. It will populate your database with sample data.
+          <Callout type="warning" title="Current repo behavior">
+            This starter includes <InlineCode>prisma/schema.prisma</InlineCode> and <InlineCode>prisma/seed.ts</InlineCode>,
+            but it does not currently ship checked-in Prisma migrations. Use <InlineCode>db:push</InlineCode> for the
+            initial bootstrap.
           </Callout>
         </Step>
 
-        <Step step={5} title="Start Development Server">
-          <p>Run the development server:</p>
-          <CodeBlock
-            code="npm run dev"
-            language="bash"
-            title="Terminal"
-          />
-          <Callout type="success" title="Success">
-            Your application is now running! Open{" "}
-            <a href="http://localhost:3000" target="_blank" className="text-primary hover:underline font-semibold">
-              http://localhost:3000
-            </a>{" "}
-            in your browser to see it in action.
+        <Step step={4} title="Run the product locally">
+          <p>Once the database is ready, start the development server and verify the shell loads cleanly.</p>
+          <CodeBlock code="npm run dev" language="bash" title="Terminal" />
+          <Callout type="success" title="Expected result">
+            Open <a href="http://localhost:3000" target="_blank" rel="noreferrer">http://localhost:3000</a>. You should be able to
+            browse the marketing pages, docs, pricing, and auth screens without database or session errors.
           </Callout>
+        </Step>
+
+        <Step step={5} title="Add service credentials for the full product flow">
+          <p>After the app is stable locally, add the remaining integrations in this order.</p>
+          <CodeBlock
+            code={`# OAuth
+GOOGLE_CLIENT_ID="..."
+GOOGLE_CLIENT_SECRET="..."
+GITHUB_ID="..."
+GITHUB_SECRET="..."
+
+# Stripe
+STRIPE_SECRET_KEY="sk_test_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+STRIPE_PRO_MONTHLY_PRICE_ID="price_..."
+STRIPE_PRO_YEARLY_PRICE_ID="price_..."
+STRIPE_BUSINESS_MONTHLY_PRICE_ID="price_..."
+STRIPE_BUSINESS_YEARLY_PRICE_ID="price_..."
+
+# AI
+OPENROUTER_API_KEY="sk-or-v1-..."
+OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"`}
+            language="bash"
+            title="Additional integrations"
+          />
         </Step>
       </Steps>
 
-      {/* Next Steps */}
-      <h2>Next Steps</h2>
-      <p>Now that your application is running, explore these key features:</p>
+      <h2>What to verify before moving on</h2>
+
+      <div className="my-6 space-y-3">
+        {[
+          "The home page and docs shell render without runtime errors.",
+          "Registration or sign-in pages load and session cookies are created correctly.",
+          "The database contains seeded roles, permissions, and plans.",
+          "Email delivery is configured well enough to support verification and admin notifications.",
+        ].map((item) => (
+          <div
+            key={item}
+            className="flex items-start gap-3 rounded-[1.2rem] border border-[#c7b8aa] bg-[#f6efe7] px-4 py-4"
+          >
+            <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#1f1b18]" />
+            <p className="!mb-0 text-sm leading-7 text-[#5b534b]">{item}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2>Continue with the right next guide</h2>
 
       <CardGrid cols={2}>
         <LinkCard
-          title="Set Up Authentication"
-          description="Configure OAuth providers and role-based access control"
+          title="Installation"
+          description="Full environment blueprint, service-by-service setup, and verification steps."
+          href="/docs/installation"
+        />
+        <LinkCard
+          title="Authentication"
+          description="Configure OAuth providers, session behavior, roles, and access boundaries."
           href="/docs/authentication"
         />
         <LinkCard
-          title="Configure Stripe Billing"
-          description="Set up subscription plans and payment processing"
-          href="/docs/billing"
-        />
-        <LinkCard
           title="AI Integration"
-          description="Connect to 200+ AI models via OpenRouter"
+          description="Wire in OpenRouter models, credits, and AI request handling."
           href="/docs/ai"
         />
         <LinkCard
-          title="Deploy to Production"
-          description="Deploy your app to Vercel, Railway, or any platform"
+          title="Deployment"
+          description="Take the current repo to production with the correct database bootstrap flow."
           href="/docs/deployment"
         />
       </CardGrid>
 
-      {/* Troubleshooting */}
-      <h2>Troubleshooting</h2>
-      <p>Encountering issues? Here are solutions to common problems:</p>
-
-      <div className="space-y-4 my-6">
-        <Callout type="danger" title="Database Connection Error">
-          Make sure PostgreSQL is running and your <InlineCode>DATABASE_URL</InlineCode> is correct. You can verify the connection with:{" "}
-          <InlineCode>npx prisma db pull</InlineCode>
-        </Callout>
-
-        <Callout type="warning" title="OAuth Sign-In Not Working">
-          Verify your OAuth client IDs and secrets. Make sure your redirect URLs are configured correctly in the provider dashboards. For local development, use <InlineCode>http://localhost:3000</InlineCode> as the base URL.
-        </Callout>
-
-        <Callout type="info" title="Stripe Webhooks Failing">
-          Use the Stripe CLI for local testing:
-          <CodeBlock
-            code="stripe listen --forward-to localhost:3000/api/webhooks/stripe"
-            language="bash"
-            title="Terminal"
-          />
-        </Callout>
-      </div>
-
-      {/* Support */}
-      <div className="rounded-2xl border border-[#c7b8aa] bg-[#efe6dc] p-8 my-12">
-        <div>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-[#1f1b18] shadow-lg">
-              <Rocket className="h-6 w-6 text-white" />
+      <div className="my-12 rounded-[1.9rem] border border-[#c7b8aa] bg-[#efe6dc] p-8">
+        <div className="flex flex-wrap items-start justify-between gap-6">
+          <div className="max-w-2xl">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1f1b18] text-[#f3eadf]">
+              <Zap className="h-5 w-5" />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold !mt-0 !mb-0">Need Help?</h3>
-              <p className="text-sm text-muted-foreground !mb-0">We're here to support you</p>
-            </div>
+            <h3 className="!mt-0 text-2xl font-semibold">Ready for production-facing setup?</h3>
+            <p className="mt-3 text-base leading-8 text-[#5b534b]">
+              Once local development is stable, move into installation for the full env map, then deployment for
+              production domains, callbacks, and Stripe webhook configuration.
+            </p>
           </div>
-          <p className="text-muted-foreground mb-6 leading-relaxed">
-            If you run into any issues, check out our comprehensive documentation or explore the API reference for detailed endpoint information.
-          </p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/docs">
-              <Button variant="outline" size="lg">View Full Documentation</Button>
+            <Link href="/docs/installation">
+              <Button className="h-12 rounded-full bg-[#1f1b18] px-6 text-[#f3eadf] hover:bg-[#312a25]">
+                Installation guide
+              </Button>
             </Link>
-            <Link href="/api-docs">
-              <Button variant="outline" size="lg">API Reference</Button>
+            <Link href="/docs/deployment">
+              <Button
+                variant="outline"
+                className="h-12 rounded-full border-[#b8ab9c] bg-transparent px-6 hover:bg-[#e8ddd1] hover:text-[#1f1b18]"
+              >
+                Deployment
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
             </Link>
           </div>
         </div>

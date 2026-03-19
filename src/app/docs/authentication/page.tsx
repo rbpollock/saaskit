@@ -1,6 +1,6 @@
 export default function AuthenticationPage() {
   return (
-    <div className="prose prose-slate dark:prose-invert max-w-none">
+    <div className="docs-content">
       <h1>Authentication</h1>
       <p className="lead">
         Secure authentication with NextAuth v5, OAuth providers, and role-based access control (RBAC).
@@ -28,8 +28,8 @@ GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
 # GitHub OAuth
-GITHUB_CLIENT_ID="your-github-client-id"
-GITHUB_CLIENT_SECRET="your-github-client-secret"`}</code>
+GITHUB_ID="your-github-client-id"
+GITHUB_SECRET="your-github-client-secret"`}</code>
       </pre>
 
       <h4>Google OAuth Setup</h4>

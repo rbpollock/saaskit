@@ -1,6 +1,6 @@
 export default function AdminPage() {
   return (
-    <div className="prose prose-slate dark:prose-invert max-w-none">
+    <div className="docs-content">
       <h1>Admin Dashboard</h1>
       <p className="lead">
         Complete admin panel with CRUD operations for users, subscriptions, payments, and blog management.

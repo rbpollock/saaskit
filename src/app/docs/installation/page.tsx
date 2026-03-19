@@ -1,5 +1,11 @@
-import Link from "next/link";
-import { CheckCircle2, Package, Database as DatabaseIcon, Key, CreditCard, Zap } from "lucide-react";
+import {
+  CheckCircle2,
+  CreditCard,
+  Database as DatabaseIcon,
+  Mail,
+  Package,
+  Rocket,
+} from "lucide-react";
 import {
   Callout,
   CodeBlock,
@@ -22,299 +28,217 @@ export default function InstallationPage() {
         ]}
       />
 
-      <div className="mb-8">
-        <h1>Installation</h1>
-        <p className="text-xl text-muted-foreground leading-relaxed">
-          Detailed guide for installing and configuring the AI SaaS Starter Kit.
+      <div className="mb-10">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <DocBadge variant="default">System setup</DocBadge>
+          <DocBadge variant="info">Detailed guide</DocBadge>
+        </div>
+        <h1>Installation and environment setup for the current repository.</h1>
+        <p className="text-xl leading-8 text-[#5b534b]">
+          Use this guide when you need the full environment blueprint, service integration checklist, and database
+          bootstrap flow for a clean local or staging installation.
         </p>
       </div>
 
-      <Callout type="info" title="Prerequisites">
-        Before starting, ensure you have Node.js 18.17+, PostgreSQL 14+, and Git installed on your system.
+      <Callout type="info" title="Before you begin">
+        Have a working PostgreSQL instance available, use a current Node.js runtime supported by your Next.js setup,
+        and decide whether your email delivery will use Resend or SMTP.
       </Callout>
 
-      <h2>System Requirements</h2>
+      <h2>Prerequisites</h2>
 
-      <CardGrid cols={2}>
-        <div className="p-4 rounded-xl border bg-card">
-          <div className="flex items-center gap-3 mb-2">
-            <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-            <h4 className="font-semibold !mt-0 !mb-0">Node.js</h4>
-          </div>
-          <p className="text-sm text-muted-foreground !mb-0">Version 18.17 or later</p>
+      <CardGrid cols={4}>
+        <div className="rounded-[1.4rem] border border-[#c7b8aa] bg-[#f6efe7] p-5">
+          <Package className="mb-4 h-5 w-5 text-[#1f1b18]" />
+          <h3 className="!mt-0 !mb-2 text-lg font-semibold">Node.js</h3>
+          <p className="!mb-0 text-sm leading-7 text-[#5b534b]">Use a recent Node.js runtime compatible with Next.js 16.</p>
         </div>
-        <div className="p-4 rounded-xl border bg-card">
-          <div className="flex items-center gap-3 mb-2">
-            <DatabaseIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
-            <h4 className="font-semibold !mt-0 !mb-0">PostgreSQL</h4>
-          </div>
-          <p className="text-sm text-muted-foreground !mb-0">Version 14 or later</p>
+        <div className="rounded-[1.4rem] border border-[#c7b8aa] bg-[#f6efe7] p-5">
+          <DatabaseIcon className="mb-4 h-5 w-5 text-[#1f1b18]" />
+          <h3 className="!mt-0 !mb-2 text-lg font-semibold">PostgreSQL</h3>
+          <p className="!mb-0 text-sm leading-7 text-[#5b534b]">A local or managed PostgreSQL database reachable from your app.</p>
+        </div>
+        <div className="rounded-[1.4rem] border border-[#c7b8aa] bg-[#f6efe7] p-5">
+          <Mail className="mb-4 h-5 w-5 text-[#1f1b18]" />
+          <h3 className="!mt-0 !mb-2 text-lg font-semibold">Email provider</h3>
+          <p className="!mb-0 text-sm leading-7 text-[#5b534b]">Resend is preferred. SMTP is supported as the fallback path.</p>
+        </div>
+        <div className="rounded-[1.4rem] border border-[#c7b8aa] bg-[#f6efe7] p-5">
+          <CreditCard className="mb-4 h-5 w-5 text-[#1f1b18]" />
+          <h3 className="!mt-0 !mb-2 text-lg font-semibold">External services</h3>
+          <p className="!mb-0 text-sm leading-7 text-[#5b534b]">OAuth, Stripe, and OpenRouter can be added after the first local boot.</p>
         </div>
       </CardGrid>
 
-      <h2>Installation Methods</h2>
+      <h2>Install the project</h2>
 
-      <h3>Method 1: Clone from GitHub</h3>
-      <p>Clone the repository and install dependencies:</p>
       <CodeBlock
-        code={`git clone https://github.com/yourusername/ai-saas-starter.git
-cd ai-saas-starter
-npm install`}
+        code={`git clone <your-repository-url> saaskit
+cd saaskit
+npm install
+cp .env.example .env`}
         language="bash"
         title="Terminal"
       />
 
-      <h3>Method 2: Use as Template</h3>
-      <Callout type="note">
-        Click the "Use this template" button on GitHub to create your own repository based on this starter kit.
+      <Callout type="note" title="PowerShell">
+        If you are working on Windows PowerShell, use <InlineCode>Copy-Item .env.example .env</InlineCode> instead of <InlineCode>cp</InlineCode> when needed.
       </Callout>
 
-      <h2>Environment Configuration</h2>
-
-      <h3>Environment Variables</h3>
-      <p>Create a <InlineCode>.env</InlineCode> file in the root directory:</p>
+      <h2>Environment blueprint</h2>
+      <p>
+        The block below reflects the variables currently referenced by the app, the docs, and the deployment flow.
+      </p>
 
       <CodeBlock
-        code={`# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/ai_saas"
-
-# NextAuth.js
-NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
+        code={`# Core application
+DATABASE_URL="postgresql://user:password@localhost:5432/saaskit?schema=public"
 NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="replace-with-a-strong-secret"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+APP_NAME="AI SaaS"
 
-# Google OAuth
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-
-# GitHub OAuth
-GITHUB_CLIENT_ID="your-github-client-id"
-GITHUB_CLIENT_SECRET="your-github-client-secret"
+# OAuth
+GOOGLE_CLIENT_ID="..."
+GOOGLE_CLIENT_SECRET="..."
+GITHUB_ID="..."
+GITHUB_SECRET="..."
 
 # Stripe
-STRIPE_SECRET_KEY="sk_test_your_key"
-STRIPE_PUBLISHABLE_KEY="pk_test_your_key"
-STRIPE_WEBHOOK_SECRET="whsec_your_webhook_secret"
-NEXT_PUBLIC_STRIPE_PRICE_ID_BASIC="price_xxx"
-NEXT_PUBLIC_STRIPE_PRICE_ID_PRO="price_xxx"
-NEXT_PUBLIC_STRIPE_PRICE_ID_BUSINESS="price_xxx"
+STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_PRO_MONTHLY_PRICE_ID="price_..."
+STRIPE_PRO_YEARLY_PRICE_ID="price_..."
+STRIPE_BUSINESS_MONTHLY_PRICE_ID="price_..."
+STRIPE_BUSINESS_YEARLY_PRICE_ID="price_..."
 
-# OpenRouter AI
-OPENROUTER_API_KEY="sk-or-v1-your-key"
+# OpenRouter
+OPENROUTER_API_KEY="sk-or-v1-..."
+OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
 
-# Optional: Analytics
-NEXT_PUBLIC_GA_ID="G-XXXXXXXXXX"`}
+# Email: preferred production path
+RESEND_API_KEY="re_..."
+
+# Email: SMTP fallback
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_SECURE="false"
+SMTP_USER="you@example.com"
+SMTP_PASS="app-password"
+SMTP_FROM="AI SaaS <you@example.com>"
+ADMIN_EMAIL="ops@example.com"
+
+# Optional monitoring
+SENTRY_DSN=""
+SENTRY_ORG=""
+SENTRY_PROJECT=""
+
+# Optional CI helper
+PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING="1"`}
         language="bash"
         title=".env"
         showLineNumbers={true}
       />
 
-      <Callout type="warning" title="Security Warning">
-        Never commit your <InlineCode>.env</InlineCode> file to version control. It's already in <InlineCode>.gitignore</InlineCode> by default.
+      <Callout type="warning" title="Secrets">
+        Never commit <InlineCode>.env</InlineCode> to version control. Keep secrets in local env files, CI secret
+        stores, or your hosting platform's environment manager.
       </Callout>
 
-      <h2>Service Setup</h2>
+      <h2>Bootstrap the app</h2>
 
-      <h3>
-        <DatabaseIcon className="inline h-6 w-6 mr-2 text-green-600" />
-        Database Setup
-      </h3>
-      <p>Initialize and migrate your PostgreSQL database:</p>
-
-      <CodeBlock
-        code={`# Generate Prisma Client
-npx prisma generate
-
-# Create database tables
-npx prisma migrate dev --name init
-
-# Seed initial data (roles, plans)
-npx prisma db seed`}
-        language="bash"
-        title="Terminal"
-        showLineNumbers={true}
-      />
-
-      <Callout type="success">
-        The seed command creates default roles (USER, ADMIN, SUPER_ADMIN) and subscription plans (Free, Pro, Business).
-      </Callout>
-
-      <h3>
-        <Key className="inline h-6 w-6 mr-2 text-blue-600" />
-        OAuth Provider Setup
-      </h3>
-
-      <h4>Google OAuth</h4>
       <Steps>
-        <Step step={1} title="Create Project">
-          <p>Go to <a href="https://console.cloud.google.com/" target="_blank" className="text-primary hover:underline">Google Cloud Console</a> and create a new project or select an existing one.</p>
+        <Step step={1} title="Generate the Prisma client">
+          <CodeBlock code="npm run prisma:generate" language="bash" title="Terminal" />
         </Step>
-        <Step step={2} title="Enable APIs">
-          <p>Navigate to APIs & Services → Enable APIs and Services, then enable the Google+ API.</p>
+
+        <Step step={2} title="Push the schema to PostgreSQL">
+          <p>Use the current bootstrap flow for this repository.</p>
+          <CodeBlock code="npm run db:push" language="bash" title="Terminal" />
         </Step>
-        <Step step={3} title="Create Credentials">
-          <p>Go to Credentials → Create Credentials → OAuth client ID → Web application</p>
+
+        <Step step={3} title="Seed starter data">
+          <p>The seed creates roles, permissions, plans, categories, and tags.</p>
+          <CodeBlock code="npm run db:seed" language="bash" title="Terminal" />
         </Step>
-        <Step step={4} title="Configure Redirect URI">
-          <p>Add authorized redirect URIs:</p>
-          <ul>
-            <li>Development: <InlineCode>http://localhost:3000/api/auth/callback/google</InlineCode></li>
-            <li>Production: <InlineCode>https://yourdomain.com/api/auth/callback/google</InlineCode></li>
-          </ul>
-        </Step>
-        <Step step={5} title="Save Credentials">
-          <p>Copy Client ID and Client Secret to your <InlineCode>.env</InlineCode> file.</p>
+
+        <Step step={4} title="Run the development server">
+          <CodeBlock code="npm run dev" language="bash" title="Terminal" />
         </Step>
       </Steps>
 
-      <h4>GitHub OAuth</h4>
-      <Steps>
-        <Step step={1} title="Navigate to Settings">
-          <p>Go to GitHub Settings → Developer settings → OAuth Apps</p>
-        </Step>
-        <Step step={2} title="Create OAuth App">
-          <p>Click "New OAuth App" and fill in:</p>
-          <ul>
-            <li>Homepage URL: <InlineCode>http://localhost:3000</InlineCode></li>
-            <li>Authorization callback URL: <InlineCode>http://localhost:3000/api/auth/callback/github</InlineCode></li>
-          </ul>
-        </Step>
-        <Step step={3} title="Generate Secret">
-          <p>Click "Register application" then generate a new client secret.</p>
-        </Step>
-        <Step step={4} title="Save Credentials">
-          <p>Copy Client ID and Client Secret to <InlineCode>.env</InlineCode></p>
-        </Step>
-      </Steps>
-
-      <h3>
-        <CreditCard className="inline h-6 w-6 mr-2 text-purple-600" />
-        Stripe Setup
-      </h3>
-      <Steps>
-        <Step step={1} title="Create Account">
-          <p>Create a <a href="https://stripe.com" target="_blank" className="text-primary hover:underline">Stripe account</a> and switch to test mode.</p>
-        </Step>
-        <Step step={2} title="Get API Keys">
-          <p>Navigate to Dashboard → Developers → API keys and copy your keys to <InlineCode>.env</InlineCode></p>
-        </Step>
-        <Step step={3} title="Create Products">
-          <p>Create subscription products and prices in the Stripe Dashboard.</p>
-        </Step>
-        <Step step={4} title="Configure Webhooks">
-          <p>Set up webhook endpoint: <InlineCode>/api/webhooks/stripe</InlineCode></p>
-          <p>Listen to events:</p>
-          <ul>
-            <li><InlineCode>checkout.session.completed</InlineCode></li>
-            <li><InlineCode>customer.subscription.*</InlineCode></li>
-            <li><InlineCode>invoice.*</InlineCode></li>
-          </ul>
-        </Step>
-      </Steps>
-
-      <Callout type="info" title="Local Webhook Testing">
-        Use the Stripe CLI for local webhook testing:
-        <CodeBlock
-          code="stripe listen --forward-to localhost:3000/api/webhooks/stripe"
-          language="bash"
-        />
+      <Callout type="info" title="Prisma note">
+        The current repo does not ship checked-in Prisma migrations. For first-time installs, use <InlineCode>db:push</InlineCode>.
+        If you later introduce migrations, production deploys should switch to <InlineCode>prisma migrate deploy</InlineCode>.
       </Callout>
 
-      <h3>
-        <Zap className="inline h-6 w-6 mr-2 text-yellow-600" />
-        OpenRouter AI Setup
-      </h3>
-      <Steps>
-        <Step step={1} title="Sign Up">
-          <p>Sign up at <a href="https://openrouter.ai" target="_blank" className="text-primary hover:underline">OpenRouter</a></p>
-        </Step>
-        <Step step={2} title="Get API Key">
-          <p>Navigate to Settings and copy your API key.</p>
-        </Step>
-        <Step step={3} title="Add Credits">
-          <p>Add credits to your account to use AI models.</p>
-        </Step>
-        <Step step={4} title="Configure">
-          <p>Add the API key to your <InlineCode>.env</InlineCode> file.</p>
-        </Step>
-      </Steps>
+      <h2>Configure the product services</h2>
 
-      <h2>Run Development Server</h2>
-      <p>Start the development server:</p>
-      <CodeBlock
-        code="npm run dev"
-        language="bash"
-        title="Terminal"
-      />
-
-      <Callout type="success" title="Server Running!">
-        The application will be available at <a href="http://localhost:3000" target="_blank" className="text-primary hover:underline font-semibold">http://localhost:3000</a>
-      </Callout>
-
-      <h2>Build for Production</h2>
-      <CodeBlock
-        code={`# Build the application
-npm run build
-
-# Start production server
-npm start`}
-        language="bash"
-        title="Terminal"
-      />
-
-      <h2>Prisma Studio</h2>
-      <p>View and edit your database with Prisma Studio:</p>
-      <CodeBlock
-        code="npx prisma studio"
-        language="bash"
-        title="Terminal"
-      />
-      <p>Access at <a href="http://localhost:5555" target="_blank" className="text-primary hover:underline">http://localhost:5555</a></p>
-
-      <h2>Verification Checklist</h2>
-      <p>After installation, verify everything works:</p>
-      <div className="space-y-2 my-6">
-        <div className="flex items-center gap-2 p-3 rounded-lg border bg-card">
-          <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-          <span>Homepage loads at localhost:3000</span>
-        </div>
-        <div className="flex items-center gap-2 p-3 rounded-lg border bg-card">
-          <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-          <span>Database connection successful</span>
-        </div>
-        <div className="flex items-center gap-2 p-3 rounded-lg border bg-card">
-          <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-          <span>OAuth sign-in works</span>
-        </div>
-        <div className="flex items-center gap-2 p-3 rounded-lg border bg-card">
-          <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-          <span>API documentation at /api-docs</span>
-        </div>
-        <div className="flex items-center gap-2 p-3 rounded-lg border bg-card">
-          <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-          <span>Admin dashboard accessible at /admin</span>
-        </div>
-      </div>
-
-      <h2>Next Steps</h2>
-      <p>Once installed, check out:</p>
-
-      <CardGrid cols={3}>
+      <CardGrid cols={2}>
         <LinkCard
-          title="Authentication Guide"
-          description="Set up user auth and roles"
+          title="Authentication"
+          description="Set up Google and GitHub OAuth, session behavior, credentials sign-in, and RBAC."
           href="/docs/authentication"
         />
         <LinkCard
-          title="Billing Guide"
-          description="Configure subscription plans"
+          title="Billing"
+          description="Create Stripe products, wire price IDs, and configure the webhook endpoint."
           href="/docs/billing"
         />
         <LinkCard
-          title="Deployment Guide"
-          description="Deploy to production"
+          title="AI Integration"
+          description="Add your OpenRouter key, choose models, and validate credits and request flow."
+          href="/docs/ai"
+        />
+        <LinkCard
+          title="Deployment"
+          description="Take the local install to Vercel, Railway, or your own Node host."
           href="/docs/deployment"
         />
       </CardGrid>
+
+      <h2>Build verification</h2>
+
+      <CodeBlock
+        code={`npm run build
+npm run start`}
+        language="bash"
+        title="Production check"
+      />
+
+      <h2>Installation checklist</h2>
+
+      <div className="my-6 space-y-3">
+        {[
+          "The app loads at localhost:3000 and the docs shell renders correctly.",
+          "The database connection works and seed data is visible in Prisma Studio.",
+          "Auth pages load without missing-secret or callback errors.",
+          "Email delivery is configured for verification and notifications.",
+          "Stripe and OpenRouter credentials are ready for the next integration pass.",
+        ].map((item) => (
+          <div
+            key={item}
+            className="flex items-start gap-3 rounded-[1.2rem] border border-[#c7b8aa] bg-[#f6efe7] px-4 py-4"
+          >
+            <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#1f1b18]" />
+            <p className="!mb-0 text-sm leading-7 text-[#5b534b]">{item}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="my-12 rounded-[1.9rem] border border-[#c7b8aa] bg-[#efe6dc] p-8">
+        <div className="max-w-2xl">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1f1b18] text-[#f3eadf]">
+            <Rocket className="h-5 w-5" />
+          </div>
+          <h3 className="!mt-0 text-2xl font-semibold">Next step</h3>
+          <p className="mt-3 text-base leading-8 text-[#5b534b]">
+            Once installation is complete, move into deployment to align production domains, Stripe webhooks, and the
+            database bootstrap sequence with your hosting platform.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

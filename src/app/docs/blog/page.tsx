@@ -1,6 +1,6 @@
 export default function BlogSystemPage() {
   return (
-    <div className="prose prose-slate dark:prose-invert max-w-none">
+    <div className="docs-content">
       <h1>Blog System</h1>
       <p className="lead">
         Built-in blog with categories, SEO optimization, and markdown support for content marketing.

@@ -1,6 +1,6 @@
 export default function AIPage() {
   return (
-    <div className="prose prose-slate dark:prose-invert max-w-none">
+    <div className="docs-content">
       <h1>AI Integration</h1>
       <p className="lead">
         Connect to 200+ AI models via OpenRouter including GPT-4, Claude, Gemini, Llama, and more - all in one unified API.
