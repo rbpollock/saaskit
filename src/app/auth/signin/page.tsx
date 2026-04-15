@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { WalletConnectPanel } from "@/components/WalletConnectPanel";
 
 function SignInForm() {
   const router = useRouter();
@@ -238,6 +239,17 @@ function SignInForm() {
               Continue with GitHub
             </Button>
           </div>
+          
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-[#c7b8aa]" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-[#efe6dc] px-2 text-[#7a6f65]">Or connect sovereign wallet</span>
+            </div>
+          </div>
+
+          <WalletConnectPanel />
 
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}

@@ -14,9 +14,16 @@ const nextConfig: NextConfig = {
     ],
   },
   serverExternalPackages: ["@prisma/client"],
+  transpilePackages: ["@cosmos-kit/react", "@cosmos-kit/keplr", "@cosmos-kit/leap", "chain-registry"],
   // Explicitly set output mode for Vercel deployments
   // This prevents static export issues
   output: "standalone",
+  allowedDevOrigins: ["100.66.59.61"],
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["100.66.59.61:3000", "100.66.59.61"],
+    },
+  },
 };
 
 // Sentry configuration options

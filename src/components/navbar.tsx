@@ -44,11 +44,11 @@ export function Navbar() {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-display text-xl text-[#1f1b18] md:text-2xl">
-                    AI SaaS Kit
+                    irl.coop
                   </span>
                   {!isScrolled && (
                     <span className="-mt-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#73685e]">
-                      Next.js SaaS starter
+                      Community OS
                     </span>
                   )}
                 </div>
@@ -87,7 +87,7 @@ export function Navbar() {
                 </Link>
                 <Link href="/auth/signin">
                   <Button className="rounded-full bg-[#1f1b18] font-semibold text-[#f3eadf] hover:bg-[#312a25]">
-                    Get Started Free
+                    Join the Coop
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
@@ -144,7 +144,7 @@ export function Navbar() {
             </Link>
             <Link href="/auth/signin" className="block">
               <Button className="h-12 w-full rounded-xl bg-[#1f1b18] text-base font-semibold text-[#f3eadf] hover:bg-[#312a25]">
-                Get Started Free
+                Join the Coop
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>

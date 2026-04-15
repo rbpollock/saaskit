@@ -108,12 +108,12 @@ export default async function DashboardPage() {
           <h1 className="text-3xl font-bold text-foreground">
             Welcome back, {user?.name}!
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Track your account activity and usage</p>
+          <p className="text-sm text-muted-foreground mt-1">Monitor your sovereign shard activity and coordination.</p>
         </div>
         <Link href="/dashboard/chat">
           <Button className="bg-blue-600 hover:bg-blue-700">
-            <Zap className="h-4 w-4 mr-2" />
-            Start New Chat
+            <MessageSquare className="h-4 w-4 mr-2" />
+            New Collective Discussion
           </Button>
         </Link>
       </div>
@@ -125,7 +125,7 @@ export default async function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Available Credits</p>
+                <p className="text-sm font-medium text-muted-foreground">Resource Allocation</p>
                 <h3 className="text-2xl font-bold text-foreground mt-2">{user?.credits || 0}</h3>
               </div>
               <div className="rounded-full bg-blue-100 dark:bg-blue-900/30 p-3">
@@ -152,7 +152,7 @@ export default async function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Conversations</p>
+                <p className="text-sm font-medium text-muted-foreground">Cooperative Discussions</p>
                 <h3 className="text-2xl font-bold text-foreground mt-2">{totalChats}</h3>
                 <p className="text-xs text-muted-foreground mt-2">
                   {usedCredits || 0} credits used
@@ -170,12 +170,12 @@ export default async function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Current Plan</p>
+                <p className="text-sm font-medium text-muted-foreground">Membership Status</p>
                 <h3 className="text-2xl font-bold text-foreground mt-2">
                   {user?.subscription?.plan.name || "Free"}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-2">
-                  {user?.subscription?.status || "No active subscription"}
+                  {user?.subscription?.status || "Individual Participant"}
                 </p>
               </div>
               <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-3">
@@ -188,7 +188,7 @@ export default async function DashboardPage() {
                   size="sm"
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  Upgrade Plan
+                  Increase Contribution
                 </Button>
               </Link>
             )}
@@ -209,8 +209,8 @@ export default async function DashboardPage() {
           <CardHeader className="border-b border-border">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg font-semibold text-foreground">Recent Chats</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">Your most recent AI conversations</CardDescription>
+                <CardTitle className="text-lg font-semibold text-foreground">Recent Activity</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">Latest updates from your decentralized collective</CardDescription>
               </div>
               <Link href="/dashboard/chat">
                 <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
@@ -266,7 +266,7 @@ export default async function DashboardPage() {
         {/* Quick Actions */}
         <Card className="border-border">
           <CardHeader className="border-b border-border">
-            <CardTitle className="text-lg font-semibold text-foreground">Quick Actions</CardTitle>
+            <CardTitle className="text-lg font-semibold text-foreground">Collective Actions</CardTitle>
             <CardDescription className="text-sm text-muted-foreground">Frequently used features</CardDescription>
           </CardHeader>
           <CardContent className="p-4">
@@ -280,7 +280,7 @@ export default async function DashboardPage() {
               <Link href="/dashboard/billing">
                 <Button variant="outline" className="w-full justify-start">
                   <CreditCard className="mr-2 h-4 w-4" />
-                  Manage Billing
+                  Collective Treasury
                 </Button>
               </Link>
               <Link href="/dashboard/settings">
@@ -301,11 +301,11 @@ export default async function DashboardPage() {
                   <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">Upgrade to Pro</p>
-                  <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">Get unlimited credits and premium features</p>
+                  <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">Become a Member</p>
+                  <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">Unlock voting rights and a dedicated sovereign shard.</p>
                   <Link href="/dashboard/billing">
                     <Button size="sm" className="mt-3 bg-blue-600 hover:bg-blue-700 text-white">
-                      Upgrade Now
+                      Support the Coop
                     </Button>
                   </Link>
                 </div>

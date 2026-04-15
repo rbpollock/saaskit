@@ -15,16 +15,16 @@ export function Footer() {
               </div>
               <div className="flex flex-col">
                 <span className="font-display text-2xl text-[#f2e9df]">
-                  AI SaaS Kit
+                  irl.coop
                 </span>
                 <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#b6a896]">
-                  Next.js SaaS starter
+                  Community OS
                 </span>
               </div>
             </Link>
             <p className="mb-6 max-w-sm leading-relaxed text-[#c5b8a8]">
-              A production-shaped Next.js starter for subscription software,
-              AI tools, client portals, and admin-heavy products.
+              A sovereign stack for decentralized cooperatives, local land
+              trusts, and federated shards. Privacy-first by design.
             </p>
             <div className="flex gap-3">
               <Link
@@ -117,7 +117,7 @@ export function Footer() {
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
           <div className="flex flex-col items-center gap-6 md:flex-row">
             <p className="text-sm text-[#b7a995]">
-              Copyright {year} AI SaaS Kit. All rights reserved.
+              Copyright {year} irl.coop. All rights reserved.
             </p>
             <div className="flex items-center gap-2 rounded-full border border-[#4d433b] bg-[#26211d] px-3 py-1.5">
               <div className="h-2 w-2 rounded-full bg-[#d7c7b7]" />

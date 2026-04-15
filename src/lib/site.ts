@@ -1,19 +1,19 @@
 export const siteConfig = {
-  name: "AI SaaS Kit",
-  title: "AI SaaS Kit",
+  name: "irl.coop",
+  title: "irl.coop Community OS",
   description:
-    "Next.js SaaS starter kit with Auth.js, Stripe billing, Prisma, admin tooling, docs, blog, and AI integrations for production-ready subscription products.",
+    "The sovereign stack for decentralized cooperatives. Privacy-first, open-source infrastructure for identity, communication, and productivity.",
   keywords: [
-    "next.js saas starter kit",
-    "saas boilerplate",
-    "ai saas boilerplate",
-    "next.js starter",
-    "auth.js starter",
-    "stripe subscription starter",
-    "prisma saas starter",
-    "admin dashboard starter",
-    "next.js billing boilerplate",
-    "saas template",
+    "irl.coop",
+    "community os",
+    "decentralized cooperative",
+    "sovereign stack",
+    "lit protocol auth",
+    "privacy-first infrastructure",
+    "open source cooperative",
+    "federated identity",
+    "data sovereignty",
+    "coop tech",
   ],
 };
 

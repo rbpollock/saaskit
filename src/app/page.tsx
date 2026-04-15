@@ -22,22 +22,22 @@ import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
 import { getSiteUrl, siteConfig } from "@/lib/site";
 
-const homeTitle = "Next.js SaaS Starter Kit for AI Products, Billing and Admin Workflows";
+const homeTitle = "irl.coop Community OS - The Sovereign Stack for Decentralized Cooperatives";
 const homeDescription =
-  "Launch a production-ready SaaS with Next.js, Auth.js, Stripe subscriptions, Prisma, admin tooling, docs, blog, and AI integrations already wired into one coherent codebase.";
+  "Deploy a privacy-first, open-source infrastructure for your cooperative. Featuring Lit Protocol auth, Citus sharding, Matrix chat, and sovereign data management built for leaderless federations.";
 
 export const metadata: Metadata = {
   title: homeTitle,
   description: homeDescription,
   keywords: [
-    "next.js saas starter kit",
-    "next.js saas boilerplate",
-    "ai saas starter",
-    "auth.js boilerplate",
-    "stripe billing boilerplate",
-    "prisma starter kit",
-    "admin dashboard next.js",
-    "saas landing page template",
+    "irl.coop",
+    "community os",
+    "decentralized cooperative",
+    "sovereign stack",
+    "lit protocol",
+    "citus sharding",
+    "privacy-first",
+    "open source coop",
   ],
   alternates: {
     canonical: "/",
@@ -57,48 +57,48 @@ export const metadata: Metadata = {
 };
 
 const heroStats = [
-  ["Auth.js + Stripe", "sign-in and subscriptions"],
-  ["Prisma + Admin", "data model and operations"],
-  ["Docs + Blog", "seo and support content"],
+  ["Lit + Citus", "decentralized auth and sharding"],
+  ["Sovereign Shards", "data sovereignty by design"],
+  ["Matrix + Stalwart", "secure chat and email"],
 ];
 
 const audiences = [
   {
-    label: "SaaS founders",
-    title: "Launch the commercial layer before the product gets messy",
+    label: "Cooperative Organizers",
+    title: "Launch the collective layer before the coordination gets messy",
     description:
-      "Ship pricing, onboarding, authentication, billing, docs, and internal operations from the same Next.js codebase instead of patching them in later.",
+      "Ship identity, membership dues, secure communication, and internal operations from a single sovereign shard instead of fragmented Web2 silos.",
   },
   {
-    label: "Agencies",
-    title: "Start client products from a reusable SaaS foundation",
+    label: "Infrastructure Shards",
+    title: "Host sovereign nodes for local community chapters",
     description:
-      "Use one production-shaped starter for AI apps, client portals, dashboards, and subscription software without rebuilding roles, webhooks, and admin workflows every time.",
+      "Deploy a standardized Federated Stack for local cooperatives, community land trusts, or DAOs without rebuilding auth, encryption, and governance every time.",
   },
   {
-    label: "Product teams",
-    title: "Keep public pages and internal surfaces visually coherent",
+    label: "Leaderless Federations",
+    title: "Keep local autonomy while staying globally coherent",
     description:
-      "Run marketing pages, blog, docs, account settings, and operator tools together so the product feels intentional from first visit to daily use.",
+      "Run local communications, member directories, and treasury tools that connect to a wider federation without surrendering your data to a central provider.",
   },
 ];
 
 const features = [
   {
-    title: "AI orchestration",
-    description: "Model access, prompt handling, and response flows in one clean surface.",
+    title: "Community Intelligence",
+    description: "Collective knowledge management and privacy-preserving AI orchestration.",
     icon: Bot,
     tone: "bg-[#1f1b18] text-[#f3eadf] border-[#1f1b18]",
   },
   {
-    title: "Authentication that feels finished",
-    description: "Auth.js, verification, and permissions without the usual rough edges.",
+    title: "Sovereign Identity",
+    description: "Lit Protocol, SSI, and cryptographically enforced permissions.",
     icon: LockKeyhole,
     tone: "bg-[#efe6dc] text-[#1f1b18] border-[#baad9f]",
   },
   {
-    title: "Billing with structure",
-    description: "Stripe subscriptions, credits, and payment handling already wired.",
+    title: "Cooperative Treasury",
+    description: "Membership dues, collective billing, and transparent resource tracking.",
     icon: CreditCard,
     tone: "bg-[#314337] text-[#f3eadf] border-[#314337]",
   },
@@ -106,73 +106,73 @@ const features = [
 
 const platformSections = [
   {
-    eyebrow: "Acquisition",
-    title: "Marketing surfaces that already connect",
+    eyebrow: "Identity",
+    title: "Decentralized Auth that actually works",
     description:
-      "Homepage, pricing, docs, blog, and signup flow stay visually aligned instead of feeling stitched together.",
+      "Login via Web3 wallets using Lit Protocol session sigs. No local password database, zero trust architecture.",
     icon: Sparkles,
-    points: ["Landing page and pricing", "Docs and blog routes", "Calls to action wired into auth"],
+    points: ["Lit Protocol Gateway", "SIWE Integration", "Programmable Key Pairs"],
     tone: "bg-[#efe6dc] border-[#b9ab9d] text-[#1f1b18]",
   },
   {
-    eyebrow: "Product",
-    title: "App foundation with less hidden work",
+    eyebrow: "Communication",
+    title: "Private, Federated Social Infrastructure",
     description:
-      "Authentication, account access, role checks, and user-facing product surfaces are already in place.",
+      "Internal Matrix server for chat, Stalwart for mail, and Postiz for social coordination, all under your control.",
     icon: Layers3,
-    points: ["Protected routes", "User dashboard", "Permissions and roles"],
+    points: ["Matrix / Dendrite", "Stalwart Mail (Rust)", "Postiz Social Manager"],
     tone: "bg-[#1f1b18] border-[#2b2521] text-[#f3eadf]",
   },
   {
-    eyebrow: "Operations",
-    title: "Admin oversight without a second project",
+    eyebrow: "Governance",
+    title: "Transparent Collective Management",
     description:
-      "Give operators an internal surface for users, plans, content, and performance without bolting on another admin tool.",
+      "Monitor community health, membership status, and treasury flows without external oversight.",
     icon: BarChart3,
-    points: ["Admin pages", "Usage and payment views", "Content management"],
+    points: ["Admin Dashboard", "Membership Registry", "Role-based Access Control"],
     tone: "bg-[#f4ede5] border-[#cdbfb1] text-[#1f1b18]",
   },
   {
-    eyebrow: "Delivery",
-    title: "Billing, data, and outbound systems connected",
+    eyebrow: "Operations",
+    title: "Sharded Data and Distributed Services",
     description:
-      "Move from sign-in to subscription, transactional email, and data persistence without rebuilding the same plumbing.",
+      "Citus-sharded PostgreSQL for global scale with local sovereignty. MinIO for S3-compatible storage.",
     icon: Workflow,
-    points: ["Stripe billing", "Prisma and PostgreSQL", "Email and AI providers"],
+    points: ["Citus Sharded DB", "MinIO Object Storage", "Redis Cache Layer"],
     tone: "bg-[#314337] border-[#314337] text-[#f3eadf]",
   },
 ];
 
 const stack = [
-  "Next.js 16",
-  "Auth.js",
-  "Prisma",
-  "Stripe",
-  "Resend",
-  "OpenRouter",
+  "Lit Protocol",
+  "Citus Sharding",
   "PostgreSQL",
-  "Tailwind CSS",
+  "Dendrite (Matrix)",
+  "Stalwart (Mail)",
+  "Postiz",
+  "CryptPad",
+  "MinIO",
 ];
 
 const comparisonRows = [
   {
-    task: "Authentication, verification, and protected routes",
-    withoutKit: "separate build",
+    task: "Sovereign identity and programmable permissions",
+    withoutKit: "centralized silos",
     withKit: "included",
   },
   {
-    task: "Billing, checkout, subscriptions, and webhooks",
-    withoutKit: "custom wiring",
+    task: "Federated chat, mail, and social coordination",
+    withoutKit: "fragmented tools",
     withKit: "included",
   },
   {
-    task: "Admin management, roles, and reporting surfaces",
-    withoutKit: "new module",
+    task: "Sharded database and distributed storage",
+    withoutKit: "local scaling",
     withKit: "included",
   },
   {
-    task: "Docs, blog, pricing, and marketing shell",
-    withoutKit: "separate project",
+    task: "Community dashboard and membership flows",
+    withoutKit: "manual admin",
     withKit: "included",
   },
 ];
@@ -180,44 +180,44 @@ const comparisonRows = [
 const launchSteps = [
   {
     step: "01",
-    title: "Shape the offer",
+    title: "Provision the Shard",
     description:
-      "Adjust the homepage, pricing, and onboarding copy so the product already sells itself before you touch the core workflow.",
+      "Initialize your community's sovereign infrastructure with a single command. Set up auth, DB sharding, and core services.",
   },
   {
     step: "02",
-    title: "Wire the product logic",
+    title: "Define the Collective",
     description:
-      "Connect your AI actions, data model, and internal tooling on top of a stack that already handles auth, billing, and admin access.",
+      "Configure membership tiers, resource permissions, and communication channels for your cooperative.",
   },
   {
     step: "03",
-    title: "Ship with fewer gaps",
+    title: "Activate Federation",
     description:
-      "Launch with docs, account settings, operational controls, and a front-end that feels like a product brand, not a generic starter.",
+      "Connect with other irl.coop shards to share resources, identities, and governance models across a global network.",
   },
 ];
 
 const faqs = [
   {
-    question: "What is included?",
+    question: "What is irl.coop?",
     answer:
-      "Authentication, billing, AI integration, admin tooling, docs routes, and the public marketing shell are already part of the project.",
+      "irl.coop is a sovereign stack designed to help local cooperatives and community organizations own their infrastructure, data, and identity.",
   },
   {
-    question: "Can I use it commercially?",
+    question: "How is it decentralised?",
     answer:
-      "Yes. The starter is designed to be customized and used as the base for real products and client work.",
+      "We use Lit Protocol for authentication (no central password database) and Citus for data sharding, allowing each community to 'own' their slice of the network.",
   },
   {
-    question: "Is it only for AI apps?",
+    question: "Is it only for tech cooperatives?",
     answer:
-      "No. It works well for subscription SaaS, client portals, B2B dashboards, and internal tools. The AI integration is there when you need it, but the product foundation stands on its own.",
+      "No. It is designed for housing cooperatives, artist collectives, community land trusts, and any group needing to coordinate resources without Web2 intermediaries.",
   },
   {
-    question: "Can I keep refining the design?",
+    question: "Can I host it myself?",
     answer:
-      "Yes. The design language is deliberately restrained so you can adapt it to a stronger brand without fighting generic template styling.",
+      "Yes. The entire stack is containerized and designed to run on a single sovereign node (4GB RAM minimum) or as part of a larger cluster.",
   },
 ];
 
@@ -283,17 +283,17 @@ export default function Home() {
                   <div className="space-y-8">
                     <div className="inline-flex items-center gap-2 rounded-full border border-[#b8ab9c] bg-[#e5dbcf] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-[#61584f]">
                       <Sparkles className="h-3.5 w-3.5" />
-                      Next.js SaaS starter kit
+                      Next.js Community OS
                     </div>
                     <div className="space-y-5">
                       <p className="text-sm uppercase tracking-[0.34em] text-[#73685e]">
-                        For AI products, subscription apps, and client portals.
+                        For decentralized cooperatives, land trusts, and sovereign shards.
                       </p>
                       <h1 className="font-display max-w-5xl text-5xl leading-[0.95] sm:text-6xl lg:text-7xl">
-                        Launch a production-ready SaaS with Auth.js, Stripe, Prisma, docs, blog, and admin tools already wired.
+                        Deploy a sovereign stack for your cooperative with identity, chat, mail, and treasury already wired.
                       </h1>
                       <p className="max-w-3xl text-lg leading-8 text-[#4f4942] md:text-xl">
-                        Built for teams that want one codebase for marketing, onboarding, billing, account access, operator workflows, and AI-enabled product features without shipping a generic-looking template.
+                        Built for communities that want to own their digital infrastructure. Privacy-first communications, sharded data sovereignty, and collective governance in one sovereign node.
                       </p>
                     </div>
                     <div className="flex flex-col gap-4 sm:flex-row">
@@ -362,11 +362,11 @@ export default function Home() {
                       </div>
                       <div className="mt-6 space-y-3">
                         {[
-                          "AI routing and product actions",
-                          "Access control and verification",
-                          "Stripe subscriptions and credits",
-                          "Admin surfaces and reporting",
-                          "Blog, docs, and pricing pages",
+                          "Lit Protocol session signatures",
+                          "Citus-sharded data architecture",
+                          "Matrix (Dendrite) secure chat",
+                          "Stalwart (Rust) federated mail",
+                          "Collective governance dashboard",
                         ].map((item) => (
                           <div
                             key={item}
@@ -382,12 +382,12 @@ export default function Home() {
                       <div className="mt-6 grid gap-4 border-t border-[#3b342e] pt-6 sm:grid-cols-2">
                         {[
                           [
-                            "Commercially ready",
-                            "Subscriptions, credits, pricing, and account flows are already connected.",
+                            "Sovereign by default",
+                            "Identity, storage, and communication are owned by the community.",
                           ],
                           [
-                            "Operationally calm",
-                            "Permissions, admin views, and internal controls are part of the product shell.",
+                            "Federated by design",
+                            "Connect your shard to the wider irl.coop network without a central hub.",
                           ],
                         ].map(([title, description]) => (
                           <div
@@ -442,10 +442,10 @@ export default function Home() {
                       Built for real launch teams
                     </p>
                     <h2 className="font-display text-4xl leading-tight sm:text-5xl">
-                      A grounded starting point for SaaS founders, agencies, and product teams shipping web software.
+                      A sovereign infrastructure for cooperative organizers, local land trusts, and federated shards.
                     </h2>
                     <p className="text-lg leading-8 text-[#5a524a]">
-                      This is not a hero-only theme. It is a Next.js SaaS starter kit designed for products that need sales pages, account systems, subscription billing, admin operations, and content surfaces to work together.
+                      This is more than a template. It is the irl.coop Community OS, designed for organizations that need to own their communication, identity, and shared treasury.
                     </p>
                   </div>
                   <div className="divide-y divide-[#cfbfae] border-y border-[#cfbfae]">
@@ -484,7 +484,7 @@ export default function Home() {
                     A landing page that explains the product, the stack, and the operating model.
                   </h2>
                   <p className="text-lg leading-8 text-[#5a524a]">
-                    The homepage now carries more searchable, product-specific content around onboarding, billing, administration, documentation, and AI workflows instead of repeating generic template language.
+                    The collective portal carries searchable, community-specific content around identity, federated tools, sharding, and governance instead of generic SaaS claims.
                   </p>
                 </div>
                 <div className="grid gap-6 md:grid-cols-2">

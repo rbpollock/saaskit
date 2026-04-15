@@ -3,6 +3,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getSiteUrl, siteConfig } from "@/lib/site";
+import { WalletProviders } from "@/providers/WalletProviders";
 
 const siteUrl = getSiteUrl();
 
@@ -63,9 +64,12 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          enableColorScheme={false}
         >
-          {children}
-          <Toaster position="top-right" />
+          <WalletProviders>
+            {children}
+            <Toaster position="top-right" />
+          </WalletProviders>
         </ThemeProvider>
       </body>
     </html>

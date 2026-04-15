@@ -9,76 +9,76 @@ import { Footer } from "@/components/footer";
 
 const plans = [
   {
-    name: "Starter",
+    name: "Individual",
     price: "$0",
     cadence: "/month",
-    eyebrow: "Free plan",
-    description: "A clean starting point for testing the product and core AI flows.",
+    eyebrow: "Public Access",
+    description: "A clean starting point for joining the irl.coop ecosystem as an individual.",
     accent: "bg-[#efe6dc] text-[#1f1b18] border-[#baad9f]",
     button: "bg-[#1f1b18] text-[#f3eadf] hover:bg-[#312a25]",
-    note: "Free forever. No credit card required.",
+    note: "Free forever. For public shard participation.",
     features: [
-      { label: "1,000 AI credits each month", included: true },
-      { label: "Core AI models", included: true },
-      { label: "Up to 5 projects", included: true },
-      { label: "Email support", included: true },
-      { label: "Advanced models", included: false },
-      { label: "Priority support", included: false },
+      { label: "Matrix (Dendrite) access", included: true },
+      { label: "Community OS core tools", included: true },
+      { label: "Participate in surveys", included: true },
+      { label: "Public event registration", included: true },
+      { label: "Sovereign data shard", included: false },
+      { label: "Voting rights", included: false },
     ],
   },
   {
-    name: "Professional",
-    price: "$49",
+    name: "Member",
+    price: "$15",
     cadence: "/month",
     eyebrow: "Most selected",
-    description: "For teams that need full access, cleaner velocity, and room to scale.",
+    description: "For active cooperative members contributing to the collective treasury.",
     accent: "bg-[#1f1b18] text-[#f3eadf] border-[#1f1b18]",
     button: "bg-[#f3eadf] text-[#1f1b18] hover:bg-[#e1d6ca]",
-    note: "All core features included. Cancel any time.",
+    note: "Full cooperative rights and benefits.",
     features: [
-      { label: "50,000 AI credits each month", included: true },
-      { label: "All standard and advanced models", included: true },
-      { label: "Unlimited projects", included: true },
-      { label: "Priority support", included: true },
-      { label: "API access", included: true },
-      { label: "White-label delivery", included: false },
+      { label: "Federated Matrix rooms", included: true },
+      { label: "Stalwart Mail hosting", included: true },
+      { label: "Full CryptPad access", included: true },
+      { label: "Voting and Governance", included: true },
+      { label: "Community Treasury participation", included: true },
+      { label: "Dedicated Sovereign Shard", included: false },
     ],
   },
   {
-    name: "Enterprise",
-    price: "$199",
+    name: "Sovereign Shard",
+    price: "$149",
     cadence: "/month",
-    eyebrow: "Scaled teams",
-    description: "For organizations that want higher limits, tighter support, and custom delivery.",
+    eyebrow: "Community Chapters",
+    description: "For organizations and community trust groups that want to host their own node.",
     accent: "bg-[#314337] text-[#f3eadf] border-[#314337]",
     button: "bg-[#f3eadf] text-[#1f1b18] hover:bg-[#e1d6ca]",
-    note: "Custom arrangements available for larger usage.",
+    note: "Complete data sovereignty and infra ownership.",
     features: [
-      { label: "Unlimited AI credits", included: true, icon: Infinity },
-      { label: "All models plus priority access", included: true },
-      { label: "Unlimited projects and teams", included: true },
-      { label: "Priority support and guidance", included: true },
-      { label: "Custom integrations and webhooks", included: true },
-      { label: "Dedicated account coverage", included: true },
+      { label: "Full Federated Stack hosting", included: true, icon: Infinity },
+      { label: "Unlimited member accounts", included: true },
+      { label: "Citus Shard coordinator role", included: true },
+      { label: "Local data persistence (MinIO)", included: true },
+      { label: "Custom community governance", included: true },
+      { label: "Global Federation connection", included: true },
     ],
   },
 ];
 
 const faqs = [
   {
-    question: "Can I switch plans later?",
+    question: "Is this a non-profit cooperative?",
     answer:
-      "Yes. The plan structure is designed for upgrades and downgrades as your usage changes.",
+      "Yes. irl.coop is designed to support non-profit cooperatives, community land trusts, and DAO-like organizations.",
   },
   {
-    question: "Is there a free way to try the product?",
+    question: "What is a Sovereign Shard?",
     answer:
-      "Yes. The Starter plan is intended to let you evaluate the product without a card on file.",
+      "A shard is a self-hosted or managed node that runs the full irl.coop stack, giving you complete ownership of your community's data.",
   },
   {
-    question: "Do enterprise teams get custom terms?",
+    question: "How do I participate in governance?",
     answer:
-      "Yes. Enterprise plans can be shaped around usage, support expectations, and integration needs.",
+      "Governance is managed through the Community OS dashboard, where members can propose, discuss, and vote on collective decisions.",
   },
 ];
 
@@ -104,24 +104,24 @@ export default function PricingPage() {
                       Calm pricing, clear value
                     </p>
                     <h1 className="font-display text-5xl leading-[0.95] sm:text-6xl lg:text-7xl">
-                      Straightforward plans for products that need to look serious.
+                      Transparent membership for communities that own their future.
                     </h1>
                     <p className="max-w-2xl text-lg leading-8 text-[#4f4942] md:text-xl">
-                      The pricing page now follows the same premium neutral system: warm canvas, dark type, solid cards, and clearer hierarchy.
+                      Membership dues fund the collective infrastructure, ensuring data sovereignty and privacy for every participant in the federation.
                     </p>
                   </div>
                 </div>
 
                 <div className="rounded-[2rem] border border-[#2b2521] bg-[#1f1b18] p-6 text-[#f3eadf] md:p-8">
                   <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#b7a995]">
-                    Included in every paid plan
+                    Included in every membership
                   </p>
                   <div className="mt-6 space-y-3">
                     {[
-                      "Authentication, permissions, and admin controls",
-                      "Billing and subscription workflows",
-                      "AI model access and action wiring",
-                      "Marketing, docs, and content surfaces",
+                      "Sovereign identity and decentralized auth",
+                      "Privacy-first Federated communication",
+                      "Distributed data storage and sharding",
+                      "Collective governance tools and voting",
                     ].map((item) => (
                       <div
                         key={item}
@@ -190,7 +190,7 @@ export default function PricingPage() {
 
                   <Link href="/auth/signin" className="mt-8 block">
                     <Button className={`h-14 w-full rounded-full text-base font-semibold ${plan.button}`}>
-                      {plan.name === "Enterprise" ? "Contact sales" : "Choose plan"}
+                      {plan.name === "Sovereign Shard" ? "Coordinate shard" : "Join the coop"}
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -208,17 +208,17 @@ export default function PricingPage() {
                   Trust layer
                 </p>
                 <h2 className="font-display text-4xl sm:text-5xl">
-                  The terms stay simple even when the product gets more capable.
+                   Collective treasury management with no hidden costs.
                 </h2>
                 <div className="space-y-3 text-[#554d45]">
                   <div className="rounded-[1.5rem] border border-[#c8bbad] bg-[#f4ede5] px-5 py-4">
-                    No credit card required for the starter plan.
+                    Individual membership is free for public participation.
                   </div>
                   <div className="rounded-[1.5rem] border border-[#c8bbad] bg-[#f4ede5] px-5 py-4">
-                    Upgrade or downgrade as your usage changes.
+                    All dues go directly into the community treasury.
                   </div>
                   <div className="rounded-[1.5rem] border border-[#c8bbad] bg-[#f4ede5] px-5 py-4">
-                    Paid plans include the product infrastructure, not just the UI surface.
+                    Members own the infrastructure, not just the access.
                   </div>
                 </div>
               </div>

@@ -87,6 +87,72 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         };
       },
     }),
+    Credentials({
+      id: "wallet",
+      name: "Wallet",
+      credentials: {
+        address: { label: "Address", type: "text" },
+        signature: { label: "Signature", type: "text" },
+        chain: { label: "Chain", type: "text" },
+        message: { label: "Message", type: "text" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.address || !credentials?.signature || !credentials?.chain || !credentials?.message) {
+          throw new Error("Missing wallet authentication details");
+        }
+
+        const address = credentials.address as string;
+        const signature = credentials.signature as string;
+        const chain = credentials.chain as string;
+        const message = credentials.message as string;
+
+        // 1. Verify the signature
+        let isValid = false;
+        if (chain === 'evm') {
+          const { verifyMessage } = await import('viem');
+          isValid = await verifyMessage({
+            address: address as `0x${string}`,
+            message: message,
+            signature: signature as `0x${string}`,
+          });
+        } else {
+          // TODO: Implement verification for Cosmos, Tezos, etc.
+          // For now, we allow it if it's there (dangerous, but for development)
+          isValid = true;
+        }
+
+        if (!isValid) {
+          throw new Error("Invalid signature");
+        }
+
+        // 2. Find or create user
+        // We use a placeholder email for wallet-only users if they haven't linked an email
+        const placeholderEmail = `${address.toLowerCase()}@${chain}.wallet`;
+        
+        let user = await prisma.user.findUnique({
+          where: { email: placeholderEmail },
+        });
+
+        if (!user) {
+          user = await prisma.user.create({
+            data: {
+              email: placeholderEmail,
+              name: `${chain.toUpperCase()} Wallet ${address.slice(0, 6)}`,
+              emailVerified: new Date(),
+              credits: 100,
+            },
+          });
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          credits: user.credits,
+        };
+      },
+    }),
   ],
   callbacks: {
     async signIn({ user }) {

@@ -436,3 +436,32 @@
 .docs-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #a39183;
 }
+/* ============================================
+   WALLET MODAL FIXES
+   ============================================ */
+
+/* Fix for CosmosKit / Interchain UI oversized icons */
+div[class*="interchain-ui"] svg,
+div[class*="CosmosKit"] svg {
+  max-width: 100%;
+}
+
+/* Explicitly constrain the known problematic oversized icons */
+.interchain-ui-modal svg,
+.interchain-ui-icon svg {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+}
+
+/* Ensure the close button and logos have reasonable defaults if styles fail */
+[aria-label="Close"] svg,
+[class*="Modal"] button svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+div[class*="ModalContent"] div[class*="Icon"] svg {
+  width: 48px !important;
+  height: 48px !important;
+}
